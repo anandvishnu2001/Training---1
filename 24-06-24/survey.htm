@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Survey Form</title>
+    <link rel="stylesheet" href="survey.css">
+  </head>
+  <body>
+    <h1 id="title">Survey Form</h1>
+    <p id="description">Thank you for helping us improve our platform</p>
+    <form id="survey-form">
+      <fieldset>
+        <label id="name-label" for="name">Name:</label>
+        <input id="name" type="text" placeholder="Your Name" required/>
+        <label id="email-label" for="email">Email:</label>
+        <input id="email" type="email" placeholder="Your Email" required/>
+        <label id="number-label" for="number">Age:</label>
+        <input id="number" type="number" placeholder="Your Age" min="13" max="100" required/>
+      <fieldset>
+        <legend>What is your current role?</legend>
+        <select id="dropdown">
+          <option value="">select one</option>
+          <option value="1">Student</option>
+          <option value="2">Employee</option>
+          <option value="3">Other</option>
+        </select>
+      </fieldset>
+      <fieldset>
+        <legend>Which are the fields that you are interested in?</legend>
+        <label><input type="checkbox" value="front-end" class="inline" >Front-end</label>
+        <label><input type="checkbox" value="back-end" class="inline" >Back-end</label>
+        <label><input type="checkbox" value="database" class="inline" >Database</label>
+      </fieldset>
+      <fieldset>
+        <legend>How do you rate us?</legend>
+        <label><input type="radio" name="rate" value="Poor" class="inline" />Poor</label>
+        <label><input type="radio" name="rate" value="Good" class="inline" />Good</label>
+        <label><input type="radio" name="rate" value="Excellent" class="inline" />Excellent</label>
+      </fieldset>
+      <fieldset>
+        <legend>What are your suggestions to us?</legend>
+        <textarea id="comment" rows="3" cols="30" placeholder="Your Comments"></textarea>
+      </fieldset>
+      <input type="submit" id="submit" value="Submit" />
+    </form>
+  </body>
+</html>
