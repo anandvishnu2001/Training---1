@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Registration Form</title>
+		<link rel="stylesheet" href=".\css\form.css">
+		<script type="text/javascript" href=".\js\form.js"></script>
+		<link rel="icon" type="image/x-icon" href=".\images\title.ico">
+		<link href=".\css\bootstrap.min.css" rel="stylesheet">
+		<script type="text/javascript" href=".\js\bootstrap.min.js"></script>
+	</head>
+	<body class="container-fluid bg-gradient d-flex flex-column align-items-center">
+		<p class="title text-info text-center mt-5">Register Now</p>
+		<p class="instr text-success text-center">Please fill out the credentials.</p>
+		<form class="d-flex flex-column bg-success bg-gradient rounded p-5 my-5 gap-3" method="post" action="">
+			<fieldset>
+				<div class="form-floating mb-3">
+					<input class="form-control" id="name" name="name" type="text" placeholder=""  />
+					<label class="form-label" for="name">Enter your Name: <div name="npop"></div></label>
+				</div>
+				<div class="form-floating mb-3">
+					<input class="form-control" id="phone" type="number" name="phone" placeholder="" pattern=[0-9]{10}  />
+					<label class="form-label" for="phone">Enter your Phone number: <div name="phpop"></div></label>
+				</div>
+				<div class="form-floating mb-3">
+					<input class="form-control" id="profile" type="file" name="profile" placeholder="" accept="image/*"/>
+					<label class="form-label" for="profile">Upload a profile picture: <div name="prpop"></div></label>
+				</div>
+				<div class="form-floating mb-3">
+					<input class="form-control" id="dob" type="date" placeholder="" name="dob"/>
+					<label class="form-label" for="dob">Enter your Date of Birth(dd-mm-yyyy): <div name="dpop"></div></label>
+				</div>
+			</fieldset>
+			<fieldset>
+				<div class="d-flex form-control mb-3">
+					<legend>Select your Gender: </legend><div name="gpop"></div>
+					<div>
+						<div class="form-check">
+							<input class="form-check-input" id="male" type="radio" name="gender" />
+							<label class="form-check-label" for="male"> Male</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" id="female" type="radio" name="gender" />
+							<label class="form-check-label" for="female"> Female</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" id="other" type="radio" name="gender" />
+						<label class="form-check-label" for="other"> Other</label>
+						</div>
+					</div>
+				</div>
+				<div class="d-flex form-control mb-3">
+					<legend>Select your Marital Status: </legend><div name="mpop"></div>
+					<div>
+						<div class="form-check">
+							<input class="form-check-input" id="married" type="radio" name="marital" />
+							<label class="form-check-label" for="married"> Married</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" id="unmarried" type="radio" name="marital" />
+							<label class="form-check-label" for="unmarried"> Unmarried</label>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			<fieldset>
+				<div class="form-floating mb-3">
+					<select class="form-select" id="job" name="job">
+						<option value="">(select one)</option>
+						<option value="1">Student</option>
+						<option value="2">Government Employee</option>
+						<option value="3">Corporate Employee</option>
+						<option value="4">Daily-wage Worker</option>
+						<option value="5">Other</option>
+					</select>
+					<label class="form-label" for="job">Select your Occupation: <div name="jpop"></div></label>
+				</div>
+				<div class="form-floating mb-3">
+					<textarea class="form-control" id="bio" name="bio" rows="3" cols="30" placeholder=""></textarea>
+					<label class="form-label" for="bio">Describe yourself: <div name="bpop"></div></label>
+				</div>
+			</fieldset>
+			<fieldset class="">
+				<div class="form-floating mb-3">
+					<input class="form-control" id="email" name="email" placeholder="" type="email"  />
+					<label class="form-label" for="email">Enter your Email: <div name="epop"></div></label>
+				</div>
+				<div class="form-floating mb-3">
+					<input class="form-control" id="password" name="password" type="password" placeholder="" pattern="[a-z0-9]{8,}"  />
+					<label class="form-label" for="password">Create new Password: <div name="papop"></div></label>
+				</div>
+			</fieldset>
+			<div class="form-check mb-3">
+				<input class="form-check-input" id="terms" type="checkbox"  name="terms" />
+				<label class="form-check-label" for="terms"> I accept the <a class="link-warning link-underline-opacity-0 link-underline-opacity-100-hover" href="">terms and conditions.</a><div name="tpop"></div></label>
+			</div>
+			<input class="form-control" id="verify" name="verify" type="hidden" value="0" />
+			<input class="form-control btn btn-outline-info" type="submit" value="Submit" />
+		</form>
+	</body>
+</html>
