@@ -20,7 +20,7 @@
 					<label class="form-label" for="name">Enter your Name: </label><div id="namepop" class="pop"></div>
 				</div>
 				<div class="form-floating mb-3">
-					<input class="form-control check valid" id="phone" type="number" name="Phone" placeholder="" pattern=[0-9]{10} />
+					<input class="form-control check valid" id="phone" type="number" name="Phone" placeholder="" />
 					<label class="form-label" for="phone">Enter your Phone number: </label>
 					<div id="phonepop" class="pop"></div>
 				</div>
@@ -37,7 +37,7 @@
 			</fieldset>
 			<fieldset>
 				<div class="d-flex form-control mb-3">
-					<legend class="row">Select your Gender: <div id="gpop" class="pop"></div></legend>
+					<legend class="row">Select your Gender: <div id="Genderpop" class="pop"></div></legend>
 					<div class="d-flex flex-column justify-cotent-between">
 						<div class="form-check">
 							<input class="form-check-input" id="male" type="radio" name="Gender" />
@@ -54,14 +54,14 @@
 					</div>
 				</div>
 				<div class="d-flex form-control mb-3">
-					<legend class="row">Select your Marital Status: <div id="mpop" class="pop"></div></legend>
+					<legend class="row">Select your Marital Status: <div id="Marital-Statuspop" class="pop"></div></legend>
 					<div class="d-flex flex-column justify-cotent-between">
 						<div class="form-check">
 							<input class="form-check-input" id="married" type="radio" name="Marital-Status" />
 							<label class="form-check-label" for="married"> Married</label>
 						</div>
 						<div class="form-check">
-							<input class="form-check-input" id="unmarried" type="radio" name="Marital Status" />
+							<input class="form-check-input" id="unmarried" type="radio" name="Marital-Status" />
 							<label class="form-check-label" for="unmarried"> Unmarried</label>
 						</div>
 					</div>
@@ -93,7 +93,7 @@
 					<div id="emailpop" class="pop"></div>
 				</div>
 				<div class="form-floating mb-3">
-					<input class="form-control check valid" id="password" name="Password" type="password" placeholder="" pattern="[a-z0-9]{8,}"  />
+					<input class="form-control check valid" id="password" name="Password" type="password" placeholder="" />
 					<label class="form-label" for="password">Create new Password: </label>
 					<div id="passwordpop" class="pop"></div>
 				</div>
@@ -101,7 +101,7 @@
 			<div class="form-check mb-3">
 				<input class="form-check-input valid" id="terms" type="checkbox"  name="Terms-and-Conditions" />
 				<label class="form-check-label" for="terms"> I accept the <a class="link-warning link-underline-opacity-0 link-underline-opacity-100-hover" href="">terms and conditions.</a></label>
-				<div id="termspop" class="pop"></div>
+				<div id="Terms-and-Conditionspop" class="pop"></div>
 			</div>
 			<input class="form-control" id="verify" name="verify" type="hidden" value="0" />
 			<input class="container form-control btn btn-outline-success" type="submit" value="Submit" /> 
