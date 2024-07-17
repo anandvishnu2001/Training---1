@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>JQuery</title>
+		<link href=".\css\design.css" rel="stylesheet">
+		<link href=".\css\bootstrap.min.css" rel="stylesheet">
+		<script src=".\js\bootstrap.min.js"></script>
+	</head>
+	<body>
+		<h1>TAB</h1>
+		<div>
+			<div class="container bg-primary overflow-hidden p-0">
+				<button class="tab btn btn-primary p-3 float-start" name="tab1">London</button>
+				<button class="tab btn btn-primary p-3 float-start" name="tab2">Paris</button>
+				<button class="tab btn btn-primary p-3 float-start" name="tab3">Tokyo</button>
+				<button class="tab btn btn-close float-end"></button>
+			</div>
+			<div id="tab1" class="tabcontent container border border-3 border-top-0 border-danger bg-info px-2 py-3">
+				<h3>London</h3>
+				<p>London is the capital city of England.</p>
+			</div>
+			<div id="tab2" class="tabcontent container border border-3 border-top-0 border-danger bg-info px-2 py-3">
+				<h3>Paris</h3>
+				<p>Paris is the capital of France.</p> 
+			</div>
+			<div id="tab3" class="tabcontent container border border-3 border-top-0 border-danger bg-info px-2 py-3">
+			<h3>Tokyo</h3>
+			<p>Tokyo is the capital of Japan.</p>
+			</div>
+		</div>
+		<h1>ACCORDION</h1>
+		<div class="container d-grid p-0">
+			<button class="accordion btn btn-primary p-3" name="panel1">London</button>
+			<div id="panel1" class="panel border-3 border-start border-end border-danger bg-info px-2 py-3">
+				<h3>London</h3>
+				<p>London is the capital city of England.</p>
+			</div>
+			<button class="accordion btn btn-primary p-3" name="panel2">Paris</button>
+			<div id="panel2" class="panel border-3 border-start border-end border-danger bg-info px-2 py-3">
+				<h3>Paris</h3>
+				<p>Paris is the capital of France.</p> 
+			</div>
+			<button class="accordion btn btn-primary p-3" name="panel3">Tokyo</button>
+			<div id="panel3" class="panel border-3 border-start border-end border-danger bg-info px-2 py-3">
+			<h3>Tokyo</h3>
+			<p>Tokyo is the capital of Japan.</p>
+			</div>
+		</div>
+		<h1>DATEPICKER</h1>
+		<script src=".\js\jquery-3.7.1.js"></script>
+		<script src=".\js\design.js"></script>
+	</body>
+</html>
