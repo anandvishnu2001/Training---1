@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Registration Form</title>
+		<link rel="stylesheet" href=".\css\form.css">
+		<link href=".\css\bootstrap.min.css" rel="stylesheet">
+		<script src=".\js\bootstrap.min.js"></script>
+	</head>
+	<body class="container-fluid bg-gradient d-flex flex-column align-items-center">
+		<p class="title text-primary text-center mt-5">Register Now</p>
+		<p class="instr text-success text-center">Please fill out the credentials.</p>
+		<form class="d-flex flex-column bg-info bg-gradient rounded p-5 my-5 gap-3" id="register" method="post" action="">
+
+			<fieldset>
+				
+				<div class="form-floating mb-3">
+					<input class="form-control valid" id="name" name="Name" type="text" placeholder="" autofocus/>
+					<label class="form-label" for="name">Enter your Name: </label><div id="namepop" class="pop"></div>
+				</div>
+				<div class="form-floating mb-3">
+					<input class="form-control check valid" id="phone" type="number" name="Phone" placeholder="" />
+					<label class="form-label" for="phone">Enter your Phone number: </label>
+					<div id="phonepop" class="pop"></div>
+				</div>
+				<div class="form-floating mb-3">
+					<input class="form-control valid" id="profile" type="file" name="Profile" placeholder="" accept="image/*"/>
+					<label class="form-label" for="profile">Upload a profile picture: </label>
+					<div id="profilepop" class="pop"></div>
+				</div>
+				<div class="form-floating mb-3">
+					<input class="form-control valid" id="dob" type="date" placeholder="" name="Date-of-Birth"/>
+					<label class="form-label" for="dob">Enter your Date of Birth(dd-mm-yyyy): </label>
+					<div id="dobpop" class="pop"></div>
+				</div>
+			</fieldset>
+			<fieldset>
+				<div class="d-flex form-control mb-3">
+					<legend class="row">Select your Gender: <div id="Genderpop" class="pop"></div></legend>
+					<div class="d-flex flex-column justify-cotent-between">
+						<div class="form-check">
+							<input class="form-check-input" id="male" type="radio" name="Gender" />
+							<label class="form-check-label" for="male"> Male</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" id="female" type="radio" name="Gender" />
+							<label class="form-check-label" for="female"> Female</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" id="other" type="radio" name="Gender" />
+						<label class="form-check-label" for="other"> Other</label>
+						</div>
+					</div>
+				</div>
+				<div class="d-flex form-control mb-3">
+					<legend class="row">Select your Marital Status: <div id="Marital-Statuspop" class="pop"></div></legend>
+					<div class="d-flex flex-column justify-cotent-between">
+						<div class="form-check">
+							<input class="form-check-input" id="married" type="radio" name="Marital-Status" />
+							<label class="form-check-label" for="married"> Married</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" id="unmarried" type="radio" name="Marital-Status" />
+							<label class="form-check-label" for="unmarried"> Unmarried</label>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			<fieldset>
+				<div class="form-floating mb-3">
+					<select class="form-select valid" id="job" name="Occupation">
+						<option value="">(select one)</option>
+						<option value="1">Student</option>
+						<option value="2">Government Employee</option>
+						<option value="3">Corporate Employee</option>
+						<option value="4">Daily-wage Worker</option>
+						<option value="5">Other</option>
+					</select>
+					<label class="form-label" for="job">Select your Occupation: </label>
+					<div id="jobpop" class="pop"></div>
+				</div>
+				<div class="form-floating mb-3">
+					<textarea class="form-control valid" id="bio" name="Description" rows="3" cols="30" placeholder=""></textarea>
+					<label class="form-label" for="bio">Describe yourself: </label>
+					<div id="biopop" class="pop"></div>
+				</div>
+			</fieldset>
+			<fieldset class="">
+				<div class="form-floating mb-3">
+					<input class="form-control check valid" id="email" name="Email" placeholder="" type="email"  />
+					<label class="form-label" for="email">Enter your Email: </label>
+					<div id="emailpop" class="pop"></div>
+				</div>
+				<div class="form-floating mb-3">
+					<input class="form-control check valid" id="password" name="Password" type="password" placeholder="" />
+					<label class="form-label" for="password">Create new Password: </label>
+					<div id="passwordpop" class="pop"></div>
+				</div>
+			</fieldset>
+			<div class="form-check mb-3">
+				<input class="form-check-input valid" id="terms" type="checkbox"  name="Terms-and-Conditions" />
+				<label class="form-check-label" for="terms"> I accept the <a class="link-warning link-underline-opacity-0 link-underline-opacity-100-hover" href="">terms and conditions.</a></label>
+				<div id="Terms-and-Conditionspop" class="pop"></div>
+			</div>
+			<input class="form-control" id="verify" name="verify" type="hidden" value="0" />
+			<input class="container form-control btn btn-outline-success" type="submit" value="Submit" /> 
+		</form>
+		<script src=".\js\jquery-3.7.1.js"></script>
+		<script src=".\js\form.js"></script>
+	</body>
+</html>
