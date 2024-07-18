@@ -1,3 +1,6 @@
+.task {
+	margin-bottom: 50px !important;
+}
 .tabcontent,.panel {
 	display: none;
 }

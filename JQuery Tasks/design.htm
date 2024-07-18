@@ -6,50 +6,146 @@
 		<title>JQuery</title>
 		<link href=".\css\design.css" rel="stylesheet">
 		<link href=".\css\bootstrap.min.css" rel="stylesheet">
-		<script src=".\js\bootstrap.min.js"></script>
+		<link rel="stylesheet" href=".\assets\jquery-ui-themes\themes\base\jquery-ui.css">
+		<link rel="stylesheet" href=".\assets\datatables\datatables.min.css">
 	</head>
 	<body>
 		<h1>TAB</h1>
-		<div>
+		<div class="task">
 			<div class="container bg-primary overflow-hidden p-0">
 				<button class="tab btn btn-primary p-3 float-start" name="tab1">London</button>
 				<button class="tab btn btn-primary p-3 float-start" name="tab2">Paris</button>
 				<button class="tab btn btn-primary p-3 float-start" name="tab3">Tokyo</button>
 				<button class="tab btn btn-close float-end"></button>
 			</div>
-			<div id="tab1" class="tabcontent container border border-3 border-top-0 border-danger bg-info px-2 py-3">
+			<div id="tab1" class="tabcontent container border border-3 border-top-0 border-warning bg-info px-2 py-3">
 				<h3>London</h3>
 				<p>London is the capital city of England.</p>
 			</div>
-			<div id="tab2" class="tabcontent container border border-3 border-top-0 border-danger bg-info px-2 py-3">
+			<div id="tab2" class="tabcontent container border border-3 border-top-0 border-warning bg-info px-2 py-3">
 				<h3>Paris</h3>
 				<p>Paris is the capital of France.</p> 
 			</div>
-			<div id="tab3" class="tabcontent container border border-3 border-top-0 border-danger bg-info px-2 py-3">
+			<div id="tab3" class="tabcontent container border border-3 border-top-0 border-warning bg-info px-2 py-3">
 			<h3>Tokyo</h3>
 			<p>Tokyo is the capital of Japan.</p>
 			</div>
 		</div>
 		<h1>ACCORDION</h1>
-		<div class="container d-grid p-0">
+		<div class="task container d-grid p-0">
 			<button class="accordion btn btn-primary p-3" name="panel1">London</button>
-			<div id="panel1" class="panel border-3 border-start border-end border-danger bg-info px-2 py-3">
+			<div id="panel1" class="panel border-3 border-start border-end border-warning bg-info px-2 py-3">
 				<h3>London</h3>
 				<p>London is the capital city of England.</p>
 			</div>
 			<button class="accordion btn btn-primary p-3" name="panel2">Paris</button>
-			<div id="panel2" class="panel border-3 border-start border-end border-danger bg-info px-2 py-3">
+			<div id="panel2" class="panel border-3 border-start border-end border-warning bg-info px-2 py-3">
 				<h3>Paris</h3>
 				<p>Paris is the capital of France.</p> 
 			</div>
 			<button class="accordion btn btn-primary p-3" name="panel3">Tokyo</button>
-			<div id="panel3" class="panel border-3 border-start border-end border-danger bg-info px-2 py-3">
+			<div id="panel3" class="panel border-3 border-start border-end border-warning bg-info px-2 py-3">
 			<h3>Tokyo</h3>
 			<p>Tokyo is the capital of Japan.</p>
 			</div>
 		</div>
 		<h1>DATEPICKER</h1>
+		<div class="task container w-25">
+			<div class="form-floating">
+				<input type="text" id="datepicker" class="bg-primary form-control" placeholder=""/>
+				<label for="datepicker" class="form-label">Date</label>
+			</div>
+		</div>
+		<h1>DATA TABLE</h1>
+		<div class="task container bg-primary rounded">
+			<table id="datatable" class="table table-hover table-striped table-bordered">
+				<thead class="table-warning">
+					<tr>
+						<td>Employee ID</td>
+						<td>Name</td>
+						<td>Email</td>
+						<td>Phone</td>
+						<td>Designation</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>RTE031</td>
+						<td>John Arryn</td>
+						<td>john.arryn@ratestertech.com</td>
+						<td>+91 9123456789</td>
+						<td>Software Engineer</td>
+					</tr>
+					<tr>
+						<td>RTE043</td>
+						<td>Jane Bolton</td>
+						<td>jane.bolton@ratestertech.com</td>
+						<td>+91 8345678901</td>
+						<td>Project Manager</td>
+					</tr>
+					<tr>
+						<td>RTE102</td>
+						<td>Michael Cassano</td>
+						<td>michael.cassano@ratestertech.com</td>
+						<td>+91 7456789012</td>
+						<td>Business Analyst</td>
+					</tr>
+					<tr>
+						<td>RTE167</td>
+						<td>Sarah Baratheon</td>
+						<td>sarah.baratheon@ratestertech.com</td>
+						<td>+91 8567890123</td>
+						<td>HR Manager</td>
+					</tr>
+					<tr>
+						<td>RTE178</td>
+						<td>Alfred Stark</td>
+						<td>alfred.stark@ratestertech.com</td>
+						<td>+91 7678901234</td>
+						<td>System Administrator</td>
+					</tr>
+					<tr>
+						<td>RTE189</td>
+						<td>Emily Lannnister</td>
+						<td>emily.lannister@ratestertech.com</td>
+						<td>+91 9789012345</td>
+						<td>Graphic Designer</td>
+					</tr>
+					<tr>
+						<td>RTE211</td>
+						<td>William Varys</td>
+						<td>william.varys@ratestertech.com</td>
+						<td>+91 7890123456</td>
+						<td>Marketing Specialist</td>
+					</tr>
+					<tr>
+						<td>RTE254</td>
+						<td>Alice Magentano</td>
+						<td>alice.magentano@ratestertech.com</td>
+						<td>+91 8901234567</td>
+						<td>Financial Analyst</td>
+					</tr>
+					<tr>
+						<td>RTE312</td>
+						<td>James Martinez</td>
+						<td>james.martinez@ratestertech.com</td>
+						<td>+91 7912345678</td>
+						<td>Software Developer</td>
+					</tr>
+					<tr>
+						<td>RTE321</td>
+						<td>Olivia Garcia</td>
+						<td>olivia.garcia@ratestertech.com</td>
+						<td>+91 7123456789</td>
+						<td>Product Manager</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 		<script src=".\js\jquery-3.7.1.js"></script>
+		<script src=".\assets\jquery-ui\jquery-ui.js"></script>
+		<script src=".\assets\datatables\datatables.min.js"></script>
 		<script src=".\js\design.js"></script>
+		<script src=".\js\bootstrap.min.js"></script>
 	</body>
 </html>
