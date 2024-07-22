@@ -1,6 +1,6 @@
 body {
 	background-image: linear-gradient(black,grey,grey,grey,black);
-	color: white;
+	color: purple;
 	margin: 0;
 }
 p {
@@ -9,31 +9,107 @@ p {
 .title {
 	font-size: 50px;
 	font-weight: 800;
-	color: blue;
+	color: lime;
 }
 .instr {
 	font-size: 20px;
 	font-weight: 400;
-	color: green;
+	color: cyan;
 }
 form {
 	width: 100%;
 	display: flex;
 	flex-direction:column;
+	box-shadow: 0 0 18px aqua;
 	align-items:center;
 	justify-content: space-around;
-	background-color: orangered;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	background-color: burlywood;
+	padding: 10px 0;
 	margin-bottom: 30px;
 	border-radius: 5px;
 }
-.row,.column {
+.row,.column,.outrow {
 	width: 90%;
 	display: flex;
-	flex-direction:column;
+	flex-direction: column;
+}
+.valid {
+	width: 100%;
+	border-radius: 5px;
+}
+a {
+	color: blue;
 }
 #submit {
-	width: 90%;
+	width: 95%;
+	margin-top: 10px;
 	background-color: green;
+	border-radius: 5px;
+}
+#submit:hover {
+	box-shadow: 0 0 8px aqua;
+}
+
+@media (width > 600px) {
+	.title {
+		margin-left: 20px;
+		font-size: 65px;
+		text-align:left;
+	}
+	.instr {
+		margin-right: 50px;
+		font-size: 25px;
+		text-align: right;
+	}
+	form {
+		width: 85%;
+		margin: 40px auto;
+	}
+	fieldset {
+		margin-bottom: 5px;
+	}
+	.row {
+		width: 100%;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+	.outrow {
+		flex-direction: row;
+		justify-content: space-between;
+		
+	}
+	.valid {
+		width: 90%;
+	}
+	#submit {
+		width: 50%;
+		margin: 15px 0;
+	}
+}
+
+@media (width > 1000px) {
+	.title {
+		font-size: 90px;
+		text-align:left;
+	}
+	.instr {
+		font-size: 35px;
+		text-align: right;
+	}
+	form {
+		width: 75%;
+		margin: 60px auto;
+		padding-top: 30px;
+	}
+	fieldset {
+		margin-bottom: 15px;
+	}
+	.valid {
+		width: 75%;
+	}
+	#submit {
+		width: 25%;
+		font-size: 15px;
+		margin: 30px 0;
+	}
 }
