@@ -10,7 +10,7 @@
 	<br><cfinput name="btn" type="submit">
 </cfform>
 <cfif NOT isNull(form.btn)>
-	<cfif structKeyExists(form, "img") AND isDefined("form.img") AND len(trim(form.img))>
+	<cfif structKeyExists(form, "img") AND len(trim(form.img))>
 		<cfset upload = expandPath('./uploads/')>
 		<cfif NOT directoryExists(upload)>
 			<cfdirectory action="create" directory="#upload#">
@@ -19,7 +19,7 @@
 		<cfset extensions = "jpg,png,gif">
 		<cfif ListContainsNoCase(extensions,cffile.serverFileExt) AND cffile.fileSize/1024 LTE 1024>
 			<cfset img = ImageNew("#upload##cffile.serverFile#")>
-			<cfset ImageResize(img,"50%","50%")>
+			<cfset ImageResize(img,"20","20")>
 			<cfimage source="#img#" action="writeToBrowser">
 			<cfform action="image.cfm" method="post">
 				<cfinput name="name" type="hidden" value="#form.imgname#">
