@@ -1,5 +1,5 @@
 <cfif NOT isNull(form.btn)>
-	<cfswitch  expression="#form.ifrate#">
+	<cfswitch  expression="#form.switchrate#">
 		<cfcase value="5">
 			<cfoutput>Very good</cfoutput>
 		</cfcase>
