@@ -35,8 +35,8 @@
 			<tbody>
 				<cfloop query="GetName">
 					<tr>
-						<td align="right">#firstname#</td>
-						<td align="right">#lastname#</td>
+						<td align="right">#GetName.firstname#</td>
+						<td align="right">#GetName.lastname#</td>
 					</tr>
 				</cfloop>
 			</tbody>
