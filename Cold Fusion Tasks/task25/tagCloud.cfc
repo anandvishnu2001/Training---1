@@ -1,9 +1,11 @@
 <cfcomponent>
 	<cffunction name="init" access="public">
-		<cfargument name="result" type="query" required="true">
+		<cfset color = ["black","red","blue","green","yellow"]>
+		<cfset tableStruct = structNew()>
 	</cffunction>
 	<cffunction name="style">
-		
-		<script src="script.js"></script>
+		<cfargument name="record" type="string" requiired="yes">
+		<cfset recArray = ListToArray(record)>
+		<cfset tableStruct[recArray[1]] = {size = "#recArray[2]#"}>
 	</cffunction>
 </cfcomponent>
