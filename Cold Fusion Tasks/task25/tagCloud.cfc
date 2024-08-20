@@ -18,7 +18,12 @@
 	<cffunction name="style">
 		<cfargument name="record" type="string" requiired="yes">
 		<cfset tableStruct = structNew()>
+		<cfset colorHex = 010101>
 		<cfset recArray = ListToArray(record)>
-		<cfset tableStruct[recArray[1]] = {size="#recArray[2]#" , color = "black"}>
+		<cfif recArray[2] GT 1>
+			<cfset colorHex += 10000>
+		</cfif>
+		<cfset tableStruct[recArray[1]] = {size="#recArray[2]#" , color = "#"+colorHex}>
+		<cfdump var="#tableStruct#">
 	</cffunction>
 </cfcomponent>

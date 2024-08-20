@@ -21,5 +21,5 @@
 <cfloop query="findCount">
 	<cfset style.style("#word#,#count#")>
 </cfloop>
-<cfdump var="#tableStruct#">
+
 </cfif>
