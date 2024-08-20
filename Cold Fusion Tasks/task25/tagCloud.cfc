@@ -17,7 +17,8 @@
 	</cffunction>
 	<cffunction name="style">
 		<cfargument name="record" type="string" requiired="yes">
+		<cfset tableStruct = structNew()>
 		<cfset recArray = ListToArray(record)>
-		<cfset tableStruct[recArray[1]] = {size = "#recArray[2]#"}>
+		<cfset tableStruct[recArray[1]] = {size="#recArray[2]#" , color = "black"}>
 	</cffunction>
 </cfcomponent>

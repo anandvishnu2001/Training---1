@@ -3,7 +3,7 @@
 	<input name="btn" type="submit">
 </form>
 <cfif structKeyExists(form,"btn")>
-	<cfset insert = createObject("component","database")>
+	<cfset insert = createObject("component","tagCloud")>
 	<cfset insert.init()>
 	<cfset insert.submit(form.paragraph)>
 <cfquery name="findCount" datasource="train">
@@ -14,12 +14,12 @@
 		WORD ASC;
 </cfquery>
 <cfset style = createObject("component","tagCloud")>
-<cfset style.init()>
+
+<cfoutput query="findCount">
+	<span class="style">-#word#(#count#)</span><br>
+</cfoutput><cfset style.init()>
 <cfloop query="findCount">
 	<cfset style.style("#word#,#count#")>
 </cfloop>
-<cfoutput query="findCount">
-	<span class="style">-#word#(#count#)</span><br>
-</cfoutput>
 <cfdump var="#tableStruct#">
 </cfif>
