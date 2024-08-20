@@ -6,5 +6,20 @@
 	<cfset insert = createObject("component","database")>
 	<cfset insert.init()>
 	<cfset insert.submit(form.paragraph)>
-	<cfinclude template="count.cfm">
+<cfquery name="findCount" datasource="train">
+	SELECT WORD,COUNT(WORD) AS COUNT FROM PARAGRAPH
+	GROUP BY WORD HAVING LENGTH(WORD) >= 3
+	ORDER BY COUNT(WORD) DESC,
+		LENGTH(WORD) DESC,
+		WORD ASC;
+</cfquery>
+<cfset style = createObject("component","tagCloud")>
+<cfset style.init()>
+<cfloop query="findCount">
+	<cfset style.style("#word#,#count#")>
+</cfloop>
+<cfoutput query="findCount">
+	<span class="style">-#word#(#count#)</span><br>
+</cfoutput>
+<cfdump var="#tableStruct#">
 </cfif>
