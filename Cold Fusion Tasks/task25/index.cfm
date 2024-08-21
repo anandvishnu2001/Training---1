@@ -1,27 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-    		<meta charset="UTF-8">
-    		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-    		<title>task25</title>
-	</head>
-<body>
-<form action='' method='post'>
-	<textarea name='paragraph'></textarea>
-	<input name='btn' type='submit'>
+<form action="" method="post">
+	<textarea name="paragraph"></textarea>
+	<input name="btn" type="submit">
 </form>
-</body>
-</html>
-<cfif structKeyExists(form,'btn')>
-	<cfset table = createObject('component','tagCloud')>
-	<cfset table.submit(form.paragraph)>
-	<cfset quer = table.init()>
-	<cfoutput query='quer'>
-		<span class='style'>-#word#(#count#)</span><br>
-		<cfset record = table.style('#word#')>
-	</cfoutput>
-	<cfdump var="#record#">
-	<cfset jsonRecord = serializeJSON(record)>
-	<script src="./js/script.js"></script>
+<cfif structKeyExists(form,"btn")>
+	<cfset insert = createObject("component","tagCloud")>
+	<cfset insert.init()>
+	<cfset insert.submit(form.paragraph)>
+<cfquery name="findCount" datasource="train">
+	SELECT WORD,COUNT(WORD) AS COUNT FROM PARAGRAPH
+	GROUP BY WORD HAVING LENGTH(WORD) >= 3
+	ORDER BY COUNT(WORD) DESC,
+		LENGTH(WORD) DESC,
+		WORD ASC;
+</cfquery>
+<cfset style = createObject("component","tagCloud")>
+
+<cfoutput query="findCount">
+	<span class="style">-#word#(#count#)</span><br>
+</cfoutput><cfset style.init()>
+<cfloop query="findCount">
+	<cfset style.style("#word#,#count#")>
+</cfloop>
+
 </cfif>
