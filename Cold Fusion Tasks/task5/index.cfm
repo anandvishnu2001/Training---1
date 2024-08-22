@@ -1,10 +1,10 @@
-<cfform>
+<form>
 	<label>Enter User's Date-of-Birth:</label>
-	<cfinput name="user" type="date"/>
+	<input name="user" type="date"/>
 	<label>Enter Mother's Date-of-Birth:</label>
-	<cfinput name="mother" type="date"/>
-	<cfinput name="btn" type="submit">submit</cfinput>
-</cfform>
+	<input name="mother" type="date"/>
+	<input name="btn" type="submit">
+</form>
 <cfif NOT isNull(form.btn)>
 	<cfoutput>Age of User is #dateDiff('yyyy',form.user,now())#<br>
 	Age of User's mother when user was delivered #dateDiff('yyyy',form.mother,form.user)#</cfoutput>

@@ -1,7 +1,7 @@
-<cfform action="t6submit.cfm" method="post">
+<form action="t6submit.cfm" method="post">
 	<label for="key">Enter structure key :</label>
-	<cfinput name="key" id="key" type="text"><br>
+	<input name="key" id="key" type="text"><br>
 	<label for="value">Enter structure value :</label>
-	<cfinput name="value" id="value" type="text"><br>
-	<cfinput name="btn" type="submit">
-</cfform>
+	<input name="value" id="value" type="text"><br>
+	<input name="btn" type="submit">
+</form>

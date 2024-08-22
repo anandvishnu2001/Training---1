@@ -19,11 +19,11 @@
 <cfquery name="GetName" datasource="train">
 	SELECT firstname,lastname FROM name;
 </cfquery>
-<cfform action="" method="post">
+<form action="" method="post">
 	<label>Enter record no.:</label>
-	<cfinput name="n" type="number" min="1" max="10">
-	<br><cfinput name="btn" type="submit">
-</cfform>
+	<input name="n" type="number" min="1" max="10">
+	<br><input name="btn" type="submit">
+</form>
 <cfif NOT isNull(form.btn)>
 	<cfoutput>
 		<table border="3 solid black" cellspacing="5" cellpadding="5">

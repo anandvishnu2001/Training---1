@@ -13,9 +13,18 @@
 </cfif>
 
 <form action="" method="post">
-	<label for="user">Enter Username:</label>
-	<input name="user" id="user" type="text" required>
-	<br><label for="user">Enter Password:</label>
+	<label for="userid">User ID:</label>
+	<input name="userid" id="userid" type="text" required>
+	<br><label for="username">User Name:</label>
+	<input name="username" id="username" type="text" required>
+	<br><label for="user">Password:</label>
 	<input name="pass" id="pass" type="password" placeholder="Atleast 8 characters" pattern="^.{8,}$" required>
+	<br><label for="role">Role:</label>
+	<select name="role" id="role" required>
+		<option value="">select role</option>
+		<option value="admin">admin</option>
+		<option value="editor">editor</option>
+		<option value="user">user</option>
+	</select>
 	<br><input type="submit" name="login" value="Login"/>
 </form>

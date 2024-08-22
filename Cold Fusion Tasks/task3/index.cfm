@@ -1,8 +1,8 @@
-<cfform>
+<form>
 	<label>Enter array:</label>
-	<cfinput name="box" type="text" placeholder="1,2,3"/>
-	<cfinput name="btn" type="submit"/>
-</cfform>
+	<input name="box" type="text" placeholder="1,2,3"/>
+	<input name="btn" type="submit"/>
+</form>
 <cfset arr = ListToArray("#form.box#")>
 <cfset s = arrayNew(1)>
 <cfloop array="#arr#" index="i" item="n">

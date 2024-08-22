@@ -1,12 +1,12 @@
 <cfset session.srt = structNew()>
 <cfapplication name="STRUCT4" sessionManagement="yes" sessionTimeOut=#CreateTimeSpan(0,0,2,0)#>
-<cfform action="" method="post">
+<form action="" method="post">
 	<label for="key">Enter structure key :</label>
-	<cfinput name="key" id="key" type="text"><br>
+	<input name="key" id="key" type="text"><br>
 	<label for="value">Enter structure value :</label>
-	<cfinput name="value" id="value" type="text"><br>
-	<cfinput name="btn" type="submit">
-</cfform>
+	<input name="value" id="value" type="text"><br>
+	<input name="btn" type="submit">
+</form>
 <cfif NOT isNull(form.btn)>
 	<cfif StructKeyExists(session.srt,"#form.key#")>
 		<cfoutput>#form.key# is already present. Cannot add again!!!</cfoutput>
