@@ -1,7 +1,7 @@
 <cfapplication name="createcookie" setClientCookies="yes">
-<cfform>
-	<cfinput name="btn" type="submit">
-</cfform>
+<form>
+	<input name="btn" type="submit">
+</form>
 <cfif NOT isNull(form.btn)>
 	<cfif isDefined("cookie.VisitsCounter")>
 		<cfset cookie.VisitsCounter = cookie.VisitsCounter+1>

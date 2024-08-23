@@ -1,11 +1,11 @@
-<cfform action="" method="post">
-	Enter email:<cfinput name="email" id="email" type="email"><br>
+<form action="" method="post">
+	Enter email:<input name="email" id="email" type="email"><br>
 	<cfset key=mid(generateSecretKey(("DES"),56),1,6)>
 	<cfimage action="captcha" width="300" height="50" text="#key#"><br>
-	Enter captcha:<cfinput name="captcha" id="captcha" type="text"><br>
-	<cfinput name="key" type="hidden" value="#key#">
-	<cfinput name="btn" type="submit">
-</cfform>
+	Enter captcha:<input name="captcha" id="captcha" type="text"><br>
+	<input name="key" type="hidden" value="#key#">
+	<input name="btn" type="submit">
+</form>
 <cfif NOT isNull(form.btn)>
 	<style>
 		div{

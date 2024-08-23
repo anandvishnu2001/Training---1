@@ -1,14 +1,14 @@
-<cfform action="" method="post" enctype="multipart/form-data">
+<form action="" method="post" enctype="multipart/form-data">
 	<div>
 		<label>Enter Image name:</label>
-		<cfinput name="imgname" type="text" message="Image name Required" required><br>
+		<input name="imgname" type="text" message="Image name Required" required><br>
 		<label>Enter Image description:</label>
-		<cftextarea name="imgdesc" size="1" message="Image description Required" required></cftextarea>
+		<textarea name="imgdesc" size="1" message="Image description Required" required></textarea>
 	</div>
 	<label>Upload Image:</label>
-	<cfinput name="img" type="file" accept="image/*" message="Image Required" required>
-	<br><cfinput name="btn" type="submit">
-</cfform>
+	<input name="img" type="file" accept="image/*" message="Image Required" required>
+	<br><input name="btn" type="submit">
+</form>
 <cfif NOT isNull(form.btn)>
 	<cfif structKeyExists(form, "img") AND len(trim(form.img))>
 		<cfset upload = expandPath('./uploads/')>
@@ -21,12 +21,12 @@
 			<cfset img = ImageNew("#upload##cffile.serverFile#")>
 			<cfset ImageResize(img,"20","20")>
 			<cfimage source="#img#" action="writeToBrowser">
-			<cfform action="image.cfm" method="post">
-				<cfinput name="name" type="hidden" value="#form.imgname#">
-				<cfinput name="description" type="hidden" value="#form.imgdesc#">
-				<cfinput name="image" type="hidden" value="#upload##cffile.serverFile#">
-				<cfinput name="submit" type="submit" value="#form.imgname#">
-			</cfform>
+			<form action="image.cfm" method="post">
+				<input name="name" type="hidden" value="#form.imgname#">
+				<input name="description" type="hidden" value="#form.imgdesc#">
+				<input name="image" type="hidden" value="#upload##cffile.serverFile#">
+				<input name="submit" type="submit" value="#form.imgname#">
+			</form>
 		<cfelse>
 			<cfif NOT ListContainsNoCase(extensions,cffile.serverFileExt)>
 				<cfoutput>#cffile.serverFile# has invalid file format. Accepted formats(jpg/png/gif)</cfoutput>
