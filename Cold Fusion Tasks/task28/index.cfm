@@ -2,7 +2,7 @@
 
 <cfif structKeyExists(form,"login")>
 	<cfset log = createObject('component','password')>
-	<cfset session.result = log.checkPass(form.user,form.pass)>
+	<cfset session.result = log.checkPass(form.userid,form.role,form.pass)>
 	<cfoutput>
 		<cfif session.result>
 			<cflocation url="welcome.cfm" addToken="yes" statusCode="302">
