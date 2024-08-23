@@ -1,12 +1,19 @@
-<cfif structKeyExists(session,"result") AND session.result>
+<cfif structKeyExists(session,"check") AND session.check>
 	<cfif structKeyExists(form,"logout")>
-		<cfset session.result = false>
+		<cfset session.check = false>
 		<cflocation url="index.cfm" addToken="no" statusCode="302">
 	</cfif>
 <cfelse>
 	<cflocation url="index.cfm" addToken="no" statusCode="302">
 </cfif>
-<cfoutput>Welcome</cfoutput>
-<form action="" method="post">
-	<input type="submit" name="logout" value="Logout">
-</form>
+<h1>Welcome to Page List</h1>
+<table>
+	<cfoutput query=>
+		<tr>
+			<th></th>
+			<td></td>
+			<td></td>
+		</tr>
+	</cfoutput>
+</table>
+<button>Add</button> <button>Log out</button>

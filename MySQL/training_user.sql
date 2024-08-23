@@ -16,32 +16,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `employment`
+-- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `employment`;
+DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `employment` (
-  `position` varchar(25) NOT NULL,
-  `relocation` varchar(3) NOT NULL,
-  `start_date` date NOT NULL,
-  `portfolio_web` varchar(40) DEFAULT NULL,
-  `resume` varchar(75) DEFAULT NULL,
-  `salary` int DEFAULT NULL,
-  `name` varchar(25) NOT NULL,
-  `email` varchar(25) NOT NULL,
-  `phone` decimal(10,0) NOT NULL
+CREATE TABLE `user` (
+  `userid` varchar(10) DEFAULT NULL,
+  `username` varchar(45) DEFAULT NULL,
+  `role` varchar(10) DEFAULT NULL,
+  `password` varchar(70) DEFAULT NULL,
+  `salt` varchar(70) DEFAULT NULL,
+  UNIQUE KEY `userid_UNIQUE` (`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `employment`
+-- Dumping data for table `user`
 --
 
-LOCK TABLES `employment` WRITE;
-/*!40000 ALTER TABLE `employment` DISABLE KEYS */;
-/*!40000 ALTER TABLE `employment` ENABLE KEYS */;
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES ('T38','Liju','admin','BB80406207207EDC8A1EE1B957D8211832FE20A7CD44625B2E40D84960CC8480','28DaE1+fE3TglJjJbMTGDw=='),('T36','Krishna','editor','03A35DB91EE54CA9FDB77A65767C90414974DB190ED34E48DB86FCCC03C45870','uLdnmQxhR0EOeDcUJcuXQA=='),('T17','Jerin','user','C0E715DE0271589B3CF20AC08761AFC375736C8308B796B9B9F17FB0B85E8CB2','zSPUJJd+5gD2tZZs0HR3ng=='),('T08','Anand','editor','58A59DD881A5435874F4731911ACEC1E012808F685851AAC2BCA87DA06E0F366','0SNqFsz3P6/D73KGMwJBFQ==');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-23 17:37:13
+-- Dump completed on 2024-08-23 17:37:14

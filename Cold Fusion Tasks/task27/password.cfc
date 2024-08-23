@@ -6,7 +6,7 @@
 			SELECT 
 				password,salt 
 			FROM 
-				users 
+				userlog 
 			WHERE 
 				username = <cfqueryparam value="#arguments.name#" cfsqltype="cf_sql_varchar">;
 		</cfquery>

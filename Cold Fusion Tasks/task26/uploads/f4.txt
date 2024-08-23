@@ -1,0 +1,5 @@
+* Words with length less than 3 are not counted.
+	* Numbers are not counted and saved into the database.
+	* Result should be in decreasing order of the count of words
+	* Result should be in decreasing order of length of the text
+	* Result should be in alphabetical order

@@ -16,32 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `employment`
+-- Table structure for table `userlog`
 --
 
-DROP TABLE IF EXISTS `employment`;
+DROP TABLE IF EXISTS `userlog`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `employment` (
-  `position` varchar(25) NOT NULL,
-  `relocation` varchar(3) NOT NULL,
-  `start_date` date NOT NULL,
-  `portfolio_web` varchar(40) DEFAULT NULL,
-  `resume` varchar(75) DEFAULT NULL,
-  `salary` int DEFAULT NULL,
-  `name` varchar(25) NOT NULL,
-  `email` varchar(25) NOT NULL,
-  `phone` decimal(10,0) NOT NULL
+CREATE TABLE `userlog` (
+  `username` varchar(45) DEFAULT NULL,
+  `password` varchar(70) DEFAULT NULL,
+  `salt` varchar(70) DEFAULT NULL,
+  UNIQUE KEY `username_UNIQUE` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `employment`
+-- Dumping data for table `userlog`
 --
 
-LOCK TABLES `employment` WRITE;
-/*!40000 ALTER TABLE `employment` DISABLE KEYS */;
-/*!40000 ALTER TABLE `employment` ENABLE KEYS */;
+LOCK TABLES `userlog` WRITE;
+/*!40000 ALTER TABLE `userlog` DISABLE KEYS */;
+INSERT INTO `userlog` VALUES ('krishna','CBCFC46340FB38A950514FAB3A0DA80CCC67D1A29D9560C61347BA66AD401AA4','2jzBWNzubhDdwjtztKUJPA=='),('anand','1BE21083BBA428BBD696D5F7B95469D785197D433ED15DBF29797AC2B65D1709','vwdxox7VaO2w2g9r5KKGlQ==');
+/*!40000 ALTER TABLE `userlog` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

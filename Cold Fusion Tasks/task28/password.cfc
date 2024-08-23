@@ -1,14 +1,18 @@
 <cfcomponent>
 	<cffunction name="checkPass" access="public" returnType="string">
+		<cfargument name="id" type="string">
 		<cfargument name="name" type="string">
+		<cfargument name="role" type="string">
 		<cfargument name="pass" type="string">
 		<cfquery datasource="train" name="getPass" result="res">
-			SELECT 
-				password,salt 
-			FROM 
-				users 
-			WHERE 
-				username = <cfqueryparam value="#arguments.name#" cfsqltype="cf_sql_varchar">;
+			SELECT
+				password,salt
+			FROM
+				user
+			WHERE
+				userid = <cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar"> AND
+				username = <cfqueryparam value="#arguments.name#" cfsqltype="cf_sql_varchar"> AND
+				role = <cfqueryparam value="#arguments.role#" cfsqltype="cf_sql_varchar">;
 		</cfquery>
 		<cfif res.RECORDCOUNT GT 0>
 			<cfoutput query="getPass">
@@ -31,5 +35,9 @@
 		<cfset local.saltedPass = arguments.pass & arguments.salt>
 		<cfset local.hashedPass = hash(local.saltedPass,"SHA-256","UTF-8")>	
 		<cfreturn local.hashedPass/>
+	</cffunction>
+	<cffunction name="getPages" access="public" returnType="query">
+	</cffunction>
+	<cffunction name="insertPage" access="public">
 	</cffunction>
 </cfcomponent>

@@ -16,28 +16,27 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `users`
+-- Table structure for table `page`
 --
 
-DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `page`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users` (
-  `username` varchar(45) DEFAULT NULL,
-  `password` varchar(70) DEFAULT NULL,
-  `salt` varchar(70) DEFAULT NULL,
-  UNIQUE KEY `username_UNIQUE` (`username`)
+CREATE TABLE `page` (
+  `pageid` varchar(10) DEFAULT NULL,
+  `pagename` varchar(45) DEFAULT NULL,
+  `pagedescs` varchar(100) DEFAULT NULL,
+  UNIQUE KEY `page_UNIQUE` (`pageid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `users`
+-- Dumping data for table `page`
 --
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('krishna','CBCFC46340FB38A950514FAB3A0DA80CCC67D1A29D9560C61347BA66AD401AA4','2jzBWNzubhDdwjtztKUJPA=='),('anand','1BE21083BBA428BBD696D5F7B95469D785197D433ED15DBF29797AC2B65D1709','vwdxox7VaO2w2g9r5KKGlQ==');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+LOCK TABLES `page` WRITE;
+/*!40000 ALTER TABLE `page` DISABLE KEYS */;
+/*!40000 ALTER TABLE `page` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-22 17:27:00
+-- Dump completed on 2024-08-23 17:37:12
