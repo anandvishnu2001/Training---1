@@ -37,6 +37,13 @@
 		<cfreturn local.hashedPass/>
 	</cffunction>
 	<cffunction name="getPages" access="public" returnType="query">
+		<cfquery datasource="train" name="getPageID" result="res">
+			SELECT
+				pageid
+			FROM
+				page;
+		</cfquery>
+		<cfreturn res>
 	</cffunction>
 	<cffunction name="insertPage" access="public">
 	</cffunction>

@@ -1,7 +1,7 @@
 <cfset session.check = false>
 
 <cfif structKeyExists(form,"login")>
-	<cfset log = createObject('component','password')>
+	<cfset log = createObject('component','manager')>
 	<cfset session.check = log.checkPass(form.userid,form.username,form.role,form.pass)>
 	<cfoutput>
 		<cfif session.check>
