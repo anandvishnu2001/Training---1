@@ -16,10 +16,8 @@
 				role = <cfqueryparam value="#arguments.role#" cfsqltype="cf_sql_varchar">;
 		</cfquery>
 		<cfif result.RECORDCOUNT GT 0>
-			<cfoutput query="local.getPass">
-				<cfset local.hashedPass = "#local.getPass.password#">
-				<cfset local.salt = "#local.getPass.salt#">
-			</cfoutput>
+			<cfset local.hashedPass = "#local.getPass.password#">
+			<cfset local.salt = "#local.getPass.salt#">
 			<cfset local.checkPass = hasher(arguments.pass,local.salt)>
 			<cfif local.checkPass EQ local.hashedPass>
 				<cfreturn true>
@@ -44,11 +42,11 @@
 			FROM
 				page;
 		</cfquery>
-		<cfreturn getID>
+		<cfreturn local.getID>
 	</cffunction>
 	<cffunction name="getPageInfo" access="public" returnType="query">
 		<cfargument name="id" type="string">
-		<cfquery datasource="train" name="local.getID">
+		<cfquery datasource="train" name="local.getInfo">
 			SELECT
 				pageid,
 				pagename,
@@ -58,7 +56,7 @@
 			WHERE
 				pageid = <cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar">;
 		</cfquery>
-		<cfreturn local.getID>
+		<cfreturn local.getInfo>
 	</cffunction>
 	<cffunction name="insertPage" access="public">
 		<cfargument name="id" type="string">

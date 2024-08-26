@@ -7,10 +7,12 @@
 			<th align="center">Location</th>
 		</tr>
 		<cfloop array="#data#" item="i">
-			<tr><cfoutput>
-				<td align="left">#i.name#</td>
-				<td align="left">#i.age#</td>
-				<td align="left">#i.location#</td>
-			</cfoutput></tr>
+			<tr>
+				<cfoutput>
+					<td align="left">#i.name#</td>
+					<td align="left">#i.age#</td>
+					<td align="left">#i.location#</td>
+				</cfoutput>
+			</tr>
 		</cfloop>
 </table>
