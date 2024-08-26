@@ -6,10 +6,9 @@
 	<cfoutput>
 		<cfif session.check>
 			<cfif listFind("admin,editor",form.role)>
-				<cfdump var="#listFind("admin,editor",form.role)#">
-				<cfset session.role = true>
+				<cfset session.role=true>
 			<cfelse>
-				<cfset session.role = false>
+				<cfset session.role=false>
 			</cfif>
 			<cflocation url="welcome.cfm" addToken="no" statusCode="302">
 		<cfelse>

@@ -1,0 +1,14 @@
+div{
+	width: 50%;
+	padding: 20px;
+	margin: 0 auto;
+	text-align: center;
+	color: white;
+	box-shadow: 0 5px 10px #00000088;
+}
+.success{
+	background: linear-gradient(green,darkgreen,green);
+}
+.warning{
+	background: linear-gradient(red,darkred,red);
+}

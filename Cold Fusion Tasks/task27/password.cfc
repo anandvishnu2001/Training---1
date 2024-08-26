@@ -2,18 +2,19 @@
 	<cffunction name="checkPass" access="public" returnType="string">
 		<cfargument name="name" type="string">
 		<cfargument name="pass" type="string">
-		<cfquery datasource="train" name="getPass" result="res">
+		<cfquery datasource="train" name="local.getPass" result="result">
 			SELECT 
-				password,salt 
+				password,
+				salt 
 			FROM 
 				userlog 
 			WHERE 
 				username = <cfqueryparam value="#arguments.name#" cfsqltype="cf_sql_varchar">;
 		</cfquery>
-		<cfif res.RECORDCOUNT GT 0>
-			<cfoutput query="getPass">
-				<cfset local.hashedPass = "#password#">
-				<cfset local.salt = "#salt#">
+		<cfif result.RECORDCOUNT GT 0>
+			<cfoutput query="local.getPass">
+				<cfset local.hashedPass = "#local.getPass.password#">
+				<cfset local.salt = "#local.getPass.salt#">
 			</cfoutput>
 			<cfset local.checkPass = hasher(arguments.pass,local.salt)>
 			<cfif local.checkPass EQ local.hashedPass>

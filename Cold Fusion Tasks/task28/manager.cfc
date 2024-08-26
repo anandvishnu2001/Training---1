@@ -4,9 +4,10 @@
 		<cfargument name="name" type="string">
 		<cfargument name="role" type="string">
 		<cfargument name="pass" type="string">
-		<cfquery datasource="train" name="getPass" result="res">
+		<cfquery datasource="train" name="local.getPass" result="result">
 			SELECT
-				password,salt
+				password,
+				salt
 			FROM
 				user
 			WHERE
@@ -14,10 +15,10 @@
 				username = <cfqueryparam value="#arguments.name#" cfsqltype="cf_sql_varchar"> AND
 				role = <cfqueryparam value="#arguments.role#" cfsqltype="cf_sql_varchar">;
 		</cfquery>
-		<cfif res.RECORDCOUNT GT 0>
-			<cfoutput query="getPass">
-				<cfset local.hashedPass = "#password#">
-				<cfset local.salt = "#salt#">
+		<cfif result.RECORDCOUNT GT 0>
+			<cfoutput query="local.getPass">
+				<cfset local.hashedPass = "#local.getPass.password#">
+				<cfset local.salt = "#local.getPass.salt#">
 			</cfoutput>
 			<cfset local.checkPass = hasher(arguments.pass,local.salt)>
 			<cfif local.checkPass EQ local.hashedPass>
@@ -36,15 +37,69 @@
 		<cfset local.hashedPass = hash(local.saltedPass,"SHA-256","UTF-8")>	
 		<cfreturn local.hashedPass/>
 	</cffunction>
-	<cffunction name="getPages" access="public" returnType="query">
-		<cfquery datasource="train" name="getPageID" result="res">
+	<cffunction name="getPageID" access="public" returnType="query">
+		<cfquery datasource="train" name="local.getID">
 			SELECT
 				pageid
 			FROM
 				page;
 		</cfquery>
-		<cfreturn res>
+		<cfreturn getID>
+	</cffunction>
+	<cffunction name="getPageInfo" access="public" returnType="query">
+		<cfargument name="id" type="string">
+		<cfquery datasource="train" name="local.getID">
+			SELECT
+				pageid,
+				pagename,
+				pagedescs
+			FROM
+				page
+			WHERE
+				pageid = <cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar">;
+		</cfquery>
+		<cfreturn local.getID>
 	</cffunction>
 	<cffunction name="insertPage" access="public">
+		<cfargument name="id" type="string">
+		<cfargument name="name" type="string">
+		<cfargument name="desc" type="string">
+		<cfquery datasource="train" name="local.insert">
+			INSERT INTO
+				page(
+					pageid,
+					pagename,
+					pagedescs
+				)
+			VALUES(
+				<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar">,
+				<cfqueryparam value="#arguments.name#" cfsqltype="cf_sql_varchar">,
+				<cfqueryparam value="#arguments.desc#" cfsqltype="cf_sql_varchar">
+			);
+		</cfquery>
+	</cffunction>
+	<cffunction name="editPage" access="public">
+		<cfargument name="id" type="string">
+		<cfargument name="name" type="string">
+		<cfargument name="desc" type="string">
+		<cfquery datasource="train" name="local.edit">
+			UPDATE
+				page
+			SET
+				pagename = <cfqueryparam value="#arguments.name#" cfsqltype="cf_sql_varchar">,
+				pagedescs = <cfqueryparam value="#arguments.desc#" cfsqltype="cf_sql_varchar">
+			WHERE
+				pageid = <cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar">;
+		</cfquery>
+	</cffunction>>
+	<cffunction name="deletePage" access="remote" returnFormat="JSON">
+		<cfargument name="id" type="string">
+		<cfquery datasource="train" name="local.delete">
+			DELETE FROM
+				page
+			WHERE
+				pageid = <cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar">;
+		</cfquery>
+		<cfreturn 1/>
 	</cffunction>
 </cfcomponent>

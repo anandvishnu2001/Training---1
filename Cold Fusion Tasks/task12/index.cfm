@@ -1,21 +1,3 @@
-<!---<cfquery name="tableCreate" datasource="train">
-	CREATE TABLE name(
-		firstname VARCHAR(15),
-		lastname VARCHAR(15));
-	INSERT INTO name(firstname,lastname)
-	VALUES	("Bruce","Banners"),
-		("Charles","Xavier"),
-		("Peter","Parker"),
-		("Reed","Richards"),
-		("Stephen","Strange"),
-		("Steve","Rogers"),
-		("Thor","Odinson"),
-		("Tony","Stark"),
-		("Victor","Von Doom"),
-		("Wade","Wilson");
-</cfquery>--->
-
-
 <cfquery name="GetName" datasource="train">
 	SELECT firstname,lastname FROM name;
 </cfquery>
@@ -33,12 +15,12 @@
 				<th align="center">Last Name</th>
 			</tr></thead>
 			<tbody>
-				<cfloop query="GetName">
+				<cfoutput query="GetName">
 					<tr>
 						<td align="right">#GetName.firstname#</td>
 						<td align="right">#GetName.lastname#</td>
 					</tr>
-				</cfloop>
+				</cfoutput>
 			</tbody>
 		</table><br>
 		Firstname at record (<b>#form.n#</b>) is <b>#GetName.firstname[form.n]#</b>

@@ -1,6 +1,6 @@
 <cfif structKeyExists(session,"check") AND session.check>
-	<cfif structKeyExists(form,"logout")>
-		<cfset session.check = false>
+	<cfif structKeyExists(form,"btn")>
+		<cfset session.check=false>
 		<cflocation url="index.cfm" addToken="no" statusCode="302">
 	</cfif>
 <cfelse>
@@ -9,15 +9,21 @@
 <cfset page = createObject('component','manager')>
 <cfset pages = page.getPageID()>
 <h1>Welcome to Page List</h1>
-<table>
-	<cfoutput query="#pages#">
+<table border="2" cellpadding="2" cellspacing="5">
+	<cfoutput query="pages">
 		<tr>
-			<th>Page ID :  #pages.pageid#</th>
+			<td><a href="view.cfm?value=#pageid#">Page ID :  #pageid#</a></td>
 			<cfif session.role>
-				<td><button>Edit</button></td>
-				<td><button>Delete</button></td>
+				<td><button onclick="editPage('#pageid#')">Edit</button></td>
+				<td><button onclick="deletePage('#pageid#')">Delete</button></td>
 			</cfif>
 		</tr>
 	</cfoutput>
 </table>
-<button>Add</button> <button>Log out</button>
+<br>
+<form method="post">
+	<button onclick="addPage()">Add</button>
+	<input name="btn" type="submit" value="Log out">
+</form>
+<script src="./js/jQuery.js"></script>
+<script src="./js/script.js"></script>

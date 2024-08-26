@@ -1,0 +1,20 @@
+<!---<cfquery name="tableCreate" datasource="train">
+	CREATE TABLE 
+		name(
+			firstname VARCHAR(15),
+			lastname VARCHAR(15)
+		);
+	INSERT INTO 
+		name(firstname,lastname)
+	VALUES	("Bruce","Banners"),
+		("Charles","Xavier"),
+		("Peter","Parker"),
+		("Reed","Richards"),
+		("Stephen","Strange"),
+		("Steve","Rogers"),
+		("Thor","Odinson"),
+		("Tony","Stark"),
+		("Victor","Von Doom"),
+		("Wade","Wilson");
+</cfquery>--->
+
