@@ -24,9 +24,17 @@
 		<div class="d-flex col-4 align-items-center bg-info rounded-start-3">
 			<img class="img-fluid" src="./images/logbook.png" alt="Address Book">
 		</div>
-		<div action class="flex-grow-1 d-inline-flex col-auto flex-column justify-content-between p-3">
-			<p class="h1 text-center text-info mb-3">LOGIN</p>
-			<form name="login" id="login" class="d-flex flex-column gap-3" action="" method="post">
+		<div action class="flex-grow-1 d-flex col-auto flex-column justify-content-between p-3">
+			<p class="h1 text-center text-info mb-3">SIGN UP</p>
+			<form name="signup" id="signup" class="d-flex flex-column gap-3" action="" method="post">
+				<div class="form-floating">
+					<input type="text" class="form-control" name="name" id="name" placeholder="" required>
+					<label for="user">Fullname</label>
+				</div>
+				<div class="form-floating">
+					<input type="email" class="form-control" name="email" id="email" placeholder="" required>
+					<label for="user">Email ID</label>
+				</div>
 				<div class="form-floating">
 					<input type="text" class="form-control" name="user" id="user" placeholder="" required>
 					<label for="user">Username</label>
@@ -35,13 +43,12 @@
 					<input type="password" class="form-control" name="password" id="password" placeholder="" required>
 					<label for="password">Password</label>
 				</div>
+				<div class="form-floating">
+					<input type="password" class="form-control" name="confirm" id="confirm" placeholder="" required>
+					<label for="password">Confirm Password</label>
+				</div>
+				<button name="btn" type="submit" class="btn btn-success btn-block disabled" form="signup">Register</button>
 			</form>
-			<div class="container d-grid gap-3">
-				<button name="btn" type="submit" class="btn btn-primary btn-block disabled" form="login">Log in</button>
-				<hr class="border-3 border-warning">
-				<p class="text-center text-warning">Not registered yet ?</p>
-				<button class="btn btn-success btn-block" onclick="window.location.href='register.cfm'">Sign up</button>
-			</div>
 		</div>
 </div>
 <link href="./css/style.css" rel="stylesheet">
