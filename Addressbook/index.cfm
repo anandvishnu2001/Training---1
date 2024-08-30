@@ -38,7 +38,7 @@
 							<label for="password">Password</label>
 						</div>
 					</form>
-					<div class="container d-grid gap-3">
+					<div class="d-grid gap-3">
 						<button name="btn" type="submit" class="btn btn-primary btn-block" form="login">Log in</button>
 						<hr class="border-3 border-warning">
 						<p class="text-center text-warning">Not registered yet ?</p>

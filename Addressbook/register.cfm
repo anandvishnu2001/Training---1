@@ -1,5 +1,6 @@
 <html lang="en" data-bs-theme="dark">
 	<body class="d-flex flex-row justify-content-center align-items-center">
+		<cfinclude template="register-submit.cfm">
 		<nav class="navbar navbar-expand-lg navbar-dark bg-info fixed-top">
 			<div class="container-fluid fw-bold">
 				<a class="navbar-brand text-primary" href="./index.cfm">
