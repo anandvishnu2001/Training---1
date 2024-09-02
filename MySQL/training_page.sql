@@ -23,9 +23,10 @@ DROP TABLE IF EXISTS `page`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `page` (
-  `pageid` varchar(10) DEFAULT NULL,
-  `pagename` varchar(45) DEFAULT NULL,
-  `pagedescs` varchar(100) DEFAULT NULL,
+  `pageid` varchar(10) NOT NULL,
+  `pagename` varchar(45) NOT NULL,
+  `pagedescs` varchar(300) NOT NULL,
+  PRIMARY KEY (`pageid`),
   UNIQUE KEY `page_UNIQUE` (`pageid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -36,6 +37,7 @@ CREATE TABLE `page` (
 
 LOCK TABLES `page` WRITE;
 /*!40000 ALTER TABLE `page` DISABLE KEYS */;
+INSERT INTO `page` VALUES ('P02','Tartarus','Tartarus is the deep abyss in Greek mythology, used as a dungeon for the Titans and a place of torment and suffering for the wicked.'),('P03','Duat','The Duat is the ancient Egyptian underworld, a realm where the souls of the dead journey through various trials to reach the afterlife and be judged by Osiris.'),('P09','Yggdrasil','Yggdrasil is the immense, mythical tree in Norse mythology, connecting the nine worlds and serving as the cosmic axis and source of life.');
 /*!40000 ALTER TABLE `page` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -48,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-23 17:37:12
+-- Dump completed on 2024-09-02 18:17:44

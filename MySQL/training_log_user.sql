@@ -16,25 +16,34 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `paragraph`
+-- Table structure for table `log_user`
 --
 
-DROP TABLE IF EXISTS `paragraph`;
+DROP TABLE IF EXISTS `log_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `paragraph` (
-  `word` varchar(45) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `log_user` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(45) NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `email` varchar(320) NOT NULL,
+  `password` varchar(70) NOT NULL,
+  `salt` varchar(70) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `username_UNIQUE` (`username`),
+  UNIQUE KEY `email_UNIQUE` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `paragraph`
+-- Dumping data for table `log_user`
 --
 
-LOCK TABLES `paragraph` WRITE;
-/*!40000 ALTER TABLE `paragraph` DISABLE KEYS */;
-INSERT INTO `paragraph` VALUES ('Words'),('with'),('length'),('less'),('than'),('are'),('not'),('counted'),('Numbers'),('are'),('not'),('counted'),('and'),('saved'),('into'),('the'),('database'),('Result'),('should'),('be'),('in'),('decreasing'),('order'),('of'),('the'),('count'),('of'),('words'),('Result'),('should'),('be'),('in'),('decreasing'),('order'),('of'),('length'),('of'),('the'),('text'),('Result'),('should'),('be'),('in'),('alphabetical'),('order');
-/*!40000 ALTER TABLE `paragraph` ENABLE KEYS */;
+LOCK TABLES `log_user` WRITE;
+/*!40000 ALTER TABLE `log_user` DISABLE KEYS */;
+INSERT INTO `log_user` VALUES (1,'anand','Anand Vishnu K V','anandvishnu0804@gmail.com','033779F1AE825642EFA058661BE36BFD378E519E8058C73A0D137940DDB7D79C','MQmBehJZ8MKXRtrq+pp0SA==');
+/*!40000 ALTER TABLE `log_user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -46,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-02 18:17:43
+-- Dump completed on 2024-09-02 18:17:44
