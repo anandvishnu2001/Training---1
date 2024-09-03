@@ -1,11 +1,24 @@
 //-- Confirm Password in register.cfm
 
 $(document).ready(function(){
-	$("#email,#user").change(function(){
-		let user = $(this).val();
-		alert(user);
+	$("#email,#username").change(function(){
+		let id = $(this).attr('id');
+		let value = $(this).val();
+		if(!$("#feedback").hasClass("invisible"))
+			$("#feedback").addClass("invisible");
+		$.ajax({
+			url: './components/manager.cfc?method=exist',
+			type: 'POST',
+			data: { check: id,
+				item: value },
+			success: function(response){
+				if(response == "true"){
+					$("#feedback").html(`*${value} is already used`).removeClass("invisible");
+				}
+			}
+		});
 	});
-	$("#confirm,#password").on("input",function(){
+	$("#register #confirm,#register #password").on("input",function(){
 		let pattern = new RegExp($("#password").attr("pattern"));
 		let button = $("#register").find("#btn");
 		let pass = $("#register").find("#password");

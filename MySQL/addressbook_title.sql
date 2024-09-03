@@ -1,6 +1,8 @@
+CREATE DATABASE  IF NOT EXISTS `addressbook` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `addressbook`;
 -- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
--- Host: localhost    Database: training
+-- Host: localhost    Database: addressbook
 -- ------------------------------------------------------
 -- Server version	8.0.38
 
@@ -16,25 +18,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `paragraph`
+-- Table structure for table `title`
 --
 
-DROP TABLE IF EXISTS `paragraph`;
+DROP TABLE IF EXISTS `title`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `paragraph` (
-  `word` varchar(45) DEFAULT NULL
+CREATE TABLE `title` (
+  `title` int NOT NULL,
+  `value` varchar(5) DEFAULT NULL,
+  PRIMARY KEY (`title`),
+  UNIQUE KEY `title_UNIQUE` (`title`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `paragraph`
+-- Dumping data for table `title`
 --
 
-LOCK TABLES `paragraph` WRITE;
-/*!40000 ALTER TABLE `paragraph` DISABLE KEYS */;
-INSERT INTO `paragraph` VALUES ('Words'),('with'),('length'),('less'),('than'),('are'),('not'),('counted'),('Numbers'),('are'),('not'),('counted'),('and'),('saved'),('into'),('the'),('database'),('Result'),('should'),('be'),('in'),('decreasing'),('order'),('of'),('the'),('count'),('of'),('words'),('Result'),('should'),('be'),('in'),('decreasing'),('order'),('of'),('length'),('of'),('the'),('text'),('Result'),('should'),('be'),('in'),('alphabetical'),('order');
-/*!40000 ALTER TABLE `paragraph` ENABLE KEYS */;
+LOCK TABLES `title` WRITE;
+/*!40000 ALTER TABLE `title` DISABLE KEYS */;
+INSERT INTO `title` VALUES (1,'Mr.'),(2,'Ms.'),(3,'Mrs.'),(4,'Dr.'),(5,'Prof.'),(6,'');
+/*!40000 ALTER TABLE `title` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -46,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-26 17:54:33
+-- Dump completed on 2024-09-03 17:58:51

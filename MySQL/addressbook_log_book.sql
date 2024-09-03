@@ -1,6 +1,8 @@
+CREATE DATABASE  IF NOT EXISTS `addressbook` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `addressbook`;
 -- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
--- Host: localhost    Database: training
+-- Host: localhost    Database: addressbook
 -- ------------------------------------------------------
 -- Server version	8.0.38
 
@@ -16,28 +18,41 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `salary_grade`
+-- Table structure for table `log_book`
 --
 
-DROP TABLE IF EXISTS `salary_grade`;
+DROP TABLE IF EXISTS `log_book`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `salary_grade` (
-  `grade` int NOT NULL,
-  `min_sal` int DEFAULT NULL,
-  `max_sal` int DEFAULT NULL,
-  PRIMARY KEY (`grade`)
+CREATE TABLE `log_book` (
+  `log_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `title` int NOT NULL,
+  `firstname` varchar(45) NOT NULL,
+  `lastname` varchar(45) NOT NULL,
+  `gender` varchar(45) NOT NULL,
+  `date_of_birth` date NOT NULL,
+  `profile` varchar(70) NOT NULL,
+  `house_flat` varchar(45) NOT NULL,
+  `street` varchar(45) NOT NULL,
+  `city` varchar(45) NOT NULL,
+  `state` varchar(45) NOT NULL,
+  `pincode` int NOT NULL,
+  `email` varchar(320) NOT NULL,
+  `phone` int NOT NULL,
+  PRIMARY KEY (`log_id`),
+  UNIQUE KEY `log_id_UNIQUE` (`log_id`),
+  UNIQUE KEY `email_UNIQUE` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `salary_grade`
+-- Dumping data for table `log_book`
 --
 
-LOCK TABLES `salary_grade` WRITE;
-/*!40000 ALTER TABLE `salary_grade` DISABLE KEYS */;
-INSERT INTO `salary_grade` VALUES (1,800,1300),(2,1301,1500),(3,1501,2100),(4,2101,3100),(5,3101,9999);
-/*!40000 ALTER TABLE `salary_grade` ENABLE KEYS */;
+LOCK TABLES `log_book` WRITE;
+/*!40000 ALTER TABLE `log_book` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log_book` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +64,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-26 17:54:33
+-- Dump completed on 2024-09-03 17:58:51

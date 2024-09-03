@@ -1,5 +1,6 @@
 <html lang="en" data-bs-theme="dark">
-	<body class="d-flex flex-row justify-content-center align-items-center">
+	<body class="d-flex flex-row align-items-center">
+		<cfinclude template="index-submit.cfm">
 		<nav class="navbar navbar-expand-lg navbar-dark bg-info fixed-top">
 			<div class="container-fluid fw-bold">
 				<a class="navbar-brand text-primary" href="./index.cfm">
@@ -22,29 +23,30 @@
 				</ul>
 			</div>
 		</nav>
-		<div class="login row d-inline-flex flex-wrap justify-content-around rounded-3 mt-5 mb-3">
-				<div class="d-flex col-7 col-md-4 align-items-center bg-info rounded-start-3">
-					<img class="img-fluid" src="./images/logbook.png" alt="Address Book" width="500" height="500">
-				</div>
-				<div action class="flex-grow-1 d-inline-flex col-auto flex-column justify-content-between p-3">
-					<p class="h1 text-center text-info mb-3">LOGIN</p>
-					<form name="login" id="login" class="d-flex flex-column was-validated gap-3" action="" method="post">
-						<div class="form-floating">
-							<input type="text" class="form-control" name="user" id="user" pattern="^\w{5,}$" placeholder="" required>
-							<label for="user">Username</label>
-						</div>
-						<div class="form-floating">
-							<input type="password" class="form-control" name="password" id="password" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).{8,}$" placeholder="" required>
-							<label for="password">Password</label>
-						</div>
-					</form>
-					<div class="d-grid gap-3">
-						<button name="btn" type="submit" class="btn btn-primary btn-block" form="login">Log in</button>
-						<hr class="border-3 border-warning">
-						<p class="text-center text-warning">Not registered yet ?</p>
-						<button class="btn btn-success btn-block" onclick="window.location.href='register.cfm'">Sign up</button>
+		<div class="login row d-inline-flex flex-wrap justify-content-around rounded-3 w-75 mx-auto mt-5 mb-3">
+			<div class="d-flex col-7 col-md-4 align-items-center bg-info rounded-start-3">
+				<img class="img-fluid" src="./images/logbook.png" alt="Address Book" width="300" height="300">
+			</div>
+			<div action class="flex-grow-1 d-inline-flex col-auto flex-column justify-content-between p-3">
+				<p class="h1 text-center text-info mb-3">LOGIN</p>
+				<form name="login" id="login" class="d-flex flex-column was-validated gap-2" action="" method="post">
+					<div class="form-floating">
+						<input type="text" class="form-control" name="username" id="username" pattern="^\w{5,}$" placeholder="" required>
+						<label for="username">Username or Email</label>
 					</div>
+					<span id="feedback" class="text-center text-danger bg-warning invisible"></span>
+					<div class="form-floating">
+						<input type="password" class="form-control" name="password" id="password" placeholder="" required>
+						<label for="password">Password</label>
+					</div>
+				</form>
+				<div class="d-grid gap-2">
+					<button name="btn" type="submit" class="btn btn-primary btn-block" form="login">Log in</button>
+					<hr class="border-3 border-warning">
+					<span class="text-center text-warning">Not registered yet ?</span>
+					<button class="btn btn-success btn-block" onclick="window.location.href='register.cfm'">Sign up</button>
 				</div>
+			</div>
 		</div>
 		<link href="./css/style.css" rel="stylesheet">
 		<link href="./css/bootstrap.min.css" rel="stylesheet">

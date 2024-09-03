@@ -1,0 +1,1 @@
+<cfset manager = createObject('component','components.manager')>
