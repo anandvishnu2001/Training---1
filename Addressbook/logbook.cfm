@@ -1,12 +1,67 @@
-<cfif structKeyExists(session,"check") AND session.check>
-	<cfif structKeyExists(form,"btn")>
-		<cfset session.check=false>
-		<cflocation url="index.cfm" addToken="no" statusCode="302">
-	</cfif>
-<cfelse>
-	<cflocation url="index.cfm" addToken="no" statusCode="302">
-</cfif>
-<form method="post">
-	<button onclick="addPage()">Add</button>
-	<input name="btn" type="submit" value="Log out">
-</form>
+<cfinclude template="logbook-submit.cfm">
+<html lang="en" data-bs-theme="dark">
+	<body class="container-fluid d-flex flex-row align-items-center">
+		<cfinclude template="object.cfm">
+		<nav class="navbar navbar-expand-sm navbar-dark bg-info fixed-top">
+			<div class="container-fluid fw-bold">
+				<a class="navbar-brand text-primary" href="./index.cfm">
+					<img src="./images/logbook.png" width="40" height="40">
+					Address Book
+				</a>
+				<ul class="navbar-nav nav-tabs">
+					<li class="nav-item">
+						<form class="m-0" method="post">
+							<button name="btn" id="btn" class="nav-link text-success" type="submit">
+								<img src="./images/logout.png" width="25" height="25">
+								Log Out
+							</button>
+						</form>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		<div class="container d-inline-flex flex-column gap-3 w-75 mx-auto mt-5 mb-3">
+			<div class="glow row bg-body w-100 rounded-3 px-3">
+				<nav class="navbar navbar-expand-lg fw-bold justify-content-end">
+					<ul class="navbar-nav nav-tabs">
+						<li class="nav-item">
+							<button class="nav-link text-success">
+								<img src="./images/pdf.png" width="40" height="40">
+							</button>
+						</li>
+						<li class="nav-item">
+							<button class="nav-link text-success">
+								<img src="./images/xls.png" width="40" height="40">
+							</button>
+						</li>
+						<li class="nav-item">
+							<button class="nav-link text-success">
+								<img src="./images/print.png" width="40" height="40">
+							</button>
+						</li>
+					</ul>
+				</nav>
+			</div>
+			<div class="row d-inline-flex w-100 flex-wrap justify-content-around">
+				<div class="col-7 col-md-4 rounded-start-3">
+					<div class="glow card bg-body p-3">
+						<img class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book" width="200" height="200">
+						<div class="card-body d-flex flex-column justify-contrnt-center">
+							<cfoutput><p class="card-title text-center">#session.check[2]#</p></cfoutput>
+							<button class="btn btn-outline-primary btn-block" onclick="">Create Contact</button>
+						</div>
+					</div>
+				</div>
+				<div class="glow bg-body card flex-grow-1 d-flex col-auto flex-column p-3">
+					<p class="h1 fw-bold text-center text-success mb-3">CONTACTS</p>
+					<cfinclude template="logbook-list.cfm">
+				</div>
+			</div>
+		</div>
+		<link href="./css/style.css" rel="stylesheet">
+		<link href="./css/bootstrap.min.css" rel="stylesheet">
+		<script type="text/javascript" src="./js/jQuery.js"></script>
+		<script type="text/javascript" src="./js/register-script.js"></script>
+		<script type="text/javascript" src="./js/bootstrap.min.js"></script>
+	</body>
+</html>

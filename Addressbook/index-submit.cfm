@@ -1,9 +1,11 @@
-<cfset session.check = false>
+<cfset session.check = ArrayNew(1)>
+<cfset session.check[3] = false>
 
 <cfif structKeyExists(form,"btn")>
 	<cfinclude template="object.cfm">
-	<cfset session.check = manager.checkPass(form.username,form.password)>
-	<cfif session.check>
+	<cfset access = manager.checkPass(form.username,form.password)>
+	<cfset session.check = access>
+	<cfif session.check[3]>
 		<cflocation url="logbook.cfm" addToken="no" statusCode="302">
 	<cfelse>
 		<cflocation url="index.cfm" addToken="no" statusCode="302">

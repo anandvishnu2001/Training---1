@@ -24,11 +24,14 @@
 			);
 		</cfquery>
 	</cffunction>
+
 	<cffunction name="checkPass" access="public">
 		<cfargument name="id" type="string">
 		<cfargument name="password" type="string">
 		<cfquery name="local.check" datasource="address">
 			SELECT
+				user_id,
+				username,
 				password,
 				salt
 			FROM
@@ -39,11 +42,31 @@
 				email=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar">;
 		</cfquery>
 		<cfset local.givenPass = hasher(arguments.password,local.check.salt)>
+		<cfset local.access = ArrayNew(1)>
+		<cfset local.access[1] = local.check.user_id>
+		<cfset local.access[2] = local.check.username>
 		<cfif local.givenPass EQ local.check.password>
-			<cfreturn true>
+			<cfset local.access[3]=true>
 		<cfelse>
-			<cfreturn false>
+			<cfset local.access[3]=false>
 		</cfif>
+		<cfreturn local.access>
+	</cffunction>
+
+	<cffunction name="getList" access="public" returnType="query">
+		<cfargument name="id" type="string">
+		<cfquery name="local.list" datasource="address" result="result">
+			SELECT
+				log_id,
+				CONCAT(title," ",firstname," ",lastname) AS name,
+				email,
+				phone
+			FROM
+				log_book
+			WHERE
+				user_id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_integer">;
+		</cfquery>
+		<cfreturn local.list>
 	</cffunction>
 
 	<cffunction name="exist" access="remote" returnFormat="JSON">
@@ -62,17 +85,6 @@
 		<cfelse>
 			<cfreturn true>
 		</cfif>
-	</cffunction>
-
-	<cffunction name="confirm" access="remote" returnFormat="JSON">
-		<cfargument name="password" type="string">
-		<cfargument name="rePassword" type="string">
-		<cfif local.password EQ local.rePassword>
-			<cfset local.flag=true>
-		<cfelse>
-			<cfset local.flag=false>
-		</cfif>
-		<cfreturn local.flag>
 	</cffunction>
 
 	<cffunction name="hasher" access="private">

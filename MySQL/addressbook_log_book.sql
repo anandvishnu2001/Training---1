@@ -30,7 +30,7 @@ CREATE TABLE `log_book` (
   `title` int NOT NULL,
   `firstname` varchar(45) NOT NULL,
   `lastname` varchar(45) NOT NULL,
-  `gender` varchar(45) NOT NULL,
+  `gender` varchar(8) NOT NULL,
   `date_of_birth` date NOT NULL,
   `profile` varchar(70) NOT NULL,
   `house_flat` varchar(45) NOT NULL,
@@ -42,7 +42,9 @@ CREATE TABLE `log_book` (
   `phone` int NOT NULL,
   PRIMARY KEY (`log_id`),
   UNIQUE KEY `log_id_UNIQUE` (`log_id`),
-  UNIQUE KEY `email_UNIQUE` (`email`)
+  UNIQUE KEY `email_UNIQUE` (`email`),
+  KEY `user_id_idx` (`user_id`),
+  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `log_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -64,4 +66,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-03 17:58:51
+-- Dump completed on 2024-09-04 18:07:44

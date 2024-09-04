@@ -23,7 +23,7 @@
 				</ul>
 			</div>
 		</nav>
-		<div class="login row d-inline-flex flex-wrap justify-content-around rounded-3 w-75 mx-auto mt-5 mb-3">
+		<div class="glow row d-inline-flex flex-wrap justify-content-around rounded-3 w-75 mx-auto mt-5 mb-3">
 			<div class="d-flex col-7 col-md-4 align-items-center bg-info rounded-start-3">
 				<img class="img-fluid" src="./images/logbook.png" alt="Address Book" width="300" height="300">
 			</div>
