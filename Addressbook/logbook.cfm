@@ -48,7 +48,7 @@
 						<img class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book" width="200" height="200">
 						<div class="card-body d-flex flex-column justify-contrnt-center">
 							<cfoutput><p class="card-title text-center">#session.check[2]#</p></cfoutput>
-							<button class="btn btn-outline-primary btn-block" onclick="">Create Contact</button>
+							<button class="btn btn-outline-primary btn-block" data-bs-toggle="modal" data-bs-target="#listModal">Create Contact</button>
 						</div>
 					</div>
 				</div>

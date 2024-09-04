@@ -1,4 +1,5 @@
 <cfset list = manager.getList(id=session.check[1])>
+<cfinclude template="logbook-modal.cfm">
 <table class="table align-middle table-borderless table-hover table-sm">	
 	<thead>
 		<th></th>
