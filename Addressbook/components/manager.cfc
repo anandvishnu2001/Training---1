@@ -1,5 +1,5 @@
 <cfcomponent>
-	<cffunction name="insert" access="public">
+	<cffunction name="insertUser" access="public">
 		<cfargument name="username" type="string">
 		<cfargument name="name" type="string">
 		<cfargument name="email" type="string">
@@ -53,22 +53,6 @@
 		<cfreturn local.access>
 	</cffunction>
 
-	<cffunction name="getList" access="public" returnType="query">
-		<cfargument name="id" type="string">
-		<cfquery name="local.list" datasource="address" result="result">
-			SELECT
-				log_id,
-				CONCAT(title," ",firstname," ",lastname) AS name,
-				email,
-				phone
-			FROM
-				log_book
-			WHERE
-				user_id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_integer">;
-		</cfquery>
-		<cfreturn local.list>
-	</cffunction>
-
 	<cffunction name="exist" access="remote" returnFormat="JSON">
 		<cfargument name="check" type="string">
 		<cfargument name="item" type="string">
@@ -93,5 +77,119 @@
 		<cfset local.saltedPass = arguments.pass & arguments.salt>
 		<cfset local.hashedPass = hash(local.saltedPass,"SHA-256","UTF-8")>	
 		<cfreturn local.hashedPass/>
+	</cffunction>
+
+	<cffunction name="insertContact" access="public">
+		<cfargument name="user_id" type="string">
+		<cfargument name="title" type="string">
+		<cfargument name="firstname" type="string">
+		<cfargument name="lastname" type="string">
+		<cfargument name="gender" type="string">
+		<cfargument name="date_of_birth" type="string">
+		<cfargument name="house_flat" type="string">
+		<cfargument name="street" type="string">
+		<cfargument name="city" type="string">
+		<cfargument name="state" type="string">
+		<cfargument name="country" type="string">
+		<cfargument name="pincode" type="string">
+		<cfargument name="email" type="string">
+		<cfargument name="phone" type="string">
+		<cfquery name="local.insertData" datasource="address" result="result">
+			INSERT INTO
+				log_book(
+					user_id,
+					title,
+					firstname,
+					lastname,
+					gender,
+					date_of_birth,
+					house_flat,
+					street,
+					city,
+					state,
+					country,
+					pincode,
+					email,
+					phone
+				)
+			VALUES(
+				<cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">,
+				<cfqueryparam value="#arguments.title#" cfsqltype="cf_sql_integer">,
+				<cfqueryparam value="#arguments.firstname#" cfsqltype="cf_sql_varchar">,
+				<cfqueryparam value="#arguments.lastname#" cfsqltype="cf_sql_varchar">,
+				<cfqueryparam value="#arguments.gender#" cfsqltype="cf_sql_integer">,
+				<cfqueryparam value="#arguments.date_of_birth#" cfsqltype="cf_sql_date">,
+				<cfqueryparam value="#arguments.house_flat#" cfsqltype="cf_sql_varchar">,
+				<cfqueryparam value="#arguments.street#" cfsqltype="cf_sql_varchar">,
+				<cfqueryparam value="#arguments.city#" cfsqltype="cf_sql_varchar">,
+				<cfqueryparam value="#arguments.state#" cfsqltype="cf_sql_varchar">,
+				<cfqueryparam value="#arguments.country#" cfsqltype="cf_sql_varchar">,
+				<cfqueryparam value="#arguments.pincode#" cfsqltype="cf_sql_varchar">,
+				<cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar">,
+				<cfqueryparam value="#arguments.phone#" cfsqltype="cf_sql_varchar">
+			);
+		</cfquery><!---
+		<cfset local.id = result.GENERATEDKEY>
+		<cfif arguments.profile NEQ "">
+			<cfquery name="local.insertPhoto" datasource="address">
+				UPDATE
+					log_book
+				SET
+					profile = <cfqueryparam value="#arguments.profile#" cfsqltype="cf_sql_varchar">
+				WHERE
+					log_id = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">;
+			</cfquery>
+		</cfif>--->
+	</cffunction>
+
+	<cffunction name="getList" access="remote" returnFormat="JSON">
+		<cfargument name="id" type="string">
+		<cfquery name="local.list" datasource="address">
+			SELECT
+				l.log_id,
+				l.profile,
+				CONCAT(
+					t.value," ",
+					l.firstname," ",
+					l.lastname	) AS name,
+				l.email,
+				l.phone
+			FROM
+				log_book l
+			JOIN
+				title t
+			ON
+				l.title = t.id
+			WHERE
+				l.user_id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_integer">;
+		</cfquery>
+		<cfreturn local.list>
+	</cffunction>
+
+	<cffunction name="getRecord" access="remote" returnFormat="JSON">
+		<cfargument name="id" type="string">
+		<cfquery name="local.record" datasource="address">
+			SELECT
+				profile,
+				title,
+				firstname,
+				lastname,
+				gender,
+				date_of_birth,
+				profile,
+				house_flat,
+				street,
+				city,
+				state,
+				country,
+				pincode,
+				email,
+				phone
+			FROM
+				log_book
+			WHERE
+				log_id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_integer">;
+		</cfquery>
+		<cfreturn local.record>
 	</cffunction>
 </cfcomponent>

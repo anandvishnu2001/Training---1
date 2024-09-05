@@ -24,14 +24,14 @@
 			</div>
 		</nav>
 		<div class="glow row d-inline-flex flex-wrap justify-content-around rounded-3 w-75 mx-auto mt-5 mb-3">
-			<div class="d-flex col-7 col-md-4 align-items-center bg-info rounded-start-3">
+			<div class="d-flex col-7 col-md-4 align-items-center bg-body rounded-start-3">
 				<img class="img-fluid" src="./images/logbook.png" alt="Address Book" width="300" height="300">
 			</div>
 			<div action class="flex-grow-1 d-inline-flex col-auto flex-column justify-content-between p-3">
 				<p class="h1 text-center text-info mb-3">LOGIN</p>
 				<form name="login" id="login" class="d-flex flex-column was-validated gap-2" action="" method="post">
 					<div class="form-floating">
-						<input type="text" class="form-control" name="username" id="username" pattern="^\w{5,}$" placeholder="" required>
+						<input type="text" class="form-control" name="username" id="username" placeholder="" autofocus required>
 						<label for="username">Username or Email</label>
 					</div>
 					<span id="feedback" class="text-center text-danger bg-warning invisible"></span>

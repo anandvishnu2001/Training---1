@@ -1,5 +1,9 @@
 <cfinclude template="logbook-submit.cfm">
 <html lang="en" data-bs-theme="dark">
+	<head>
+		<link href="./css/style.css" rel="stylesheet">
+		<link href="./css/bootstrap.min.css" rel="stylesheet">
+	</head>
 	<body class="container-fluid d-flex flex-row align-items-center">
 		<cfinclude template="object.cfm">
 		<nav class="navbar navbar-expand-sm navbar-dark bg-info fixed-top">
@@ -45,9 +49,9 @@
 			<div class="row d-inline-flex w-100 flex-wrap justify-content-around">
 				<div class="col-7 col-md-4 rounded-start-3">
 					<div class="glow card bg-body p-3">
-						<img class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book" width="200" height="200">
+						<img class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book" width="150" height="150">
 						<div class="card-body d-flex flex-column justify-contrnt-center">
-							<cfoutput><p class="card-title text-center">#session.check[2]#</p></cfoutput>
+							<cfoutput><p id="user" class="card-title text-center">#session.check[2]#</p></cfoutput>
 							<button class="btn btn-outline-primary btn-block" data-bs-toggle="modal" data-bs-target="#listModal">Create Contact</button>
 						</div>
 					</div>
@@ -58,10 +62,11 @@
 				</div>
 			</div>
 		</div>
-		<link href="./css/style.css" rel="stylesheet">
-		<link href="./css/bootstrap.min.css" rel="stylesheet">
+		<cfinclude template="logbook-modal-list.cfm">
+		<cfoutput><script type="text/javascript">let user = "#session.check[1]#";</script></cfoutput>
 		<script type="text/javascript" src="./js/jQuery.js"></script>
-		<script type="text/javascript" src="./js/register-script.js"></script>
+		<script type="text/javascript" src="./js/logbook-script.js"></script>
 		<script type="text/javascript" src="./js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="./js/bootstrap.bundle.min.js"></script>
 	</body>
 </html>

@@ -24,14 +24,14 @@
 			</div>
 		</nav>
 		<div class="glow row d-inline-flex flex-wrap justify-content-around rounded-3 w-75 mx-auto mt-5 mb-3">
-			<div class="d-flex col-7 col-md-4 align-items-center bg-info rounded-start-3">
+			<div class="d-flex col-7 col-md-4 align-items-center bg-body rounded-start-3">
 				<img class="img-fluid" src="./images/logbook.png" alt="Address Book" width="300" height="300">
 			</div>
 			<div action class="flex-grow-1 d-flex col-auto flex-column justify-content-between p-3">
 				<p class="h1 text-center text-info mb-3">SIGN UP</p>
 				<form name="register" id="register" class="d-flex flex-column was-validated gap-2" action="" method="post">
 					<div class="form-floating">
-						<input type="text" class="form-control" name="name" id="name" placeholder="" required>
+						<input type="text" class="form-control" name="name" id="name" placeholder="" autofocus required>
 						<label for="name">Fullname</label>
 					</div>
 					<div class="form-floating">

@@ -4,7 +4,6 @@ $(document).ready(function(){
 	$("#username").change(function(){
 		let id = $(this).attr('id');
 		let value = $(this).val();
-		alert(value.includes("@"));
 		if(value.includes("@"))
 			id = "email";
 		if(!$("#feedback").hasClass("invisible"))
