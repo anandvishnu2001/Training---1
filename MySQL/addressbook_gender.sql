@@ -16,28 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `title`
+-- Table structure for table `gender`
 --
 
-DROP TABLE IF EXISTS `title`;
+DROP TABLE IF EXISTS `gender`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `title` (
+CREATE TABLE `gender` (
   `id` int NOT NULL,
-  `value` varchar(5) NOT NULL,
-  UNIQUE KEY `title_UNIQUE` (`id`),
-  UNIQUE KEY `value_UNIQUE` (`value`)
+  `value` varchar(6) NOT NULL,
+  UNIQUE KEY `gender_UNIQUE` (`id`),
+  UNIQUE KEY `gendercol_UNIQUE` (`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `title`
+-- Dumping data for table `gender`
 --
 
-LOCK TABLES `title` WRITE;
-/*!40000 ALTER TABLE `title` DISABLE KEYS */;
-INSERT INTO `title` VALUES (1,'Mr.'),(3,'Mrs.'),(2,'Ms.');
-/*!40000 ALTER TABLE `title` ENABLE KEYS */;
+LOCK TABLES `gender` WRITE;
+/*!40000 ALTER TABLE `gender` DISABLE KEYS */;
+INSERT INTO `gender` VALUES (2,'Female'),(1,'Male'),(3,'Other');
+/*!40000 ALTER TABLE `gender` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

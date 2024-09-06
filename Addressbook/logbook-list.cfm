@@ -7,4 +7,3 @@
 	</thead>
 	<tbody name="contactList" id="contactList"></tbody>
 </table>
-<cfinclude template="logbook-modal-record.cfm">

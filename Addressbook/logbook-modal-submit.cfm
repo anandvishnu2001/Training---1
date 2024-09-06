@@ -1,0 +1,35 @@
+<cfif structKeyExists(form,"addbtn")>
+	<cfset manager.insertContact( session.check[1],
+					form.a_title,
+					form.a_firstname,
+					form.a_lastname,
+					form.a_gender,
+					form.a_date_of_birth,
+					form.a_profile,
+					form.a_house_flat,
+					form.a_street,
+					form.a_city,
+					form.a_state,
+					form.a_country,
+					form.a_pincode,
+					form.a_email,
+					form.a_phone )>
+</cfif>
+<cfif structKeyExists(form,"editbtn")>
+	<cfset manager.updateContact( session.check[1],
+					form.e_id,
+					form.e_title,
+					form.e_firstname,
+					form.e_lastname,
+					form.e_gender,
+					form.e_date_of_birth,
+					form.e_profile,
+					form.e_house_flat,
+					form.e_street,
+					form.e_city,
+					form.e_state,
+					form.e_country,
+					form.e_pincode,
+					form.e_email,
+					form.e_phone )>
+</cfif>

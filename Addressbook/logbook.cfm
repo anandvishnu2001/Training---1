@@ -25,14 +25,14 @@
 				<nav class="navbar navbar-expand-lg fw-bold justify-content-end">
 					<ul class="navbar-nav nav-tabs">
 						<li class="nav-item">
-							<button class="nav-link text-success">
+							<a class="nav-link text-success" href="pdf.cfm">
 								<img src="./images/pdf.png" width="40" height="40">
-							</button>
+							</a>
 						</li>
 						<li class="nav-item">
-							<button class="nav-link text-success">
+							<a class="nav-link text-success" href="xls.cfm">
 								<img src="./images/xls.png" width="40" height="40">
-							</button>
+							</a>
 						</li>
 						<li class="nav-item">
 							<button class="nav-link text-success">
@@ -48,7 +48,7 @@
 						<img class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book" width="150" height="150">
 						<div class="card-body d-flex flex-column justify-contrnt-center">
 							<cfoutput><p id="user" class="card-title text-center">#session.check[2]#</p></cfoutput>
-							<button class="btn btn-outline-primary btn-block" data-bs-toggle="modal" data-bs-target="#listModal">Create Contact</button>
+							<button class="btn btn-outline-primary btn-block" data-bs-toggle="modal" data-bs-target="#modal" data-bs-whatever="add">Create Contact</button>
 						</div>
 					</div>
 				</div>
@@ -58,7 +58,7 @@
 				</div>
 			</div>
 		</div>
-		<cfinclude template="logbook-modal-list.cfm">
+		<cfinclude template="logbook-modal.cfm">
 		<link href="./css/style.css" rel="stylesheet">
 		<link href="./css/bootstrap.min.css" rel="stylesheet">
 		<cfoutput><script type="text/javascript">let user = "#session.check[1]#";</script></cfoutput>

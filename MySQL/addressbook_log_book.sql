@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `addressbook` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `addressbook`;
 -- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
 -- Host: localhost    Database: addressbook
@@ -30,22 +28,26 @@ CREATE TABLE `log_book` (
   `title` int NOT NULL,
   `firstname` varchar(45) NOT NULL,
   `lastname` varchar(45) NOT NULL,
-  `gender` varchar(8) NOT NULL,
+  `gender` int NOT NULL,
   `date_of_birth` date NOT NULL,
-  `profile` varchar(70) NOT NULL,
+  `profile` varchar(70) NOT NULL DEFAULT 'uploads/signup.png',
   `house_flat` varchar(45) NOT NULL,
   `street` varchar(45) NOT NULL,
   `city` varchar(45) NOT NULL,
   `state` varchar(45) NOT NULL,
-  `pincode` int NOT NULL,
+  `country` varchar(45) NOT NULL,
+  `pincode` varchar(6) NOT NULL,
   `email` varchar(320) NOT NULL,
-  `phone` int NOT NULL,
+  `phone` varchar(20) NOT NULL,
   PRIMARY KEY (`log_id`),
   UNIQUE KEY `log_id_UNIQUE` (`log_id`),
-  UNIQUE KEY `email_UNIQUE` (`email`),
   KEY `user_id_idx` (`user_id`),
+  KEY `title_idx` (`title`),
+  KEY `gender_idx` (`gender`),
+  CONSTRAINT `gender` FOREIGN KEY (`gender`) REFERENCES `gender` (`id`),
+  CONSTRAINT `title` FOREIGN KEY (`title`) REFERENCES `title` (`id`),
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `log_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -54,6 +56,7 @@ CREATE TABLE `log_book` (
 
 LOCK TABLES `log_book` WRITE;
 /*!40000 ALTER TABLE `log_book` DISABLE KEYS */;
+INSERT INTO `log_book` VALUES (5,1,1,'Krishna','Renjith',1,'2002-10-31','uploads/signup.png','Athippillil House','Tagore Nagar','Muvattupuzha','Kerala','India','686661','krenjith567@gmail.com','9847987434'),(6,1,1,'Liju','Mon',1,'3222-05-31','uploads/signup.png','rwerew','fere','er','frr','frer','545454','krenjith567@gmail.com','9847987434');
 /*!40000 ALTER TABLE `log_book` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -66,4 +69,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-04 18:07:44
+-- Dump completed on 2024-09-06 17:56:21
