@@ -7,7 +7,7 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body">
-				<form name="modalAdd" id="modal" class="d-flex flex-column was-validated gap-2" action="" method="post" enctype="multipart/form-data">
+				<form name="modalAdd" id="modalAdd" class="d-flex flex-column was-validated gap-2" action="" method="post" enctype="multipart/form-data">
 					<fieldset class="d-flex flex-column gap-3">
 						<legend class="text-info">Personal Details<hr class="border-5"></legend>
 						<div class="d-flex justify-content-between">
@@ -92,7 +92,7 @@
 							</div>
 						</div>
 						<span id="feedback" class="text-center text-danger bg-warning invisible"></span>
-						<button name="edit" id="create" type="submit" class="btn btn-success" form="modalAdd">Save</button>
+						<button name="create" id="create" type="submit" class="btn btn-success" form="modalAdd">Save</button>
 					</fieldset>
 					</div>
 				</form>

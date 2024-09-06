@@ -1,9 +1,5 @@
 <cfinclude template="logbook-submit.cfm">
 <html lang="en" data-bs-theme="dark">
-	<head>
-		<link href="./css/style.css" rel="stylesheet">
-		<link href="./css/bootstrap.min.css" rel="stylesheet">
-	</head>
 	<body class="container-fluid d-flex flex-row align-items-center">
 		<cfinclude template="object.cfm">
 		<nav class="navbar navbar-expand-sm navbar-dark bg-info fixed-top">
@@ -47,7 +43,7 @@
 				</nav>
 			</div>
 			<div class="row d-inline-flex w-100 flex-wrap justify-content-around">
-				<div class="col-7 col-md-4 rounded-start-3">
+				<div class="col-7 col-md-3 rounded-start-3">
 					<div class="glow card bg-body p-3">
 						<img class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book" width="150" height="150">
 						<div class="card-body d-flex flex-column justify-contrnt-center">
@@ -63,6 +59,8 @@
 			</div>
 		</div>
 		<cfinclude template="logbook-modal-list.cfm">
+		<link href="./css/style.css" rel="stylesheet">
+		<link href="./css/bootstrap.min.css" rel="stylesheet">
 		<cfoutput><script type="text/javascript">let user = "#session.check[1]#";</script></cfoutput>
 		<script type="text/javascript" src="./js/jQuery.js"></script>
 		<script type="text/javascript" src="./js/logbook-script.js"></script>

@@ -86,6 +86,7 @@
 		<cfargument name="lastname" type="string">
 		<cfargument name="gender" type="string">
 		<cfargument name="date_of_birth" type="string">
+		<cfargument name="profile" type="string">
 		<cfargument name="house_flat" type="string">
 		<cfargument name="street" type="string">
 		<cfargument name="city" type="string">
@@ -128,7 +129,7 @@
 				<cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar">,
 				<cfqueryparam value="#arguments.phone#" cfsqltype="cf_sql_varchar">
 			);
-		</cfquery><!---
+		</cfquery>
 		<cfset local.id = result.GENERATEDKEY>
 		<cfif arguments.profile NEQ "">
 			<cfquery name="local.insertPhoto" datasource="address">
@@ -139,7 +140,7 @@
 				WHERE
 					log_id = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">;
 			</cfquery>
-		</cfif>--->
+		</cfif>
 	</cffunction>
 
 	<cffunction name="getList" access="remote" returnFormat="JSON">
@@ -170,7 +171,6 @@
 		<cfargument name="id" type="string">
 		<cfquery name="local.record" datasource="address">
 			SELECT
-				profile,
 				title,
 				firstname,
 				lastname,

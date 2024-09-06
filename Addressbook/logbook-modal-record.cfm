@@ -1,14 +1,14 @@
-<cfinclude template="logbook-modal-list-submit.cfm">
+<cfinclude template="logbook-modal-record-submit.cfm">
 <div class="modal fade" id="recordModal">
  	<div class="modal-dialog bg-body modal-lg modal-dialog-scrollable">
 		<div class="modal-content">
 			<div class="modal-header d-flex">
-				<h2 class="modal-title d-none flex-grow-1 fw-bold text-center text-primary">Edit Contact</h2>
-				<h2 class="modal-title flex-grow-1 fw-bold text-center text-primary">Contact Details</h2>
+				<h2 id="h-edit" class="modal-title d-none flex-grow-1 fw-bold text-center text-primary">Edit Contact</h2>
+				<h2 id="h-view" class="modal-title d-none flex-grow-1 fw-bold text-center text-primary">Contact Details</h2>
 				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body">
-				<form name="modal" id="modal" class="d-flex flex-column was-validated gap-2" action="" method="post" enctype="multipart/form-data">
+				<form name="modalEdit" id="modalEdit" class="d-flex flex-column was-validated gap-2" action="" method="post" enctype="multipart/form-data">
 					<fieldset class="d-flex flex-column gap-3">
 						<legend>Personal Details<hr></legend>
 						<div class="d-flex justify-content-between">
@@ -93,7 +93,7 @@
 							</div>
 						</div>
 						<span id="feedback" class="text-center text-danger bg-warning invisible"></span>
-						<button name="create" id="create" type="submit" class="btn btn-success" form="modal">Save</button>
+						<button name="edit" id="edit" type="submit" class="btn btn-success" form="modalEdit">Save</button>
 					</fieldset>
 					</div>
 				</form>
