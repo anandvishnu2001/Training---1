@@ -1,25 +1,35 @@
 <cfinclude template="object.cfm">
 <cfset log = manager.getList(session.check[1])>
 
-<!--- Create a new spreadsheet object --->
-<cfset spreadsheetObj = SpreadsheetNew("AddressBook",false)>
+<cfset spreadsheetObj = SpreadsheetNew("AddressBook","true")>
 
-<!--- Add headers to the spreadsheet --->
+<cfset SpreadsheetAddRow(spreadsheetObj,'user,,#now()#')>
 <cfset SpreadsheetAddRow(spreadsheetObj,'Name,email,phone')>
-
-<!--- Loop through the query and add rows --->
 <cfoutput query="log">
-    <cfset SpreadsheetAddRow(spreadsheetObj,'#name#,#email#,#phone#')>
+	<cfset SpreadsheetAddRow(spreadsheetObj,'#log.name#,#log.email#,#log.phone#')>
 </cfoutput>
 
-<!--- Save the spreadsheet to a temporary file --->
+<cfset SpreadsheetMergeCells(spreadsheetObj,1,1,1,2)>
 
-<!--- <cfspreadsheet action="write" filename="AddressBook.xlsx" name="spreadsheetObj"> --->
+<cfset title={color="blue",fgcolor="aqua",bold="true",alignment="center",fontsize="23"}>
+<cfset date={fgcolor="aqua",bold="true",alignment="right",verticalalignment="vertical_top"}>
+<cfset head={color="blue",fgcolor="teal",bold="true",alignment="center",fontsize="20"}>
+<cfset data={fgcolor="grey_25_percent"}>
+
+<cfset SpreadsheetFormatCell(spreadsheetObj,title,1,1)>
+<cfset SpreadsheetFormatCell(spreadsheetObj,date,1,3)>
+<cfset SpreadsheetFormatRow (spreadsheetObj,head,2)>
+<cfloop from="3" to="#3+log.RECORDCOUNT#" index="i">
+	<cfif i%2 EQ 0>
+		<cfset SpreadsheetFormatRow(spreadsheetObj,data,i)>
+	</cfif>
+</cfloop>
+<cfloop from="1" to="#SpreadsheetGetColumnCount(spreadsheetObj,'AddressBook')#" index="i">
+	<cfset SpreadSheetSetColumnWidth (spreadsheetobj,i,30)>
+</cfloop>
+
 <cfset binary = SpreadsheetReadBinary(spreadsheetObj)>
 
-<!--- Set the HTTP headers for file download --->
 <cfheader name="Content-Disposition" value="attachment; filename=AddressBook.xlsx">
-<!---<cfheader name="Content-Type" value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">--->
 
-<!--- Serve the file and delete it after download --->
 <cfcontent type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" variable="#binary#" >

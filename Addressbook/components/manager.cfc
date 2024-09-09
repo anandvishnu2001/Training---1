@@ -56,8 +56,8 @@
 	<cffunction name="exist" access="remote" returnFormat="JSON">
 		<cfargument name="check" type="string">
 		<cfargument name="item" type="string">
-		<cfif local.existCheck.recordCount EQ 0>
-			<cfquery name="local.existCheck" datasource="address">
+		<cfif arguments.check EQ "email">
+			<cfquery name="local.emailCheck" datasource="address">
 				SELECT 
 					email
 				FROM
@@ -65,20 +65,17 @@
 				WHERE
 					email=<cfqueryparam value="#arguments.item#" cfsqltype="cf_sql_varchar">;
 			</cfquery>
-		<cfelse>
-			<cfquery name="local.existCheck" datasource="address">
+			<cfreturn local.emailCheck.recordCount NEQ 0>
+		<cfelseif arguments.check EQ "username">
+			<cfquery name="local.usernameCheck" datasource="address">
 				SELECT 
-					user
+					username
 				FROM
 					log_user
 				WHERE
-					user=<cfqueryparam value="#arguments.item#" cfsqltype="cf_sql_varchar">;
+					username=<cfqueryparam value="#arguments.item#" cfsqltype="cf_sql_varchar">;
 			</cfquery>
-		</cfif>
-		<cfif local.existCheck.recordCount EQ 0>
-			<cfreturn false>
-		<cfelse>
-			<cfreturn true>
+			<cfreturn local.usernameCheck.recordCount NEQ 0>
 		</cfif>
 	</cffunction>
 
