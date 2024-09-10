@@ -4,12 +4,12 @@
 		<cfinclude template="object.cfm">
 		<nav class="navbar navbar-expand-sm navbar-dark bg-info fixed-top">
 			<div class="container-fluid fw-bold">
-				<a class="navbar-brand text-primary" href="./index.cfm">
+				<a class="no_print navbar-brand text-primary" href="./index.cfm">
 					<img src="./images/logbook.png" width="40" height="40">
 					Address Book
 				</a>
 				<ul class="navbar-nav nav-tabs">
-					<li class="nav-item">
+					<li class="no_print nav-item">
 						<form class="m-0" method="post">
 							<button name="btn" id="btn" class="nav-link text-success" type="submit">
 								<img src="./images/logout.png" width="25" height="25">
@@ -20,22 +20,22 @@
 				</ul>
 			</div>
 		</nav>
-		<div class="container d-inline-flex flex-column gap-3 w-75 mx-auto mt-5 mb-3">
-			<div class="glow row bg-body w-100 rounded-3 px-3">
-				<nav class="navbar navbar-expand-lg fw-bold justify-content-end">
-					<ul class="navbar-nav nav-tabs">
-						<li class="nav-item">
+		<div class="no_print container d-inline-flex flex-column gap-3 w-75 mx-auto mt-5 mb-3">
+			<div class="no_print glow row bg-body w-100 rounded-3 px-3">
+				<nav class="no_print navbar navbar-expand-lg fw-bold justify-content-end">
+					<ul class="no_print navbar-nav nav-tabs">
+						<li class="no_print nav-item">
 							<a class="nav-link text-success" href="pdf.cfm">
 								<img src="./images/pdf.png" width="40" height="40">
 							</a>
 						</li>
-						<li class="nav-item">
+						<li class="no_print nav-item">
 							<a class="nav-link text-success" href="xls.cfm">
 								<img src="./images/xls.png" width="40" height="40">
 							</a>
 						</li>
-						<li class="nav-item">
-							<button class="nav-link text-success">
+						<li class="no_print nav-item">
+							<button id="printbtn" class="nav-link text-success">
 								<img src="./images/print.png" width="40" height="40">
 							</button>
 						</li>
@@ -43,7 +43,7 @@
 				</nav>
 			</div>
 			<div class="row d-inline-flex w-100 flex-wrap justify-content-around">
-				<div class="col-7 col-md-3 rounded-start-3">
+				<div class="no_print col-7 col-md-3 rounded-start-3">
 					<div class="glow card bg-body p-3">
 						<img class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book" width="150" height="150">
 						<div class="card-body d-flex flex-column justify-contrnt-center">
@@ -59,6 +59,7 @@
 			</div>
 		</div>
 		<cfinclude template="logbook-modal.cfm">
+		<link href="./css/print.css" rel="stylesheet" media="print">
 		<link href="./css/style.css" rel="stylesheet">
 		<link href="./css/bootstrap.min.css" rel="stylesheet">
 		<cfoutput><script type="text/javascript">let user = "#session.check[1]#";</script></cfoutput>

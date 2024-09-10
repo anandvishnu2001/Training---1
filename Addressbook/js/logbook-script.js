@@ -106,4 +106,7 @@ $(document).ready(function(){
 			}
 		});
 	});
+	$("#printbtn").click(function(){
+		window.print();
+	});
 });
