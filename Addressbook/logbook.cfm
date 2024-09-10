@@ -1,4 +1,5 @@
 <cfinclude template="logbook-submit.cfm">
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 	<body class="container-fluid d-flex flex-row align-items-center">
 		<cfinclude template="object.cfm">
@@ -20,7 +21,7 @@
 				</ul>
 			</div>
 		</nav>
-		<div class="no_print container d-inline-flex flex-column gap-3 w-75 mx-auto mt-5 mb-3">
+		<div class="no_print container d-inline-flex flex-column gap-3 w-75 mx-auto mt-5 p-5 mb-3">
 			<div class="no_print glow row bg-body w-100 rounded-3 px-3">
 				<nav class="no_print navbar navbar-expand-lg fw-bold justify-content-end">
 					<ul class="no_print navbar-nav nav-tabs">
