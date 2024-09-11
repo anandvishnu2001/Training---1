@@ -13,10 +13,12 @@ $(document).ready(function(){
 			else{
 				for(let i=0;i< listObj.DATA.length;i++){	let row = `<tr id="${listObj.DATA[i][0]}">`;
 					row += `<td><img class="img-fluid rounded-circle mx-auto d-block" src="./images/signup.png" alt="Address Book" width="30" height="30"></td>`;
-					row += `<td>${listObj.DATA[i][2]}</td> <td>${listObj.DATA[i][3]}</td> <td>${listObj.DATA[i][4]}</td>`;
-					row += `<td><button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal" data-bs-whatever="view">View</button></td>`;
-					row += `<td><button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modal" data-bs-whatever="edit">Edit</button></td>`;
-					row += `<td><button type="button" class="1dlt btn btn-sm btn-outline-danger">Delete</button></td> </tr>`;
+					row += `<td class="contactname">${listObj.DATA[i][2]}</td>`;
+					row += `<td class="contactemail">${listObj.DATA[i][3]}</td>`;
+					row += `<td class="contactphone">${listObj.DATA[i][4]}</td>`;
+					row += `<td class="no-print"><button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal" data-bs-whatever="view">View</button></td>`;
+					row += `<td class="no-print"><button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modal" data-bs-whatever="edit">Edit</button></td>`;
+					row += `<td class="no-print"><button type="button" class="1dlt btn btn-sm btn-outline-danger">Delete</button></td> </tr>`;
 					$("#contactList").append(row);
 				}
 			}

@@ -1,5 +1,26 @@
 @media print{
-	body *{
-		display: none;
+	.no-print{
+		display: none !important;
+	}
+	.glow{
+		box-shadow: 0px 0px !important;
+	}
+	p.h1{
+		color: purple !important;
+	}
+	img{
+		background: black !important;
+	}
+	th.header{
+		color: blue !important;
+	}
+	.contactname{
+		color: black !important;
+	}
+	.contactemail{
+		color: darkcyan !important;
+	}
+	.contactphone{
+		color: dimgray !important;
 	}
 }

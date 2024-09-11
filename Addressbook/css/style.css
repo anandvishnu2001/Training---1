@@ -1,7 +1,7 @@
 body{
-	background-image: repeating-conic-gradient(#708090 10%,#36454F 20%,#708090 10%);
+	background-image: repeating-conic-gradient(#708090 10%,#304050 20%,#708090 10%);
 	background-attachment: fixed;
 }
 .glow{
-	box-shadow: 0px 0px 25px red;
+	box-shadow: 0px 0px 15px red;
 }

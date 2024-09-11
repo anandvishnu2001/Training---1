@@ -43,39 +43,34 @@
 		</cfquery>
 		<cfset local.givenPass = hasher(arguments.password,local.check.salt)>
 		<cfset local.access = ArrayNew(1)>
-		<cfset local.access[1] = local.check.user_id>
-		<cfset local.access[2] = local.check.username>
+		<cfset session.userid = local.check.user_id>
+		<cfset session.username = local.check.username>
 		<cfif local.givenPass EQ local.check.password>
-			<cfset local.access[3]=true>
+			<cfreturn true>
 		<cfelse>
-			<cfset local.access[3]=false>
+			<cfreturn false>
 		</cfif>
-		<cfreturn local.access>
 	</cffunction>
 
 	<cffunction name="exist" access="remote" returnFormat="JSON">
 		<cfargument name="check" type="string">
 		<cfargument name="item" type="string">
-		<cfif arguments.check EQ "email">
-			<cfquery name="local.emailCheck" datasource="address">
-				SELECT 
-					email
-				FROM
-					log_user
-				WHERE
+		<cfquery name="local.userCheck" datasource="address">
+			SELECT 
+				email
+			FROM
+				log_user
+			WHERE
+				<cfif arguments.check EQ "email">
 					email=<cfqueryparam value="#arguments.item#" cfsqltype="cf_sql_varchar">;
-			</cfquery>
-			<cfreturn local.emailCheck.recordCount NEQ 0>
-		<cfelseif arguments.check EQ "username">
-			<cfquery name="local.usernameCheck" datasource="address">
-				SELECT 
-					username
-				FROM
-					log_user
-				WHERE
+				<cfelseif arguments.check EQ "username">
 					username=<cfqueryparam value="#arguments.item#" cfsqltype="cf_sql_varchar">;
-			</cfquery>
-			<cfreturn local.usernameCheck.recordCount NEQ 0>
+				</cfif>
+		</cfquery>
+		<cfif local.userCheck.recordCount NEQ 0>
+			<cfreturn true>
+		<cfelse>
+			<cfreturn false>
 		</cfif>
 	</cffunction>
 
@@ -167,10 +162,7 @@
 				l.phone AS phone
 			FROM
 				log_book l
-			JOIN
-				title t
-			ON
-				l.title = t.id
+			JOIN title t ON l.title = t.id
 			WHERE
 				l.user_id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_integer">;
 		</cfquery>
@@ -282,14 +274,8 @@
 				l.phone
 			FROM
 				log_book l
-			JOIN
-				title t
-			ON
-				l.title = t.id
-			JOIN
-				gender g
-			ON
-				l.gender = g.id
+			JOIN title t ON l.title = t.id
+			JOIN gender g ON l.gender = g.id
 			WHERE
 				log_id=<cfqueryparam value="#arguments.log_id#" cfsqltype="cf_sql_integer">
 			AND
