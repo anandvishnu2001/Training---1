@@ -1,15 +1,15 @@
 <cfinclude template="logbook-modal-submit.cfm">
 <div class="modal fade" id="modal">
  	<div class="modal-dialog bg-body modal-lg modal-dialog-scrollable">
-		<div class="modal-content">
+		<div class="modal-content d-flex p-3">
 			<div class="modal-header d-flex">
 				<h2 id="h-add" class="modal-title flex-grow-1 fw-bold text-center text-primary">Create Contact</h2>
 				<h2 id="h-edit" class="modal-title flex-grow-1 fw-bold text-center text-primary">Edit Contact</h2>
 				<h2 id="h-view" class="modal-title flex-grow-1 fw-bold text-center text-primary">Contact Details</h2>
 				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
-			<div class="modal-body">
-				<form id="modalAdd" class="d-flex flex-column was-validated gap-2" action="" method="post" enctype="multipart/form-data">
+			<div class="row modal-body flex-grow-1 d-flex justify-content-between">
+				<form id="modalAdd" class="col-9 d-flex flex-column was-validated gap-2" action="" method="post" enctype="multipart/form-data">
 					<fieldset class="d-flex flex-column gap-3">
 						<legend class="text-info">Personal Details<hr class="border-5"></legend>
 						<div class="d-flex justify-content-between">
@@ -96,7 +96,7 @@
 					</fieldset>
 					<button name="addbtn" id="addbtn" type="submit" class="btn btn-success">Save</button>
 				</form>
-				<form id="modalEdit" class="d-flex flex-column was-validated gap-2" action="" method="post" enctype="multipart/form-data">
+				<form id="modalEdit" class="col-9 d-flex flex-column was-validated gap-2" action="" method="post" enctype="multipart/form-data">
 					<fieldset class="d-flex flex-column gap-3">
 						<legend class="text-info">Personal Details<hr class="border-5"></legend>
 						<div class="d-flex justify-content-between">
@@ -176,7 +176,8 @@
 								<label class="form-label" for="e_email">Email ID</label>
 							</div>
 							<div class="form-floating col-5">
-								<input type="text" class="form-control" name="e_phone" id="e_phone" pattern="[0-9]{10}" placeholder="" required>
+								<input type="text" class="form-control" 
+									name="e_phone" id="e_phone" pattern="[0-9]{10}" placeholder="" required>
 								<label class="form-label" for="e_phone">Phone</label>
 							</div>
 						</div>
@@ -184,7 +185,7 @@
 					<input type="hidden" name="e_id" id="e_id">
 					<button name="editbtn" id="editbtn" type="submit" class="btn btn-success">Save</button>
 				</form>
-				<div id="modalView" class="d-flex flex-column gap-2">
+				<div id="modalView" class="col-9 d-flex flex-column gap-2">
                         		<div class="row">
 						<h4 class="text-primary col-4">Name:</h4>
 						<h5 class="text-info col-auto" id="v-name">Krishna Renjith</h5>
@@ -214,6 +215,9 @@
 						<h5 class="text-info col-auto" id="v-phone"></h5>
 					</div>		
                     		</div>
+				<div class="card-body col-3 position-static end-0 bg-secondary d-flex flex-column justify-content-stretch">
+					<img id="contact" class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book">
+				</div>
 			</div>
 		</div>
 	</div>

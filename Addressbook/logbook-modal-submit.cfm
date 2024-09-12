@@ -1,11 +1,12 @@
 <cfif structKeyExists(form,"addbtn")>
+	<cfinclude template="imageadd.cfm">
 	<cfset manager.insertContact( session.userid,
 					form.a_title,
 					form.a_firstname,
 					form.a_lastname,
 					form.a_gender,
 					form.a_date_of_birth,
-					form.a_profile,
+					filename,
 					form.a_house_flat,
 					form.a_street,
 					form.a_city,
@@ -16,6 +17,7 @@
 					form.a_phone )>
 </cfif>
 <cfif structKeyExists(form,"editbtn")>
+	<cfinclude template="imageedit.cfm">
 	<cfset manager.updateContact( session.userid,
 					form.e_id,
 					form.e_title,
@@ -23,7 +25,7 @@
 					form.e_lastname,
 					form.e_gender,
 					form.e_date_of_birth,
-					form.e_profile,
+					filename,
 					form.e_house_flat,
 					form.e_street,
 					form.e_city,

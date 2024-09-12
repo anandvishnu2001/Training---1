@@ -1,7 +1,4 @@
 <cfset session.check = false>
-<cfset session.userid = "">
-<cfset session.username = "">
-
 <cfif structKeyExists(form,"btn")>
 	<cfinclude template="object.cfm">
 	<cfset access = manager.checkPass(form.username,form.password)>

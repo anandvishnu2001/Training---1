@@ -1,4 +1,5 @@
 <cfcomponent>
+	<cfset variables.key="baiYIM2yvVW258BNOmovjQ==">
 	<cffunction name="insertUser" access="public">
 		<cfargument name="username" type="string">
 		<cfargument name="name" type="string">
@@ -42,7 +43,6 @@
 				email=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar">;
 		</cfquery>
 		<cfset local.givenPass = hasher(arguments.password,local.check.salt)>
-		<cfset local.access = ArrayNew(1)>
 		<cfset session.userid = local.check.user_id>
 		<cfset session.username = local.check.username>
 		<cfif local.givenPass EQ local.check.password>
@@ -148,9 +148,9 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="getList" access="remote" returnFormat="JSON">
+	<cffunction name="getList" access="remote" returnFormat="JSON" returnType="struct">
 		<cfargument name="id" type="string">
-		<cfquery name="local.list" datasource="address">
+		<cfquery name="local.list" datasource="address" returnType="struct">
 			SELECT
 				l.log_id,
 				l.profile,
@@ -162,17 +162,22 @@
 				l.phone AS phone
 			FROM
 				log_book l
-			JOIN title t ON l.title = t.id
+			INNER JOIN
+				title t ON l.title = t.id
 			WHERE
 				l.user_id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_integer">;
 		</cfquery>
+		<cfloop from="1" to="#local.list.RECORDCOUNT#" index="i">
+			<cfset local.list.RESULTSET[i]["log_id"]=encrypt(local.list.RESULTSET[i]["log_id"],variables.key,"AES","hex")>
+		</cfloop>
 		<cfreturn local.list>
 	</cffunction>
 
-	<cffunction name="getEdit" access="remote" returnFormat="JSON">
+	<cffunction name="getEdit" access="remote" returnFormat="JSON" returnType="struct">
 		<cfargument name="log_id" type="string">
 		<cfargument name="user_id" type="string">
-		<cfquery name="local.record" datasource="address">
+		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
+		<cfquery name="local.record" datasource="address" returnType="struct">
 			SELECT
 				title,
 				firstname,
@@ -191,7 +196,7 @@
 			FROM
 				log_book
 			WHERE
-				log_id=<cfqueryparam value="#arguments.log_id#" cfsqltype="cf_sql_integer">
+				log_id=<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
 			AND
 				user_id=<cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
 		</cfquery>
@@ -215,6 +220,7 @@
 		<cfargument name="pincode" type="string">
 		<cfargument name="email" type="string">
 		<cfargument name="phone" type="string">
+		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
 		<cfquery name="local.insertPhoto" datasource="address">
 			UPDATE
 				log_book
@@ -233,7 +239,7 @@
 				email = <cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar">,
 				phone = <cfqueryparam value="#arguments.phone#" cfsqltype="cf_sql_varchar">
 			WHERE
-				log_id = <cfqueryparam value="#arguments.log_id#" cfsqltype="cf_sql_integer">
+				log_id = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
 			AND
 				user_id = <cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
 		</cfquery>
@@ -244,23 +250,24 @@
 				SET
 					profile = <cfqueryparam value="#arguments.profile#" cfsqltype="cf_sql_varchar">
 				WHERE
-					log_id = <cfqueryparam value="#arguments.log_id#" cfsqltype="cf_sql_integer">
+					log_id = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
 				AND
 					user_id = <cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
 			</cfquery>
 		</cfif>
 	</cffunction>
 
-	<cffunction name="getView" access="remote" returnFormat="JSON">
+	<cffunction name="getView" access="remote" returnFormat="JSON" returnType="struct">
 		<cfargument name="log_id" type="string">
 		<cfargument name="user_id" type="string">
-		<cfquery name="local.record" datasource="address">
+		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
+		<cfquery name="local.record" datasource="address" returnType="struct">
 			SELECT
 				CONCAT(
 					t.value," ",
 					l.firstname," ",
 					l.lastname	) AS name,
-				g.value,
+				g.value AS gender,
 				l.date_of_birth,
 				l.profile,
 				CONCAT(
@@ -274,10 +281,12 @@
 				l.phone
 			FROM
 				log_book l
-			JOIN title t ON l.title = t.id
-			JOIN gender g ON l.gender = g.id
+			INNER JOIN
+				title t ON l.title = t.id
+			INNER JOIN
+				gender g ON l.gender = g.id
 			WHERE
-				log_id=<cfqueryparam value="#arguments.log_id#" cfsqltype="cf_sql_integer">
+				log_id=<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
 			AND
 				user_id=<cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
 		</cfquery>
@@ -287,11 +296,12 @@
 	<cffunction name="deleteRecord" access="remote" returnFormat="JSON">
 		<cfargument name="log_id" type="string">
 		<cfargument name="user_id" type="string">
+		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
 		<cfquery name="local.deleteRow" datasource="address">
 			DELETE FROM
 				log_book
 			WHERE
-				log_id=<cfqueryparam value="#arguments.log_id#" cfsqltype="cf_sql_integer">
+				log_id=<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
 			AND
 				user_id=<cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
 		</cfquery>

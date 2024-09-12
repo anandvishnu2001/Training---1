@@ -7,15 +7,16 @@ $(document).ready(function(){
 		data: { id: user },
 		success: function(data){
 			let listObj = JSON.parse(data);
-			if (listObj.DATA == ''){
+			console.log(listObj);
+			if (listObj.RESULTSET == ''){
 				alert('Contacts is Empty');
 			}
 			else{
-				for(let i=0;i< listObj.DATA.length;i++){	let row = `<tr id="${listObj.DATA[i][0]}">`;
-					row += `<td><img class="img-fluid rounded-circle mx-auto d-block" src="./images/signup.png" alt="Address Book" width="30" height="30"></td>`;
-					row += `<td class="contactname">${listObj.DATA[i][2]}</td>`;
-					row += `<td class="contactemail">${listObj.DATA[i][3]}</td>`;
-					row += `<td class="contactphone">${listObj.DATA[i][4]}</td>`;
+				for(let i=0;i< listObj.RESULTSET.length;i++){	let row = `<tr id="${listObj.RESULTSET[i]["log_id"]}">`;
+					row += `<td><img class="img-fluid rounded-circle mx-auto d-block" src="./uploads/${listObj.RESULTSET[i]["profile"]}" alt="Address Book" width="30" height="30"></td>`;
+					row += `<td class="contactname">${listObj.RESULTSET[i]["name"]}</td>`;
+					row += `<td class="contactemail">${listObj.RESULTSET[i]["email"]}</td>`;
+					row += `<td class="contactphone">${listObj.RESULTSET[i]["phone"]}</td>`;
 					row += `<td class="no-print"><button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal" data-bs-whatever="view">View</button></td>`;
 					row += `<td class="no-print"><button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modal" data-bs-whatever="edit">Edit</button></td>`;
 					row += `<td class="no-print"><button type="button" class="1dlt btn btn-sm btn-outline-danger">Delete</button></td> </tr>`;
@@ -25,6 +26,7 @@ $(document).ready(function(){
 		}
 	});
 	$('#modal').on('show.bs.modal',function(event){
+		$("#contact").attr("src","./uploads/signup.png");
 		let button = $(event.relatedTarget);
 		if(!$("#h-add").hasClass("d-none"))
 			$("#h-add").addClass("d-none");
@@ -53,21 +55,22 @@ $(document).ready(function(){
 				success: function(data){
 					let editObj = JSON.parse(data);
 					$('#e_id').val(button.closest('tr').attr('id'));
-					$('#e_title').val(editObj.DATA[0][0]);
-					$('#e_firstname').val(editObj.DATA[0][1]);
-					$('#e_lastname').val(editObj.DATA[0][2]);
-					$('#e_gender').val(editObj.DATA[0][3]);
-					let date = new Date(editObj.DATA[0][4]);
+					$('#e_title').val(editObj.RESULTSET[0]["title"]);
+					$('#e_firstname').val(editObj.RESULTSET[0]["firstname"]);
+					$('#e_lastname').val(editObj.RESULTSET[0]["lastname"]);
+					$('#e_gender').val(editObj.RESULTSET[0]["gender"]);
+					$("#contact").attr("src",`./uploads/${editObj.RESULTSET[0]["profile"]}`);
+					let date = new Date(editObj.RESULTSET[0]["date_of_birth"]);
 					date.setDate(date.getDate() + 1);
 					$('#e_date_of_birth').val(date.toISOString().split('T')[0]);
-					$('#e_house_flat').val(editObj.DATA[0][6]);
-					$('#e_street').val(editObj.DATA[0][7]);
-					$('#e_city').val(editObj.DATA[0][8]);
-					$('#e_state').val(editObj.DATA[0][9]);
-					$('#e_country').val(editObj.DATA[0][10]);
-					$('#e_pincode').val(editObj.DATA[0][11]);
-					$('#e_email').val(editObj.DATA[0][12]);
-					$('#e_phone').val(editObj.DATA[0][13]);
+					$('#e_house_flat').val(editObj.RESULTSET[0]["house_flat"]);
+					$('#e_street').val(editObj.RESULTSET[0]["street"]);
+					$('#e_city').val(editObj.RESULTSET[0]["city"]);
+					$('#e_state').val(editObj.RESULTSET[0]["state"]);
+					$('#e_country').val(editObj.RESULTSET[0]["country"]);
+					$('#e_pincode').val(editObj.RESULTSET[0]["pincode"]);
+					$('#e_email').val(editObj.RESULTSET[0]["email"]);
+					$('#e_phone').val(editObj.RESULTSET[0]["phone"]);
 				}
 			});
 		}
@@ -81,16 +84,17 @@ $(document).ready(function(){
 					user_id: user },
 				success: function(data){
 					let viewObj = JSON.parse(data);
-					console.log(viewObj.DATA);
-					$('#v-name').html(viewObj.DATA[0][0]);
-					$('#v-gender').html(viewObj.DATA[0][1]);
-					let date = new Date(viewObj.DATA[0][2]);
+					console.log(viewObj.RESULTSET[0]);
+					$('#v-name').html(viewObj.RESULTSET[0]["name"]);
+					$('#v-gender').html(viewObj.RESULTSET[0]["gender"]);
+					$("#contact").attr("src",`./uploads/${viewObj.RESULTSET[0]["profile"]}`);
+					let date = new Date(viewObj.RESULTSET[0]["date_of_birth"]);
 					date.setDate(date.getDate() + 1);
 					$('#v-dob').html(date.toISOString().split('T')[0]);
-					$('#v-address').html(viewObj.DATA[0][4]);
-					$('#v-pincode').html(viewObj.DATA[0][5]);
-					$('#v-mail').html(viewObj.DATA[0][6]);
-					$('#v-phone').html(viewObj.DATA[0][7]);
+					$('#v-address').html(viewObj.RESULTSET[0]["address"]);
+					$('#v-pincode').html(viewObj.RESULTSET[0]["pincode"]);
+					$('#v-mail').html(viewObj.RESULTSET[0]["email"]);
+					$('#v-phone').html(viewObj.RESULTSET[0]["phone"]);
 				}
 			});
 

@@ -1,13 +1,13 @@
 <cfinclude template="object.cfm">
-<cfset log = manager.getList(session.check[1])>
+<cfset log = manager.getList(session.userid)>
 
 <cfset spreadsheetObj = SpreadsheetNew("AddressBook","true")>
 
 <cfset SpreadsheetAddRow(spreadsheetObj,'user,,#now()#')>
 <cfset SpreadsheetAddRow(spreadsheetObj,'Name,email,phone')>
-<cfoutput query="log">
-	<cfset SpreadsheetAddRow(spreadsheetObj,'#log.name#,#log.email#,#log.phone#')>
-</cfoutput>
+<cfloop array="#log.RESULTSET#" index="i">
+	<cfset SpreadsheetAddRow(spreadsheetObj,'#i.name#,#i.email#,#i.phone#')>
+</cfloop>
 
 <cfset SpreadsheetMergeCells(spreadsheetObj,1,1,1,2)>
 

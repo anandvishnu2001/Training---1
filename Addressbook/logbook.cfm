@@ -44,10 +44,10 @@
 				</nav>
 			</div>
 			<div class="row d-inline-flex w-100 flex-wrap justify-content-around">
-				<div class="no-print col-7 col-md-3 rounded-start-3">
+				<div class="no-print col-6 col-sm-3 rounded-start-3">
 					<div class="glow card bg-body p-3">
 						<img class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book" width="200" height="200">
-						<div class="card-body d-flex flex-column justify-contrnt-center">
+						<div class="card-body d-flex flex-column justify-content-center">
 							<cfoutput><p id="user" class="card-title text-center">#session.username#</p></cfoutput>
 							<button class="btn btn-outline-primary btn-block" data-bs-toggle="modal" data-bs-target="#modal" data-bs-whatever="add">Create Contact</button>
 						</div>

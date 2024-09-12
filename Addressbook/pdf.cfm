@@ -1,5 +1,5 @@
 <cfinclude template="object.cfm">
-<cfset log = manager.getList(session.check[1])>
+<cfset log = manager.getList(session.userid)>
 <cfheader name="Content-Disposition" value="attachment; filename=example.pdf">
 <cfheader name="Content-Type" value="application/pdf">
 
@@ -16,13 +16,15 @@
 			</tr>
 		</thead>
 		<tbody>
-			<cfoutput query="log">
-				<tr>
-					<td>#name#</td>
-					<td>#email#</td>
-					<td>#phone#</td>
-				</tr>
-			</cfoutput>
+			<cfloop array="#log.RESULTSET#" index="i">
+				<cfoutput>
+					<tr>
+						<td>#i.name#</td>
+						<td>#i.email#</td>
+						<td>#i.phone#</td>
+					</tr>
+				</cfoutput>
+			</cfloop>
 		</tbody>
 	</table>
 </cfdocument>

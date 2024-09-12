@@ -11,6 +11,9 @@
 	img{
 		background: black !important;
 	}
+	table{
+		border: 5px !important;
+	}
 	th.header{
 		color: blue !important;
 	}
