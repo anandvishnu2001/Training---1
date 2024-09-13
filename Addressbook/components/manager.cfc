@@ -1,10 +1,10 @@
 <cfcomponent>
 	<cfset variables.key="baiYIM2yvVW258BNOmovjQ==">
 	<cffunction name="insertUser" access="public">
-		<cfargument name="username" type="string">
-		<cfargument name="name" type="string">
-		<cfargument name="email" type="string">
-		<cfargument name="password" type="string">
+		<cfargument name="username" type="string" required="true">
+		<cfargument name="name" type="string" required="true">
+		<cfargument name="email" type="string" required="true">
+		<cfargument name="password" type="string" required="true">
 		<cfset local.salt = generateSecretKey("AES")>
 		<cfset local.hashedPass = hasher(arguments.password,local.salt)>
 		<cfquery name="local.insertData" datasource="address">
@@ -27,8 +27,8 @@
 	</cffunction>
 
 	<cffunction name="checkPass" access="public">
-		<cfargument name="id" type="string">
-		<cfargument name="password" type="string">
+		<cfargument name="id" type="string" required="true">
+		<cfargument name="password" type="string" required="true">
 		<cfquery name="local.check" datasource="address">
 			SELECT
 				user_id,
@@ -43,18 +43,20 @@
 				email=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar">;
 		</cfquery>
 		<cfset local.givenPass = hasher(arguments.password,local.check.salt)>
+		<cfset local.access = structNew()>
 		<cfset session.userid = local.check.user_id>
 		<cfset session.username = local.check.username>
 		<cfif local.givenPass EQ local.check.password>
-			<cfreturn true>
+			<cfset local.access[1]=true>
 		<cfelse>
-			<cfreturn false>
+			<cfset local.access[1]=false>
 		</cfif>
+		<cfreturn true>
 	</cffunction>
 
 	<cffunction name="exist" access="remote" returnFormat="JSON">
-		<cfargument name="check" type="string">
-		<cfargument name="item" type="string">
+		<cfargument name="check" type="string" required="true">
+		<cfargument name="item" type="string" required="true">
 		<cfquery name="local.userCheck" datasource="address">
 			SELECT 
 				email
@@ -75,8 +77,8 @@
 	</cffunction>
 
 	<cffunction name="hasher" access="private">
-		<cfargument name="pass" type="string">
-		<cfargument name="salt" type="string">
+		<cfargument name="pass" type="string" required="true">
+		<cfargument name="salt" type="string" required="true">
 		<cfset local.saltedPass = arguments.pass & arguments.salt>
 		<cfset local.hashedPass = hash(local.saltedPass,"SHA-256","UTF-8")>	
 		<cfreturn local.hashedPass/>
