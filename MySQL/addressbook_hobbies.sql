@@ -16,28 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `title`
+-- Table structure for table `hobbies`
 --
 
-DROP TABLE IF EXISTS `title`;
+DROP TABLE IF EXISTS `hobbies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `title` (
+CREATE TABLE `hobbies` (
   `id` int NOT NULL,
-  `value` varchar(5) NOT NULL,
-  UNIQUE KEY `title_UNIQUE` (`id`),
+  `value` varchar(45) NOT NULL,
+  UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `value_UNIQUE` (`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `title`
+-- Dumping data for table `hobbies`
 --
 
-LOCK TABLES `title` WRITE;
-/*!40000 ALTER TABLE `title` DISABLE KEYS */;
-INSERT INTO `title` VALUES (1,'Mr.'),(3,'Mrs.'),(2,'Ms.');
-/*!40000 ALTER TABLE `title` ENABLE KEYS */;
+LOCK TABLES `hobbies` WRITE;
+/*!40000 ALTER TABLE `hobbies` DISABLE KEYS */;
+INSERT INTO `hobbies` VALUES (2,'Cooking'),(9,'Crafting'),(4,'Dance'),(7,'Gardening'),(5,'Music'),(8,'Painting/Drawing'),(10,'Photography'),(6,'Reading'),(1,'Sports'),(3,'Traveling');
+/*!40000 ALTER TABLE `hobbies` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-17 17:45:16
+-- Dump completed on 2024-09-17 17:45:17

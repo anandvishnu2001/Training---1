@@ -49,7 +49,7 @@
 						<img class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book" width="200" height="200">
 						<div class="card-body d-flex flex-column justify-content-center">
 							<cfoutput><p id="user" class="card-title text-center">#session.username#</p></cfoutput>
-							<button class="btn btn-outline-primary btn-block" data-bs-toggle="modal" data-bs-target="#modal" data-bs-whatever="add">Create Contact</button>
+							<button class="btn btn-outline-primary btn-block" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="add">Create Contact</button>
 						</div>
 					</div>
 				</div>
@@ -62,13 +62,6 @@
 			</div>
 		</div>
 		<cfinclude template="logbook-modal.cfm">
-		<link href="./css/print.css" rel="stylesheet" media="print">
-		<link href="./css/style.css" rel="stylesheet">
-		<link href="./css/bootstrap.min.css" rel="stylesheet">
-		<cfoutput><script type="text/javascript">let user = "#session.userid#";</script></cfoutput>
-		<script type="text/javascript" src="./js/jQuery.js"></script>
-		<script type="text/javascript" src="./js/logbook-script.js"></script>
-		<script type="text/javascript" src="./js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="./js/bootstrap.bundle.min.js"></script>
+		<cfinclude template="logbook-include.cfm">
 	</body>
 </html>

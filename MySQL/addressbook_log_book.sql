@@ -39,6 +39,7 @@ CREATE TABLE `log_book` (
   `pincode` varchar(6) NOT NULL,
   `email` varchar(320) NOT NULL,
   `phone` varchar(20) NOT NULL,
+  `hobbies` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`log_id`),
   UNIQUE KEY `log_id_UNIQUE` (`log_id`),
   KEY `user_id_idx` (`user_id`),
@@ -47,7 +48,7 @@ CREATE TABLE `log_book` (
   CONSTRAINT `gender` FOREIGN KEY (`gender`) REFERENCES `gender` (`id`),
   CONSTRAINT `title` FOREIGN KEY (`title`) REFERENCES `title` (`id`),
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `log_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,7 +57,7 @@ CREATE TABLE `log_book` (
 
 LOCK TABLES `log_book` WRITE;
 /*!40000 ALTER TABLE `log_book` DISABLE KEYS */;
-INSERT INTO `log_book` VALUES (5,1,1,'Krishna','Renjith',1,'2002-10-31','uploads/signup.png','Athippillil House','Tagore Nagar','Muvattupuzha','Kerala','India','686661','krenjith567@gmail.com','9847987434'),(6,1,1,'Liju','Mon',1,'3222-05-31','uploads/signup.png','rwerew','fere','er','frr','frer','545454','krenjith567@gmail.com','9847987434');
+INSERT INTO `log_book` VALUES (10,1,1,'Krishna','Renjith',1,'2002-10-31','michealfaraday.jpg','Athippillil House','Tagore Nagar','Muvattupuzha','Kerala','India','686661','krenjith567@gmail.com','9847987434',NULL),(11,5,1,'sss','ss',1,'1988-10-01','signup-removebg-preview1.png','dwqsdsa','asdf','asdsa','asdf','asfdsafdsa','asdf','asdfdfsafsa@dsafsd.jhfgjh','5454545454',NULL);
 /*!40000 ALTER TABLE `log_book` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -69,4 +70,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-06 17:56:21
+-- Dump completed on 2024-09-17 17:45:17

@@ -5,8 +5,8 @@
 
 <cfset SpreadsheetAddRow(spreadsheetObj,'user,,#now()#')>
 <cfset SpreadsheetAddRow(spreadsheetObj,'Name,email,phone')>
-<cfloop array="#log.RESULTSET#" index="i">
-	<cfset SpreadsheetAddRow(spreadsheetObj,'#i.name#,#i.email#,#i.phone#')>
+<cfloop array="#log#" index="i">
+	<cfset SpreadsheetAddRow(spreadsheetObj,'#i.3#,#i.4#,#i.5#')>
 </cfloop>
 
 <cfset SpreadsheetMergeCells(spreadsheetObj,1,1,1,2)>
