@@ -175,9 +175,9 @@
 		<cfreturn local.list>
 	</cffunction>
 
-	<cffunction name="getEdit" access="remote" returnFormat="JSON" returnType="struct">
-		<cfargument name="log_id" type="string">
+	<cffunction name="getEdit" access="public">
 		<cfargument name="user_id" type="string">
+		<cfargument name="log_id" type="string">
 		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
 		<cfquery name="local.record" datasource="address" returnType="struct">
 			SELECT
@@ -202,7 +202,9 @@
 			AND
 				user_id=<cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
 		</cfquery>
-		<cfreturn local.record>
+		<cfset local.data = structNew()>
+		<cfset locak.data = local.record[RESULTSET][0]>
+		<cfreturn local.data>
 	</cffunction>
 
 	<cffunction name="updateContact" access="public">
@@ -260,8 +262,8 @@
 	</cffunction>
 
 	<cffunction name="getView" access="remote" returnFormat="JSON" returnType="struct">
-		<cfargument name="log_id" type="string">
 		<cfargument name="user_id" type="string">
+		<cfargument name="log_id" type="string">
 		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
 		<cfquery name="local.record" datasource="address" returnType="struct">
 			SELECT
@@ -296,8 +298,8 @@
 	</cffunction>
 
 	<cffunction name="deleteRecord" access="remote" returnFormat="JSON">
-		<cfargument name="log_id" type="string">
 		<cfargument name="user_id" type="string">
+		<cfargument name="log_id" type="string">
 		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
 		<cfquery name="local.deleteRow" datasource="address">
 			DELETE FROM

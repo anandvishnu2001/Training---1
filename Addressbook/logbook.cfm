@@ -1,8 +1,8 @@
-<cfinclude template="logbook-submit.cfm">
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 	<body class="container-fluid d-flex flex-row align-items-center">
 		<cfinclude template="object.cfm">
+		<cfinclude template="logbook-submit.cfm">
 		<nav class="no-print navbar navbar-expand-sm navbar-dark bg-info fixed-top">
 			<div class="container-fluid fw-bold">
 				<a class="navbar-brand text-primary" href="./index.cfm">
@@ -21,7 +21,7 @@
 				</ul>
 			</div>
 		</nav>
-		<div class="container d-inline-flex flex-column gap-3 w-75 mx-auto mt-5 p-5 mb-3">
+		<div class="container d-inline-flex flex-column gap-3 w-100 mx-auto mt-5 p-5 mb-3">
 			<div class="no-print glow row bg-body w-100 rounded-3 px-3">
 				<nav class="navbar navbar-expand-lg fw-bold justify-content-end">
 					<ul class="navbar-nav nav-tabs">
@@ -44,7 +44,7 @@
 				</nav>
 			</div>
 			<div class="row d-inline-flex w-100 flex-wrap justify-content-around">
-				<div class="no-print col-6 col-sm-3 rounded-start-3">
+				<div class="no-print col-6 col-md-3 rounded-start-3">
 					<div class="glow card bg-body p-3">
 						<img class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book" width="200" height="200">
 						<div class="card-body d-flex flex-column justify-content-center">
@@ -55,7 +55,9 @@
 				</div>
 				<div class="glow bg-body card flex-grow-1 d-flex col-auto flex-column p-3">
 					<p class="h1 fw-bold text-center text-success mb-3">CONTACTS</p>
-					<cfinclude template="logbook-list.cfm">
+					<div class="table-responsive">
+						<cfinclude template="logbook-list.cfm">
+					</div>
 				</div>
 			</div>
 		</div>

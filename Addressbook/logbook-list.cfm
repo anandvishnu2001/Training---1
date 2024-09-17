@@ -1,4 +1,4 @@
-<table class="table align-middle table-borderless table-hover table-sm">	
+<table class="table align-middle table-borderless table-sm table-hover table-sm">	
 	<thead>
 		<th></th>
 		<th class="header text-primary">Name</th>
