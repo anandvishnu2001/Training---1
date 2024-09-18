@@ -1,5 +1,5 @@
 <cfinclude template="object.cfm">
-<cfset log = manager.getList(session.userid)>
+<cfset log = DeserializeJSON(manager.getList(session.userid))>
 <cfheader name="Content-Disposition" value="attachment; filename=example.pdf">
 <cfheader name="Content-Type" value="application/pdf">
 
@@ -16,7 +16,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<cfloop array="#log.RESULTSET#" index="i">
+			<cfloop array="#log#" index="i">
 				<cfoutput>
 					<tr>
 						<td>#i.name#</td>

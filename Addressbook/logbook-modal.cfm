@@ -99,7 +99,7 @@
 					<fieldset class="d-flex flex-column gap-3">
 						<legend class="text-info">Hobbies<hr class="border-5"></legend>
 							<div class="form-floating col-3">
-								<select multiple class="form-select" id="e_hobbies" name="e_hobbies" required>
+								<select multiple class="form-select" id="a_hobbies" name="a_hobbies" required>
 									<option value="" disabled selected>Select a title</option>
 									<option value="1">Sports</option>
 									<option value="2">Cooking</option>
@@ -112,7 +112,7 @@
 									<option value="9">Crafting</option>
 									<option value="10">Photography</option>
 								</select>
-								<label class="form-label" for="e_hobbies">Title</label>
+								<label class="form-label" for="a_hobbies">Title</label>
 							</div>
 					</fieldset>
 					<button name="addbtn" id="addbtn" type="submit" class="btn btn-success">Save</button>
