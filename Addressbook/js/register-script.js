@@ -12,7 +12,8 @@ $(document).ready(function(){
 			data: { check: id,
 				item: value },
 			success: function(response){
-				if(response == "true"){
+				let check = JSON.parse(response);
+				if(check[1] == true){
 					$("#feedback").html(`*${value} is already used`).removeClass("invisible");
 				}
 			}

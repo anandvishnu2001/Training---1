@@ -1,7 +1,6 @@
 <cfinclude template="object.cfm">
-<cfparam name="form.id" default="">
 <cfset record=manager.getView( session.userid,
-				form.id )>
+				url.id )>
 <cfoutput>
 <div class="d-flex">
 	<div class="bg-secondary d-flex flex-column justify-content-stretch p-5">
@@ -36,6 +35,12 @@
 			<h2 class="text-primary col-4">Phone:</h2>
 			<h3 class="text-info col-auto" id="v-phone">#record[8]#</h3>
 		</div>
+		<div class="row">
+			<h2 class="text-primary col-4">Hobbies:</h2>
+			<h3 class="text-info col-auto" id="v-hobbies">#record[9]#</h3>
+		</div>
 	</div>
 </div></cfoutput>
-<cfinclude template="include.cfm">
+<link href="./css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="./js/jQuery.js"></script>
+<script type="text/javascript" src="./js/bootstrap.min.js"></script>

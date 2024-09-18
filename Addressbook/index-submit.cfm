@@ -3,7 +3,7 @@
 	<cfinclude template="object.cfm">
 	<cfset access = manager.checkPass(form.username,form.password)>
 	<cfset session.check = access>
-	<cfif session.check>
+	<cfif session.check[1]>
 		<cflocation url="logbook.cfm" addToken="no" statusCode="302">
 	<cfelse>
 		<cflocation url="index.cfm" addToken="no" statusCode="302">

@@ -51,7 +51,7 @@
 		<cfelse>
 			<cfset local.access[1]=false>
 		</cfif>
-		<cfreturn true>
+		<cfreturn local.access>
 	</cffunction>
 
 	<cffunction name="exist" access="remote" returnFormat="JSON">
@@ -59,7 +59,7 @@
 		<cfargument name="item" type="string" required="true">
 		<cfquery name="local.userCheck" datasource="address">
 			SELECT 
-				email
+				username,email
 			FROM
 				log_user
 			WHERE
@@ -69,11 +69,13 @@
 					username=<cfqueryparam value="#arguments.item#" cfsqltype="cf_sql_varchar">;
 				</cfif>
 		</cfquery>
+		<cfset local.access = structNew()>
 		<cfif local.userCheck.recordCount NEQ 0>
-			<cfreturn true>
+			<cfset local.access[1]=true>
 		<cfelse>
-			<cfreturn false>
+			<cfset local.access[1]=false>
 		</cfif>
+		<cfreturn local.access>
 	</cffunction>
 
 	<cffunction name="hasher" access="private">
@@ -85,22 +87,22 @@
 	</cffunction>
 
 	<cffunction name="insertContact" access="public">
-		<cfargument name="user_id" type="string">
-		<cfargument name="title" type="string">
-		<cfargument name="firstname" type="string">
-		<cfargument name="lastname" type="string">
-		<cfargument name="gender" type="string">
-		<cfargument name="date_of_birth" type="string">
-		<cfargument name="profile" type="string">
-		<cfargument name="house_flat" type="string">
-		<cfargument name="street" type="string">
-		<cfargument name="city" type="string">
-		<cfargument name="state" type="string">
-		<cfargument name="country" type="string">
-		<cfargument name="pincode" type="string">
-		<cfargument name="email" type="string">
-		<cfargument name="phone" type="string">
-		<cfargument name="hobbies" type="string">
+		<cfargument name="user_id" type="string" required="true">
+		<cfargument name="title" type="string" required="true">
+		<cfargument name="firstname" type="string" required="true">
+		<cfargument name="lastname" type="string" required="true">
+		<cfargument name="gender" type="string" required="true">
+		<cfargument name="date_of_birth" type="string" required="true">
+		<cfargument name="profile" type="string" required="true">
+		<cfargument name="house_flat" type="string" required="true">
+		<cfargument name="street" type="string" required="true">
+		<cfargument name="city" type="string" required="true">
+		<cfargument name="state" type="string" required="true">
+		<cfargument name="country" type="string" required="true">
+		<cfargument name="pincode" type="string" required="true">
+		<cfargument name="email" type="string" required="true">
+		<cfargument name="phone" type="string" required="true">
+		<cfargument name="hobbies" type="string" required="true">
 		<cfquery name="local.insertData" datasource="address" result="result">
 			INSERT INTO
 				log_book(
@@ -154,7 +156,7 @@
 	</cffunction>
 
 	<cffunction name="getList" access="remote" returnFormat="JSON" returnType="struct">
-		<cfargument name="id" type="string">
+		<cfargument name="id" type="string" required="true">
 		<cfquery name="local.list" datasource="address">
 			SELECT
 				l.log_id,
@@ -164,13 +166,20 @@
 					l.firstname," ",
 					l.lastname	) AS name,
 				l.email,
-				l.phone
+				l.phone,
+				GROUP_CONCAT(
+					h.value 
+					ORDER BY h.id SEPARATOR ',') AS hobbies
 			FROM
 				log_book l
 			INNER JOIN
 				title t ON l.title = t.id
+			INNER JOIN 
+				hobbies h ON FIND_IN_SET(h.id,l.hobbies)
 			WHERE
-				l.user_id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_integer">;
+				l.user_id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_integer">
+			GROUP BY
+				l.log_id, l.profile, l.firstname, l.lastname, l.email, l.phone, t.value;
 		</cfquery>
 		<cfset local.records = structNew()>
 		<cfset local.i=1>
@@ -179,15 +188,16 @@
 							2="#local.list.profile#",
 							3="#local.list.name#",
 							4="#local.list.email#",
-							5="#local.list.phone#" }>
+							5="#local.list.phone#",
+							6="#local.list.hobbies#" }>
 			<cfset i++>
 		</cfoutput>
 		<cfreturn local.records>
 	</cffunction>
 
 	<cffunction name="getEdit" access="remote" returnFormat="JSON" returnType="struct">
-		<cfargument name="user_id" type="string">
-		<cfargument name="log_id" type="string">
+		<cfargument name="user_id" type="string" required="true">
+		<cfargument name="log_id" type="string" required="true">
 		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
 		<cfquery name="local.list" datasource="address">
 			SELECT
@@ -204,7 +214,8 @@
 				country,
 				pincode,
 				email,
-				phone
+				phone,
+				hobbies
 			FROM
 				log_book
 			WHERE
@@ -227,14 +238,15 @@
 						11="#local.list.country#",
 						12="#local.list.pincode#",
 						13="#local.list.email#",
-						14="#local.list.phone#" }>
+						14="#local.list.phone#",
+						15="#local.list.hobbies#" }>
 		</cfoutput>
 		<cfreturn local.record>
 	</cffunction>
 
 	<cffunction name="getView" access="remote" returnFormat="JSON" returnType="struct">
-		<cfargument name="user_id" type="string">
-		<cfargument name="log_id" type="string">
+		<cfargument name="user_id" type="string" required="true">
+		<cfargument name="log_id" type="string" required="true">
 		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
 		<cfquery name="local.list" datasource="address">
 			SELECT
@@ -253,13 +265,18 @@
 					l.country	) AS address,
 				l.pincode,
 				l.email,
-				l.phone
+				l.phone,
+				GROUP_CONCAT(
+					h.value 
+					ORDER BY h.id SEPARATOR ',<br>') AS hobbies
 			FROM
 				log_book l
 			INNER JOIN
 				title t ON l.title = t.id
 			INNER JOIN
 				gender g ON l.gender = g.id
+			INNER JOIN 
+				hobbies h ON FIND_IN_SET(h.id,l.hobbies)
 			WHERE
 				log_id=<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
 			AND
@@ -274,29 +291,30 @@
 						5="#local.list.address#",
 						6="#local.list.pincode#",
 						7="#local.list.email#",
-						8="#local.list.phone#" }>
+						8="#local.list.phone#",
+						9="#local.list.hobbies#" }>
 		</cfoutput>
 		<cfreturn local.record>
 	</cffunction>
 
 	<cffunction name="updateContact" access="public">
-		<cfargument name="user_id" type="string">
-		<cfargument name="log_id" type="string">
-		<cfargument name="title" type="string">
-		<cfargument name="firstname" type="string">
-		<cfargument name="lastname" type="string">
-		<cfargument name="gender" type="string">
-		<cfargument name="date_of_birth" type="string">
-		<cfargument name="profile" type="string">
-		<cfargument name="house_flat" type="string">
-		<cfargument name="street" type="string">
-		<cfargument name="city" type="string">
-		<cfargument name="state" type="string">
-		<cfargument name="country" type="string">
-		<cfargument name="pincode" type="string">
-		<cfargument name="email" type="string">
-		<cfargument name="phone" type="string">
-		<cfargument name="hobbies" type="string">
+		<cfargument name="user_id" type="string" required="true">
+		<cfargument name="log_id" type="string" required="true">
+		<cfargument name="title" type="string" required="true">
+		<cfargument name="firstname" type="string" required="true">
+		<cfargument name="lastname" type="string" required="true">
+		<cfargument name="gender" type="string" required="true">
+		<cfargument name="date_of_birth" type="string" required="true">
+		<cfargument name="profile" type="string" required="true">
+		<cfargument name="house_flat" type="string" required="true">
+		<cfargument name="street" type="string" required="true">
+		<cfargument name="city" type="string" required="true">
+		<cfargument name="state" type="string" required="true">
+		<cfargument name="country" type="string" required="true">
+		<cfargument name="pincode" type="string" required="true">
+		<cfargument name="email" type="string" required="true">
+		<cfargument name="phone" type="string" required="true">
+		<cfargument name="hobbies" type="string" required="true">
 		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
 		<cfquery name="local.insertPhoto" datasource="address">
 			UPDATE

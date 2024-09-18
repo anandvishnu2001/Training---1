@@ -11,13 +11,13 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="row modal-body d-flex justify-content-between">
-				<form id="modalAdd" class="d-flex flex-column was-validation gap-2" action="" method="post" enctype="multipart/form-data">
+				<form id="modalAdd" class="d-flex flex-column gap-2" action="" method="post" enctype="multipart/form-data">
 					<fieldset class="d-flex flex-column gap-3">
 						<legend class="text-info">Personal Details<hr class="border-5"></legend>
 						<div class="d-flex justify-content-between">
 							<div class="form-floating col-3">
 								<select class="form-select invalid" id="a_title" name="a_title" required>
-									<option value="" disabled selected>Select a title</option>
+									<option value="" disabled selected></option>
 									<option value="1">Mr.</option>
 									<option value="2">Ms.</option>
 									<option value="3">Mrs.</option>
@@ -36,7 +36,7 @@
 						<div class="d-flex justify-content-between">
 							<div class="form-floating col-5">
 								<select class="form-select" id="a_gender" name="a_gender" required>
-									<option value="" disabled selected>Select a gender</option>
+									<option value="" disabled selected></option>
 									<option value="1">Male</option>
 									<option value="2">Female</option>
 									<option value="3">Other</option>
@@ -96,11 +96,11 @@
 							</div>
 						</div>
 					</fieldset>
-					<fieldset class="d-flex flex-column gap-3">
+					<fieldset class="d-flex flex-column">
 						<legend class="text-info">Hobbies<hr class="border-5"></legend>
-							<div class="form-floating col-3">
+							<div class="col-8">
 								<select multiple class="form-select" id="a_hobbies" name="a_hobbies" required>
-									<option value="" disabled selected>Select a title</option>
+									<option value="" disabled selected></option>
 									<option value="1">Sports</option>
 									<option value="2">Cooking</option>
 									<option value="3">Traveling</option>
@@ -112,10 +112,9 @@
 									<option value="9">Crafting</option>
 									<option value="10">Photography</option>
 								</select>
-								<label class="form-label" for="a_hobbies">Title</label>
 							</div>
 					</fieldset>
-					<button name="addbtn" id="addbtn" type="submit" class="btn btn-success">Save</button>
+					<button name="addbtn" id="addbtn" type="submit" class="btn btn-success mt-5">Save</button>
 				</form>
 				<form id="modalEdit" class="d-flex flex-column was-validated gap-2" action="" method="post" enctype="multipart/form-data">
 					<fieldset class="d-flex flex-column gap-3">
@@ -123,7 +122,7 @@
 						<div class="d-flex justify-content-between">
 							<div class="form-floating col-3">
 								<select class="form-select" id="e_title" name="e_title" required>
-									<option value="" disabled selected>Select a title</option>
+									<option value="" disabled selected></option>
 									<option value="1">Mr.</option>
 									<option value="2">Ms.</option>
 									<option value="3">Mrs.</option>
@@ -142,7 +141,7 @@
 						<div class="d-flex justify-content-between">
 							<div class="form-floating col-5">
 								<select class="form-select" id="e_gender" name="e_gender" required>
-									<option value="" disabled selected>Select a gender</option>
+									<option value="" disabled selected></option>
 									<option value="1">Male</option>
 									<option value="2">Female</option>
 									<option value="3">Other</option>
@@ -203,9 +202,9 @@
 							</div>
 						</div>
 					</fieldset>
-					<fieldset class="d-flex flex-column gap-3">
+					<fieldset class="d-flex flex-column">
 						<legend class="text-info">Hobbies<hr class="border-5"></legend>
-							<div class="form-floating col-3">
+							<div class="col-8">
 								<select multiple class="form-select" id="e_hobbies" name="e_hobbies" width="20" required>
 									<option value="" disabled selected></option>
 									<option value="1">Sports</option>
@@ -219,11 +218,10 @@
 									<option value="9">Crafting</option>
 									<option value="10">Photography</option>
 								</select>
-								<label class="form-label" for="e_hobbies">Title</label>
 							</div>
 					</fieldset>
 					<input type="hidden" name="e_id" id="e_id">
-					<button name="editbtn" id="editbtn" type="submit" class="btn btn-success">Save</button>
+					<button name="editbtn" id="editbtn" type="submit" class="btn btn-success mt-5">Save</button>
 				</form>
 				<div id="modalView" class="d-flex flex-column gap-2">
                         		<div class="row">
@@ -253,7 +251,11 @@
 					<div class="row">
 						<h4 class="text-primary col-4">Phone:</h4>
 						<h5 class="text-info col-auto" id="v-phone"></h5>
-					</div>		
+					</div>
+					<div class="row">
+						<h4 class="text-primary col-4">Hobbies:</h4>
+						<h5 class="text-info col-auto" id="v-hobbies"></h5>
+					</div>
                     		</div>
 			</div>
 		</div>

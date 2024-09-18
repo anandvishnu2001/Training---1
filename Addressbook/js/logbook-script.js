@@ -86,6 +86,12 @@ $(document).ready(function(){
 						$('#e_pincode').val(editObj[12]);
 						$('#e_email').val(editObj[13]);
 						$('#e_phone').val(editObj[14]);
+						$('#e_hobbies').val();
+						$('#e_hobbies option').prop('selected', false);
+						editObj[15].split(",").forEach(function(value){
+							$('#e_hobbies option[value="' + value + '"]').prop('selected', true);
+						});
+
 					}
 				});
 			}
@@ -109,21 +115,16 @@ $(document).ready(function(){
 						$('#v-pincode').html(viewObj[6]);
 						$('#v-mail').html(viewObj[7]);
 						$('#v-phone').html(viewObj[8]);
+						$('#v-hobbies').html(viewObj[9]);
 					}
 				});
 			}
 		}
 	});
 	$(document).on("click",".printpage",function(){
-		
-    // Get the ID of the closest table row
-    var rowId = $(this).closest('tr').attr('id');
-    
-    // Send the data via AJAX
-    $.post('print.cfm', { id: rowId }, function(response) {
-        // Handle the response here
-        window.open('print.cfm');
-    });});
+		let id = $(this).closest('tr').attr('id');
+		window.open("print.cfm?id="+id,"_blank");
+	});
 	$("#printbtn").click(function(){
 		window.print();
 	});
