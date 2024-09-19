@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS `hobbies`;
 CREATE TABLE `hobbies` (
   `id` int NOT NULL,
   `value` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `value_UNIQUE` (`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -33,10 +34,11 @@ CREATE TABLE `hobbies` (
 --
 -- Dumping data for table `hobbies`
 --
+-- ORDER BY:  `id`
 
 LOCK TABLES `hobbies` WRITE;
 /*!40000 ALTER TABLE `hobbies` DISABLE KEYS */;
-INSERT INTO `hobbies` VALUES (2,'Cooking'),(9,'Crafting'),(4,'Dance'),(7,'Gardening'),(5,'Music'),(8,'Painting/Drawing'),(10,'Photography'),(6,'Reading'),(1,'Sports'),(3,'Traveling');
+INSERT INTO `hobbies` (`id`, `value`) VALUES (1,'Sports'),(2,'Cooking'),(3,'Traveling'),(4,'Dance'),(5,'Music'),(6,'Reading'),(7,'Gardening'),(8,'Painting/Drawing'),(9,'Crafting'),(10,'Photography');
 /*!40000 ALTER TABLE `hobbies` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -49,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-17 17:45:17
+-- Dump completed on 2024-09-19 17:18:51

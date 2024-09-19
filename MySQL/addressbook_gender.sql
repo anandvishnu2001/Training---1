@@ -24,7 +24,8 @@ DROP TABLE IF EXISTS `gender`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `gender` (
   `id` int NOT NULL,
-  `value` varchar(6) NOT NULL,
+  `value` varchar(10) NOT NULL,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `gender_UNIQUE` (`id`),
   UNIQUE KEY `gendercol_UNIQUE` (`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -33,10 +34,11 @@ CREATE TABLE `gender` (
 --
 -- Dumping data for table `gender`
 --
+-- ORDER BY:  `id`
 
 LOCK TABLES `gender` WRITE;
 /*!40000 ALTER TABLE `gender` DISABLE KEYS */;
-INSERT INTO `gender` VALUES (2,'Female'),(1,'Male'),(3,'Other');
+INSERT INTO `gender` (`id`, `value`) VALUES (1,'Male'),(2,'Female'),(3,'Other');
 /*!40000 ALTER TABLE `gender` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -49,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-17 17:45:16
+-- Dump completed on 2024-09-19 17:18:51

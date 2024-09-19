@@ -29,7 +29,7 @@
 	<cffunction name="checkPass" access="public">
 		<cfargument name="id" type="string" required="true">
 		<cfargument name="password" type="string" required="true">
-		<cfquery name="local.check" datasource="address">
+		<cfquery name="local.checker" datasource="address">
 			SELECT
 				user_id,
 				username,
@@ -42,16 +42,16 @@
 			OR
 				email=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar">;
 		</cfquery>
-		<cfset local.givenPass = hasher(arguments.password,local.check.salt)>
-		<cfset local.access = structNew()>
-		<cfset session.userid = local.check.user_id>
-		<cfset session.username = local.check.username>
-		<cfif local.givenPass EQ local.check.password>
-			<cfset local.access[1]=true>
+		<cfset local.givenPass = hasher(arguments.password,local.checker.salt)>
+		<cfset local.check = structNew()>
+		<cfset session.userid = local.checker.user_id>
+		<cfset session.username = local.checker.username>
+		<cfif local.givenPass EQ local.checker.password>
+			<cfset local.check.access=true>
 		<cfelse>
-			<cfset local.access[1]=false>
+			<cfset local.check.access=false>
 		</cfif>
-		<cfreturn local.access>
+		<cfreturn local.check>
 	</cffunction>
 
 	<cffunction name="exist" access="remote" returnFormat="JSON">

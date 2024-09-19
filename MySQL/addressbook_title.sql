@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS `title`;
 CREATE TABLE `title` (
   `id` int NOT NULL,
   `value` varchar(5) NOT NULL,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `title_UNIQUE` (`id`),
   UNIQUE KEY `value_UNIQUE` (`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -33,10 +34,11 @@ CREATE TABLE `title` (
 --
 -- Dumping data for table `title`
 --
+-- ORDER BY:  `id`
 
 LOCK TABLES `title` WRITE;
 /*!40000 ALTER TABLE `title` DISABLE KEYS */;
-INSERT INTO `title` VALUES (1,'Mr.'),(3,'Mrs.'),(2,'Ms.');
+INSERT INTO `title` (`id`, `value`) VALUES (1,'Mr.'),(2,'Ms.'),(3,'Mrs.');
 /*!40000 ALTER TABLE `title` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -49,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-17 17:45:16
+-- Dump completed on 2024-09-19 17:18:51

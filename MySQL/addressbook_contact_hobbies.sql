@@ -16,48 +16,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `log_book`
+-- Table structure for table `contact_hobbies`
 --
 
-DROP TABLE IF EXISTS `log_book`;
+DROP TABLE IF EXISTS `contact_hobbies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `log_book` (
-  `log_id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `title` int NOT NULL,
-  `gender` int NOT NULL,
-  `firstname` varchar(45) NOT NULL,
-  `lastname` varchar(45) NOT NULL,
-  `date_of_birth` date NOT NULL,
-  `profile` varchar(70) NOT NULL DEFAULT 'uploads/signup.png',
-  `house_flat` varchar(45) NOT NULL,
-  `street` varchar(45) NOT NULL,
-  `city` varchar(45) NOT NULL,
-  `state` varchar(45) NOT NULL,
-  `country` varchar(45) NOT NULL,
-  `pincode` varchar(10) NOT NULL,
-  `email` varchar(320) NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  PRIMARY KEY (`log_id`),
-  UNIQUE KEY `log_id_UNIQUE` (`log_id`),
-  KEY `user_id_idx` (`user_id`),
-  KEY `title_idx` (`title`),
-  KEY `gender_idx` (`gender`),
-  CONSTRAINT `gender` FOREIGN KEY (`gender`) REFERENCES `gender` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `title` FOREIGN KEY (`title`) REFERENCES `title` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `log_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+CREATE TABLE `contact_hobbies` (
+  `hobbies` int NOT NULL,
+  `contact` int NOT NULL,
+  PRIMARY KEY (`hobbies`,`contact`),
+  KEY `contact_idx` (`contact`),
+  CONSTRAINT `contact` FOREIGN KEY (`contact`) REFERENCES `log_book` (`log_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `hobbies` FOREIGN KEY (`hobbies`) REFERENCES `hobbies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `log_book`
+-- Dumping data for table `contact_hobbies`
 --
--- ORDER BY:  `log_id`
+-- ORDER BY:  `hobbies`,`contact`
 
-LOCK TABLES `log_book` WRITE;
-/*!40000 ALTER TABLE `log_book` DISABLE KEYS */;
-/*!40000 ALTER TABLE `log_book` ENABLE KEYS */;
+LOCK TABLES `contact_hobbies` WRITE;
+/*!40000 ALTER TABLE `contact_hobbies` DISABLE KEYS */;
+/*!40000 ALTER TABLE `contact_hobbies` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -69,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-19 17:18:50
+-- Dump completed on 2024-09-19 17:18:51

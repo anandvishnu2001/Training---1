@@ -1,6 +1,6 @@
-<cfif structKeyExists(session,"check") AND session.check[1]>
+<cfif structKeyExists(session,"check") AND session.check.access>
 	<cfif structKeyExists(form,"btn")>
-		<cfset session.check[1] = false>
+		<cfset session.check.access = false>
 		<cflocation url="index.cfm" addToken="no" statusCode="302">
 	<cfelse>
 		<cfif structKeyExists(form,"addbtn")>
