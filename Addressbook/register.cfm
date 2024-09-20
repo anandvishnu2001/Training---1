@@ -1,4 +1,8 @@
 <html lang="en" data-bs-theme="dark">
+	<head>
+		<link href="./css/style.css" rel="stylesheet">
+		<link href="./css/bootstrap.min.css" rel="stylesheet">
+	</head>
 	<body class="container-fluid d-flex flex-row align-items-center">
 		<cfinclude template="register-submit.cfm">
 		<nav class="navbar navbar-expand-lg navbar-dark bg-info fixed-top">
@@ -50,13 +54,11 @@
 						<input type="password" class="form-control" name="confirm" id="confirm" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W).{8,}$" placeholder="" required>
 						<label for="confirm">Confirm Password</label>
 					</div>
-					<span id="feedback" class="text-center text-danger bg-warning invisible"></span>
+					<span id="feedback" class="text-center text-danger bg-warning invisible">'</span>
 					<button name="btn" id="btn" type="submit" class="btn btn-success btn-block disabled" form="register">Register</button>
 				</form>
 			</div>
 		</div>
-		<link href="./css/style.css" rel="stylesheet">
-		<link href="./css/bootstrap.min.css" rel="stylesheet">
 		<script type="text/javascript" src="./js/jQuery.js"></script>
 		<script type="text/javascript" src="./js/register-script.js"></script>
 		<script type="text/javascript" src="./js/bootstrap.min.js"></script>

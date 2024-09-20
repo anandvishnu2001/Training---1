@@ -34,7 +34,7 @@
 						<input type="text" class="form-control" name="username" id="username" placeholder="" autofocus required>
 						<label for="username">Username or Email</label>
 					</div>
-					<span id="feedback" class="text-center text-danger bg-warning invisible"></span>
+					<span id="feedback" class="text-center text-danger bg-warning invisible">'</span>
 					<div class="form-floating">
 						<input type="password" class="form-control" name="password" id="password" placeholder="" required>
 						<label for="password">Password</label>

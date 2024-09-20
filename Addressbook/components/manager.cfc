@@ -103,7 +103,7 @@
 		<cfargument name="email" type="string" required="true">
 		<cfargument name="phone" type="string" required="true">
 		<cfargument name="hobbies" type="string" required="true">
-		<cfquery name="local.insertData" datasource="address" result="result">
+		<cfquery name="local.insertData">
 			INSERT INTO
 				log_book(
 					user_id,
@@ -119,8 +119,7 @@
 					country,
 					pincode,
 					email,
-					phone,
-					hobbies
+					phone
 				)
 			VALUES(
 				<cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">,
@@ -136,11 +135,26 @@
 				<cfqueryparam value="#arguments.country#" cfsqltype="cf_sql_varchar">,
 				<cfqueryparam value="#arguments.pincode#" cfsqltype="cf_sql_varchar">,
 				<cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar">,
-				<cfqueryparam value="#arguments.phone#" cfsqltype="cf_sql_varchar">,
-				<cfqueryparam value="#arguments.hobbies#" cfsqltype="cf_sql_varchar">
+				<cfqueryparam value="#arguments.phone#" cfsqltype="cf_sql_varchar">
 			);
 		</cfquery>
-		<cfset local.id = result.GENERATEDKEY>
+		<cfquery name="local.generated" datasource="address">SELECT LAST_INSERT_ID() AS id;</cfquery>
+		<cfquery name="local.insertHobbies" datasource="address">
+			INSERT INTO
+				contact_hobbies(
+					contact,
+					hobbies
+				)
+			VALUES
+				<cfloop list="#arguments.hobbies#" index="i">
+					(
+						<cfqueryparam value="#local.generated.id#" cfsqltype="cf_sql_integer">,
+						<cfqueryparam value="#i#" cfsqltype="cf_sql_integer">
+					)
+					<cfif i NEQ listLast(arguments.hobbies,",")>,</cfif>
+				</cfloop>
+			;
+		</cfquery>
 		<cfif arguments.profile NEQ "">
 			<cfquery name="local.insertPhoto" datasource="address">
 				UPDATE
@@ -148,7 +162,7 @@
 				SET
 					profile = <cfqueryparam value="#arguments.profile#" cfsqltype="cf_sql_varchar">
 				WHERE
-					log_id = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
+					log_id = <cfqueryparam value="#local.generated.id#" cfsqltype="cf_sql_integer">
 				AND
 					user_id = <cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
 			</cfquery>
@@ -159,48 +173,7 @@
 		<cfargument name="id" type="string" required="true">
 		<cfquery name="local.list" datasource="address">
 			SELECT
-				l.log_id,
-				l.profile,
-				CONCAT(
-					t.value," ",
-					l.firstname," ",
-					l.lastname	) AS name,
-				l.email,
-				l.phone,
-				GROUP_CONCAT(
-					h.value 
-					ORDER BY h.id SEPARATOR ',') AS hobbies
-			FROM
-				log_book l
-			INNER JOIN
-				title t ON l.title = t.id
-			INNER JOIN 
-				hobbies h ON FIND_IN_SET(h.id,l.hobbies)
-			WHERE
-				l.user_id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_integer">
-			GROUP BY
-				l.log_id, l.profile, l.firstname, l.lastname, l.email, l.phone, t.value;
-		</cfquery>
-		<cfset local.records = structNew()>
-		<cfset local.i=1>
-		<cfoutput query="local.list">
-			<cfset local.records[local.i] = { 1="#encrypt(local.list.log_id,variables.key,'AES','hex')#",
-							2="#local.list.profile#",
-							3="#local.list.name#",
-							4="#local.list.email#",
-							5="#local.list.phone#",
-							6="#local.list.hobbies#" }>
-			<cfset i++>
-		</cfoutput>
-		<cfreturn local.records>
-	</cffunction>
-
-	<cffunction name="getEdit" access="remote" returnFormat="JSON" returnType="struct">
-		<cfargument name="user_id" type="string" required="true">
-		<cfargument name="log_id" type="string" required="true">
-		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
-		<cfquery name="local.list" datasource="address">
-			SELECT
+				log_id,
 				title,
 				firstname,
 				lastname,
@@ -214,87 +187,25 @@
 				country,
 				pincode,
 				email,
-				phone,
-				hobbies
+				phone
+				
 			FROM
 				log_book
 			WHERE
-				log_id=<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
-			AND
-				user_id=<cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
+				l.user_id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_integer">
 		</cfquery>
-		<cfset local.record = structNew()>
+		<cfset local.records = structNew()>
+		<cfset local.i=1>
 		<cfoutput query="local.list">
-			<cfset local.record = { 1="#local.list.title#",
-						2="#local.list.firstname#",
-						3="#local.list.lastname#",
-						4="#local.list.gender#",
-						5="#local.list.date_of_birth#",
-						6="#local.list.profile#",
-						7="#local.list.house_flat#",
-						8="#local.list.street#",
-						9="#local.list.city#",
-						10="#local.list.state#",
-						11="#local.list.country#",
-						12="#local.list.pincode#",
-						13="#local.list.email#",
-						14="#local.list.phone#",
-						15="#local.list.hobbies#" }>
+			<cfset local.records[local.i] = { 1="#encrypt(local.list.log_id,variables.key,'AES','hex')#",
+							2="#local.list.profile#",
+							3="#local.list.name#",
+							4="#local.list.email#",
+							5="#local.list.phone#",
+							6="#local.list.hobbies#" }>
+			<cfset i++>
 		</cfoutput>
-		<cfreturn local.record>
-	</cffunction>
-
-	<cffunction name="getView" access="remote" returnFormat="JSON" returnType="struct">
-		<cfargument name="user_id" type="string" required="true">
-		<cfargument name="log_id" type="string" required="true">
-		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
-		<cfquery name="local.list" datasource="address">
-			SELECT
-				CONCAT(
-					t.value," ",
-					l.firstname," ",
-					l.lastname	) AS name,
-				g.value AS gender,
-				l.date_of_birth,
-				l.profile,
-				CONCAT(
-					l.house_flat,",<br>",
-					l.street,",<br>",
-					l.city,",<br>",
-					l.state,",<br>",
-					l.country	) AS address,
-				l.pincode,
-				l.email,
-				l.phone,
-				GROUP_CONCAT(
-					h.value 
-					ORDER BY h.id SEPARATOR ',<br>') AS hobbies
-			FROM
-				log_book l
-			INNER JOIN
-				title t ON l.title = t.id
-			INNER JOIN
-				gender g ON l.gender = g.id
-			INNER JOIN 
-				hobbies h ON FIND_IN_SET(h.id,l.hobbies)
-			WHERE
-				log_id=<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
-			AND
-				user_id=<cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
-		</cfquery>
-		<cfset local.record = structNew()>
-		<cfoutput query="local.list">
-			<cfset local.record = { 1="#local.list.name#",
-						2="#local.list.gender#",
-						3="#local.list.date_of_birth#",
-						4="#local.list.profile#",
-						5="#local.list.address#",
-						6="#local.list.pincode#",
-						7="#local.list.email#",
-						8="#local.list.phone#",
-						9="#local.list.hobbies#" }>
-		</cfoutput>
-		<cfreturn local.record>
+		<cfreturn local.records>
 	</cffunction>
 
 	<cffunction name="updateContact" access="public">
