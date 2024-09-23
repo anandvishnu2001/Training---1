@@ -138,7 +138,9 @@
 				<cfqueryparam value="#arguments.phone#" cfsqltype="cf_sql_varchar">
 			);
 		</cfquery>
-		<cfquery name="local.generated" datasource="address">SELECT LAST_INSERT_ID() AS id;</cfquery>
+		<cfquery name="local.generated" datasource="address">
+			SELECT LAST_INSERT_ID() AS id;
+		</cfquery>
 		<cfquery name="local.insertHobbies" datasource="address">
 			INSERT INTO
 				contact_hobbies(
@@ -173,37 +175,60 @@
 		<cfargument name="id" type="string" required="true">
 		<cfquery name="local.list" datasource="address">
 			SELECT
-				log_id,
-				title,
-				firstname,
-				lastname,
-				gender,
-				date_of_birth,
-				profile,
-				house_flat,
-				street,
-				city,
-				state,
-				country,
-				pincode,
-				email,
-				phone
-				
+				l.log_id,
+				l.title,
+				t.value AS tvalue,
+				l.firstname,
+				l.lastname,
+				l.gender,
+				g.value AS gvalue,
+				l.date_of_birth,
+				l.profile,
+				l.house_flat,
+				l.street,
+				l.city,
+				l.state,
+				l.country,
+				l.pincode,
+				l.email,
+				l.phone,
+				c.hobbies,
+				h.value AS hvalue
 			FROM
-				log_book
+				log_book l
+			LEFT JOIN
+				title t ON l.title=t.id
+			LEFT JOIN
+				gender g ON l.gender=g.id
+			LEFT JOIN
+				contact_hobbies c ON l.log_id=c.contact
+			LEFT JOIN
+				hobbies h ON c.hobbies=h.id
 			WHERE
 				l.user_id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_integer">
 		</cfquery>
 		<cfset local.records = structNew()>
-		<cfset local.i=1>
 		<cfoutput query="local.list">
-			<cfset local.records[local.i] = { 1="#encrypt(local.list.log_id,variables.key,'AES','hex')#",
-							2="#local.list.profile#",
-							3="#local.list.name#",
-							4="#local.list.email#",
-							5="#local.list.phone#",
-							6="#local.list.hobbies#" }>
-			<cfset i++>
+			<cfif NOT structKeyExists(local.records,"#encrypt(local.list.log_id,variables.key,'AES','hex')#")>
+			<cfset local.records["#encrypt(local.list.log_id,variables.key,'AES','hex')#"] = {
+					title={ #local.list.title#="#local.list.tvalue#" },
+					firstname="#local.list.firstname#",
+					lastname="#local.list.lastname#",
+					profile="#local.list.profile#",
+					gender={ #local.list.gender#="#local.list.gvalue#" },
+					date_of_birth="#local.list.date_of_birth#",
+					house_flat="#local.list.house_flat#",
+					street="#local.list.street#",
+					city="#local.list.city#",
+					state="#local.list.state#",
+					country="#local.list.country#",
+					pincode="#local.list.pincode#",
+					email="#local.list.email#",
+					phone="#local.list.phone#",
+					hobbies={ #local.list.hobbies#="#local.list.hvalue#" }}>
+			<cfelse>
+			<cfset StructInsert(local.records["#encrypt(local.list.log_id,variables.key,'AES','hex')#"]["hobbies"],"#local.list.hobbies#","#local.list.hvalue#")>
+			</cfif>
 		</cfoutput>
 		<cfreturn local.records>
 	</cffunction>

@@ -6,8 +6,9 @@ $(document).ready(function(){
 		type: 'GET',
 		data: { id: user },
 		success: function(data){
+			alert('ff');
 			let listObj = JSON.parse(data);
-			console.log(listObj);
+			console.log(listObj);/*
 			if (listObj == ''){
 				alert('Contacts is Empty');
 			}
@@ -26,7 +27,7 @@ $(document).ready(function(){
 					row += `</tr>`;
 					$("#contactList").append(row);
 				});
-			}
+			}*/
 		}
 	});
 	$('#modal').on('show.bs.modal',function(event){

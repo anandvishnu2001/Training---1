@@ -48,7 +48,7 @@
 					<div class="glow card bg-body p-3">
 						<img class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book" width="200" height="200">
 						<div class="card-body d-flex flex-column justify-content-center">
-							<cfoutput><p id="user" class="card-title text-center">#session.username#</p></cfoutput>
+							<cfoutput><h3 id="user" class="card-title text-center text-info">#session.username#</h3></cfoutput>
 							<button class="btn btn-outline-primary btn-block" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="add">Create Contact</button>
 						</div>
 					</div>
