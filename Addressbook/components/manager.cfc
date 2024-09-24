@@ -214,8 +214,8 @@
 		<cfset local.records = structNew()>
 		<cfoutput query="local.list">
 			<cfif NOT structKeyExists(local.records,"#encrypt(local.list.log_id,variables.key,'AES','hex')#")>
-			<cfset local.records["#encrypt(local.list.log_id,variables.key,'AES','hex')#"] = {
-					title={ #local.list.title#="#local.list.tvalue#" },
+				<cfset local.records["#encrypt(local.list.log_id,variables.key,'AES','hex')#"] = {
+					"title"={ #local.list.title#="#local.list.tvalue#" },
 					firstname="#local.list.firstname#",
 					lastname="#local.list.lastname#",
 					profile="#local.list.profile#",
@@ -223,7 +223,7 @@
 					date_of_birth="#local.list.date_of_birth#",
 					house_flat="#local.list.house_flat#",
 					street="#local.list.street#",
-					city="#local.list.city#",
+					city=local.list.city,
 					state="#local.list.state#",
 					country="#local.list.country#",
 					pincode="#local.list.pincode#",
@@ -231,7 +231,7 @@
 					phone="#local.list.phone#",
 					hobbies={ #local.list.hobbies#="#local.list.hvalue#" }}>
 			<cfelse>
-			<cfset StructInsert(local.records["#encrypt(local.list.log_id,variables.key,'AES','hex')#"]["hobbies"],"#local.list.hobbies#","#local.list.hvalue#")>
+				<cfset StructInsert(local.records["#encrypt(local.list.log_id,variables.key,'AES','hex')#"]["hobbies"],"#local.list.hobbies#","#local.list.hvalue#")>
 			</cfif>
 		</cfoutput>
 		<cfreturn local.records>
