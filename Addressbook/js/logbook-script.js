@@ -4,36 +4,35 @@ $(document).ready(function(){
 	$.ajax({
 		url: './components/manager.cfc?method=getList',
 		type: 'GET',
-		data: { id: user },
+		data: { userid: user },
 		success: function(data){
-			alert('ff');
 			let listObj = JSON.parse(data);
-			console.log(listObj);/*
+			console.log(listObj);
 			if (listObj == ''){
 				alert('Contacts is Empty');
 			}
 			else{
 				$.each(listObj,function(key,record){
 					console.log(record);
-					let row = `<tr id="${record[1]}">`;
-					row += `<td><img class="img-fluid img-thumbnail rounded-circle mx-auto d-block" src="./uploads/${record[2]}" alt="Address Book" width="50" height="50"></td>`;
-					row += `<td class="contactname">${record[3]}</td>`;
-					row += `<td class="contactemail">${record[4]}</td>`;
-					row += `<td class="contactphone">${record[5]}</td>`;
-					row += `<td class="no-print"><button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="view">View</button></td>`;
-					row += `<td class="no-print"><button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="edit">Edit</button></td>`;
-					row += `<td class="no-print"><button class="1dlt btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="delete">Delete</button></td>`;
-					row += `<td class="no-print"><button class="printpage btn btn-sm btn-outline-primary">Print</button></td>`;
+					let row = `<tr>`;
+					row += `<td><img class="img-fluid img-thumbnail rounded-circle mx-auto d-block" src="./uploads/${record.PROFILE}" alt="Address Book" width="50" height="50"></td>`;
+					row += `<td class="contactname">${Object.values(record.TITLE)[0]+' '+record.FIRSTNAME+' '+record.LASTNAME}</td>`;
+					row += `<td class="contactemail">${record.EMAIL}</td>`;
+					row += `<td class="contactphone">${record.PHONE}</td>`;
+					row += `<td class="no-print"><button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="view" data-bs-id="${key}">View</button></td>`;
+					row += `<td class="no-print"><button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="edit" data-bs-id="${key}">Edit</button></td>`;
+					row += `<td class="no-print"><button class="1dlt btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="delete" data-bs-id="${key}">Delete</button></td>`;
+					row += `<td class="no-print"><button class="printpage btn btn-sm btn-outline-primary" data-bs-id="${key}">Print</button></td>`;
 					row += `</tr>`;
 					$("#contactList").append(row);
 				});
-			}*/
+			}
 		}
 	});
 	$('#modal').on('show.bs.modal',function(event){
 		$("#contact").attr("src","./uploads/signup.png");
 		let button = $(event.relatedTarget);
-		let id = button.closest('tr').attr('id');
+		let id = button.data('bs-id');
 		if(!$(".contentEdit").hasClass("d-none"))
 			$(".contentEdit").addClass("d-none");
 		if(!$(".contentDelete").hasClass("d-none"))
@@ -60,70 +59,62 @@ $(document).ready(function(){
 				$("#h-add").removeClass("d-none");
 				$("#modalAdd").removeClass("d-none");
 			}
-			else if(button.data('bs-action') === "edit"){
-				$("#h-edit").removeClass("d-none");
-				$("#modalEdit").removeClass("d-none");
+			else{
 				$.ajax({
-					url: './components/manager.cfc?method=getEdit',
+					url: './components/manager.cfc?method=getList',
 					type: 'GET',
-					data: { user_id: user,
-						log_id: id },
+					data: { userid: user,
+						logid: id },
 					success: function(data){
-						let editObj = JSON.parse(data);
-						$('#e_id').val(id);
-						$('#e_title').val(editObj[1]);
-						$('#e_firstname').val(editObj[2]);
-						$('#e_lastname').val(editObj[3]);
-						$('#e_gender').val(editObj[4]);
-						$("#contact").attr("src",`./uploads/${editObj[6]}`);
-						let date = new Date(editObj[5]);
-						date.setDate(date.getDate() + 1);
-						$('#e_date_of_birth').val(date.toISOString().split('T')[0]);
-						$('#e_house_flat').val(editObj[7]);
-						$('#e_street').val(editObj[8]);
-						$('#e_city').val(editObj[9]);
-						$('#e_state').val(editObj[10]);
-						$('#e_country').val(editObj[11]);
-						$('#e_pincode').val(editObj[12]);
-						$('#e_email').val(editObj[13]);
-						$('#e_phone').val(editObj[14]);
-						$('#e_hobbies').val();
-						$('#e_hobbies option').prop('selected', false);
-						editObj[15].split(",").forEach(function(value){
-							$('#e_hobbies option[value="' + value + '"]').prop('selected', true);
-						});
-
-					}
-				});
-			}
-			else if(button.data('bs-action') === "view"){
-				$("#h-view").removeClass("d-none");
-				$("#modalView").removeClass("d-none");
-				$.ajax({
-					url: './components/manager.cfc?method=getView',
-					type: 'GET',
-					data: { user_id: user,
-						log_id: id },
-					success: function(data){
-						let viewObj = JSON.parse(data);
-						$('#v-name').html(viewObj[1]);
-						$('#v-gender').html(viewObj[2]);
-						$("#contact").attr("src",`./uploads/${viewObj[4]}`);
-						let date = new Date(viewObj[3]);
-						date.setDate(date.getDate() + 1);
-						$('#v-dob').html(date.toISOString().split('T')[0]);
-						$('#v-address').html(viewObj[5]);
-						$('#v-pincode').html(viewObj[6]);
-						$('#v-mail').html(viewObj[7]);
-						$('#v-phone').html(viewObj[8]);
-						$('#v-hobbies').html(viewObj[9]);
+						let recordObj = JSON.parse(data);
+						if(button.data('bs-action') === "edit"){
+							$("#h-edit").removeClass("d-none");
+							$("#modalEdit").removeClass("d-none");
+							$('#e_id').val(id);
+							$('#e_title').val(Object.keys(recordObj[id].TITLE));
+							$('#e_firstname').val(recordObj[id].FIRSTNAME);
+							$('#e_lastname').val(recordObj[id].LASTNAME);
+							$('#e_gender').val(Object.keys(recordObj[id].GENDER));
+							$("#contact").attr("src",`./uploads/${recordObj[id].PROFILE}`);
+							let date = new Date(recordObj[id].DATE_OF_BIRTH);
+							date.setDate(date.getDate() + 1);
+							$('#e_date_of_birth').val(date.toISOString().split('T')[0]);
+							$('#e_house_flat').val(recordObj[id].HOUSE_FLAT);
+							$('#e_street').val(recordObj[id].STREET);
+							$('#e_city').val(recordObj[id].CITY);
+							$('#e_state').val(recordObj[id].STATE);
+							$('#e_country').val(recordObj[id].COUNTRY);
+							$('#e_pincode').val(recordObj[id].PINCODE);
+							$('#e_email').val(recordObj[id].EMAIL);
+							$('#e_phone').val(recordObj[id].PHONE);
+							$('#e_hobbies').val();
+							$('#e_hobbies option').prop('selected', false);
+							Object.keys(recordObj[id].HOBBIES).forEach(function(value){
+								$('#e_hobbies option[value="' + value + '"]').prop('selected', true);
+							});
+						}
+						else if(button.data('bs-action') === "view"){
+							$("#h-view").removeClass("d-none");
+							$("#modalView").removeClass("d-none");
+							$('#v-name').html(Object.values(recordObj[id].TITLE)+" "+recordObj[id].FIRSTNAME+" "+recordObj[id].LASTNAME);
+							$('#v-gender').html(Object.values(recordObj[id].GENDER));
+							$("#contact").attr("src",`./uploads/${recordObj[id].PROFILE}`);
+							let date = new Date(recordObj[id].DATE_OF_BIRTH);
+							date.setDate(date.getDate() + 1);
+							$('#v-dob').html(date.toISOString().split('T')[0]);
+							$('#v-address').html(`${recordObj[id].HOUSE_FLAT}, <br>${recordObj[id].STREET}, <br>${recordObj[id].CITY}, <br>${recordObj[id].STATE}, <br>${recordObj[id].COUNTRY}`);
+							$('#v-pincode').html(recordObj[id].PINCODE);
+							$('#v-mail').html(recordObj[id].EMAIL);
+							$('#v-phone').html(recordObj[id].PHONE);
+							$('#v-hobbies').html(Object.values(recordObj[id].HOBBIES).join(',<br>'));
+						}
 					}
 				});
 			}
 		}
 	});
 	$(document).on("click",".printpage",function(){
-		let id = $(this).closest('tr').attr('id');
+		let id = $(this).data('bs-id');
 		window.open("print.cfm?id="+id,"_blank");
 	});
 	$("#printbtn").click(function(){

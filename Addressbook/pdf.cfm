@@ -18,17 +18,22 @@
 			</tr>
 		</thead>
 		<tbody>
-			<cfloop from="1" to="#structCount(log)#" index="i">
-				<cfoutput>
+			<cfoutput>
+				<cfloop collection="#log#" item="i">
 					<tr>
-						<td><img src="./uploads/#log[i][2]#" width="50" height="50"></td>
-						<td>#log[i][3]#</td>
-						<td>#log[i][4]#</td>
-						<td>#log[i][5]#</td>
-						<td>#log[i][6]#</td>
+						<td><img src="./uploads/#log[i].PROFILE#" width="50" height="50"></td>
+						<td>#log[i].TITLE[StructKeyList(log[i].TITLE)[1]]# #log[i].FIRSTNAME# #log[i].LASTNAME#</td>
+						<td>#log[i].EMAIL#</td>
+						<td>#log[i].PHONE#</td>
+						<td>
+							<cfloop list="#StructKeyList(log[i].HOBBIES)#" item="j">
+								#log[i].HOBBIES[j]#
+								<cfif j NEQ listLast(StructKeyList(log[i].HOBBIES),",")>,<br></cfif>
+							</cfloop>
+						</td>
 					</tr>
-				</cfoutput>
-			</cfloop>
+				</cfloop>
+			</cfoutput>
 		</tbody>
 	</table>
 </cfdocument>

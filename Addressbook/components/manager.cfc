@@ -172,7 +172,8 @@
 	</cffunction>
 
 	<cffunction name="getList" access="remote" returnFormat="JSON" returnType="struct">
-		<cfargument name="id" type="string" required="true">
+		<cfargument name="userid" type="string" required="true">
+		<cfargument name="logid" type="string" required="false">
 		<cfquery name="local.list" datasource="address">
 			SELECT
 				l.log_id,
@@ -205,7 +206,10 @@
 			LEFT JOIN
 				hobbies h ON c.hobbies=h.id
 			WHERE
-				l.user_id=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_integer">
+				l.user_id=<cfqueryparam value="#arguments.userid#" cfsqltype="cf_sql_integer">
+			<cfif structKeyExists(arguments,"logid")>
+				AND l.log_id=<cfqueryparam value="#decrypt(arguments.logid,variables.key,"AES","hex")#" cfsqltype="cf_sql_integer">
+			</cfif>;
 		</cfquery>
 		<cfset local.records = structNew()>
 		<cfoutput query="local.list">
@@ -241,7 +245,7 @@
 		<cfargument name="lastname" type="string" required="true">
 		<cfargument name="gender" type="string" required="true">
 		<cfargument name="date_of_birth" type="string" required="true">
-		<cfargument name="profile" type="string" required="true">
+		<cfargument name="profile" type="string">
 		<cfargument name="house_flat" type="string" required="true">
 		<cfargument name="street" type="string" required="true">
 		<cfargument name="city" type="string" required="true">
@@ -252,7 +256,7 @@
 		<cfargument name="phone" type="string" required="true">
 		<cfargument name="hobbies" type="string" required="true">
 		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
-		<cfquery name="local.insertPhoto" datasource="address">
+		<cfquery name="local.updateInfo" datasource="address">
 			UPDATE
 				log_book
 			SET
@@ -268,12 +272,32 @@
 				country = <cfqueryparam value="#arguments.country#" cfsqltype="cf_sql_varchar">,
 				pincode = <cfqueryparam value="#arguments.pincode#" cfsqltype="cf_sql_varchar">,
 				email = <cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar">,
-				phone = <cfqueryparam value="#arguments.phone#" cfsqltype="cf_sql_varchar">,
-				phone = <cfqueryparam value="#arguments.hobbies#" cfsqltype="cf_sql_varchar">
+				phone = <cfqueryparam value="#arguments.phone#" cfsqltype="cf_sql_varchar">
 			WHERE
 				log_id = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
 			AND
 				user_id = <cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
+		</cfquery>
+		<cfquery name="local.deleteHobbies" datasource="address">
+			DELETE FROM
+				contact_hobbies
+			WHERE
+				contact = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">;
+		</cfquery>
+		<cfquery name="local.updateHobbies" datasource="address">
+			INSERT INTO
+				contact_hobbies(
+					contact,
+					hobbies
+				)
+			VALUES
+				<cfloop list="#arguments.hobbies#" index="i">
+					(
+						<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">,
+						<cfqueryparam value="#i#" cfsqltype="cf_sql_integer">
+					)
+					<cfif i NEQ listLast(arguments.hobbies,",")>,</cfif>
+				</cfloop>;
 		</cfquery>
 		<cfif arguments.profile NEQ "">
 			<cfquery name="local.updatePhoto" datasource="address">
@@ -300,6 +324,12 @@
 				log_id=<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
 			AND
 				user_id=<cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
+		</cfquery>
+		<cfquery name="local.deleteHobbies" datasource="address">
+			DELETE FROM
+				contact_hobbies
+			WHERE
+				contact = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">;
 		</cfquery>
 	</cffunction>
 </cfcomponent>

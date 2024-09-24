@@ -18,18 +18,27 @@
 <cfset SpreadsheetFormatCell(spreadsheetObj,title,1,1)>
 <cfset SpreadsheetFormatCell(spreadsheetObj,date,1,5)>
 <cfset SpreadsheetFormatRow(spreadsheetObj,head,2)>
-<cfloop from="1" to="#structCount(log)#" index="i">
-	<cfset image = expandPath("uploads/#log[i][2]#")>
-	<cfset SpreadsheetSetRowHeight(spreadsheetObj,i+2,50)>
-    	<cfset SpreadsheetAddImage(spreadsheetObj,image,"#i+2#,1,#i+3#,2")>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i][3]#",i+2,2)>
+<cfset j=1>
+<cfloop collection="#log#" item="i">
+	<cfset image = expandPath("uploads/#log[i].PROFILE#")>
+	<cfset SpreadsheetSetRowHeight(spreadsheetObj,j+2,50)>
+    	<cfset SpreadsheetAddImage(spreadsheetObj,image,"#j+2#,1,#j+3#,2")>
+	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].TITLE[StructKeyList(log[i].TITLE)[1]]# #log[i].FIRSTNAME# #log[i].LASTNAME#",j+2,2)>
 	<cfset SpreadSheetSetColumnWidth(spreadsheetobj,2,20)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i][4]#",i+2,3)>
+	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].EMAIL#",j+2,3)>
 	<cfset SpreadSheetSetColumnWidth(spreadsheetobj,3,30)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i][5]#",i+2,4)>
+	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].PHONE#",j+2,4)>
 	<cfset SpreadSheetSetColumnWidth(spreadsheetobj,4,15)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i][6]#",i+2,5)>
+	<cfset hobbies="">
+	<cfloop list="#StructKeyList(log[i].HOBBIES)#" item="k">
+		<cfset hobbies&="#log[i].HOBBIES[k]#">
+		<cfif k NEQ listLast(StructKeyList(log[i].HOBBIES),",")>
+			<cfset hobbies&=", ">
+		</cfif>
+	</cfloop>
+	<cfset spreadsheetSetCellValue(spreadsheetObj,"#hobbies#",j+2,5)>
 	<cfset SpreadSheetSetColumnWidth(spreadsheetobj,5,50)>
+	<cfset j++>
 </cfloop>
 <cfloop from="3" to="#3+structCount(log)#" index="i">
 	<cfif i%2 EQ 0>

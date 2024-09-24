@@ -116,7 +116,7 @@
 					</fieldset>
 					<button name="addbtn" id="addbtn" type="submit" class="btn btn-success mt-5">Save</button>
 				</form>
-				<form id="modalEdit" class="d-flex flex-column was-validated gap-2" action="" method="post" enctype="multipart/form-data">
+				<form id="modalEdit" class="d-flex flex-column gap-2" action="" method="post" enctype="multipart/form-data">
 					<fieldset class="d-flex flex-column gap-3">
 						<legend class="text-info">Personal Details<hr class="border-5"></legend>
 						<div class="d-flex justify-content-between">
