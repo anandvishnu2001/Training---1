@@ -83,7 +83,42 @@
 		<cfargument name="salt" type="string" required="true">
 		<cfset local.saltedPass = arguments.pass & arguments.salt>
 		<cfset local.hashedPass = hash(local.saltedPass,"SHA-256","UTF-8")>	
-		<cfreturn local.hashedPass/>
+		<cfreturn local.hashedPass>
+	</cffunction>
+
+	<cffunction name="selectSet" access="public" returnType="struct">
+		<cfset local.list = structNew()>
+		<cfquery name="local.title" datasource="address">
+			SELECT
+				id,
+				value
+			FROM
+				title;
+		</cfquery>
+		<cfoutput query="local.title">
+			<cfset local.list.title["#local.title.id#"]=local.title.value>
+		</cfoutput>
+		<cfquery name="local.gender" datasource="address">
+			SELECT
+				id,
+				value
+			FROM
+				gender;
+		</cfquery>
+		<cfoutput query="local.gender">
+			<cfset local.list.gender["#local.gender.id#"]=local.gender.value>
+		</cfoutput>
+		<cfquery name="local.hobbies" datasource="address">
+			SELECT
+				id,
+				value
+			FROM
+				hobbies;
+		</cfquery>
+		<cfoutput query="local.hobbies">
+			<cfset local.list.hobbies["#local.hobbies.id#"]=local.hobbies.value>
+		</cfoutput>
+		<cfreturn local.list>
 	</cffunction>
 
 	<cffunction name="insertContact" access="public">
@@ -103,13 +138,14 @@
 		<cfargument name="email" type="string" required="true">
 		<cfargument name="phone" type="string" required="true">
 		<cfargument name="hobbies" type="string" required="true">
-		<cfquery name="local.insertData">
+		<cfquery name="local.insertData" result="res">
 			INSERT INTO
 				log_book(
 					user_id,
 					title,
 					firstname,
 					lastname,
+					profile,
 					gender,
 					date_of_birth,
 					house_flat,
@@ -126,6 +162,7 @@
 				<cfqueryparam value="#arguments.title#" cfsqltype="cf_sql_integer">,
 				<cfqueryparam value="#arguments.firstname#" cfsqltype="cf_sql_varchar">,
 				<cfqueryparam value="#arguments.lastname#" cfsqltype="cf_sql_varchar">,
+				<cfqueryparam value="#arguments.profile#" cfsqltype="cf_sql_varchar">,
 				<cfqueryparam value="#arguments.gender#" cfsqltype="cf_sql_integer">,
 				<cfqueryparam value="#arguments.date_of_birth#" cfsqltype="cf_sql_date">,
 				<cfqueryparam value="#arguments.house_flat#" cfsqltype="cf_sql_varchar">,
@@ -138,9 +175,6 @@
 				<cfqueryparam value="#arguments.phone#" cfsqltype="cf_sql_varchar">
 			);
 		</cfquery>
-		<cfquery name="local.generated" datasource="address">
-			SELECT LAST_INSERT_ID() AS id;
-		</cfquery>
 		<cfquery name="local.insertHobbies" datasource="address">
 			INSERT INTO
 				contact_hobbies(
@@ -150,25 +184,12 @@
 			VALUES
 				<cfloop list="#arguments.hobbies#" index="i">
 					(
-						<cfqueryparam value="#local.generated.id#" cfsqltype="cf_sql_integer">,
+						<cfqueryparam value="#res.GENERATEDKEY#" cfsqltype="cf_sql_integer">,
 						<cfqueryparam value="#i#" cfsqltype="cf_sql_integer">
 					)
 					<cfif i NEQ listLast(arguments.hobbies,",")>,</cfif>
-				</cfloop>
-			;
+				</cfloop>;
 		</cfquery>
-		<cfif arguments.profile NEQ "">
-			<cfquery name="local.insertPhoto" datasource="address">
-				UPDATE
-					log_book
-				SET
-					profile = <cfqueryparam value="#arguments.profile#" cfsqltype="cf_sql_varchar">
-				WHERE
-					log_id = <cfqueryparam value="#local.generated.id#" cfsqltype="cf_sql_integer">
-				AND
-					user_id = <cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
-			</cfquery>
-		</cfif>
 	</cffunction>
 
 	<cffunction name="getList" access="remote" returnFormat="JSON" returnType="struct">
@@ -208,30 +229,31 @@
 			WHERE
 				l.user_id=<cfqueryparam value="#arguments.userid#" cfsqltype="cf_sql_integer">
 			<cfif structKeyExists(arguments,"logid")>
-				AND l.log_id=<cfqueryparam value="#decrypt(arguments.logid,variables.key,"AES","hex")#" cfsqltype="cf_sql_integer">
+				AND l.log_id=<cfqueryparam value="#crypter(arguments.logid,'decrypt')#" cfsqltype="cf_sql_integer">
 			</cfif>;
 		</cfquery>
 		<cfset local.records = structNew()>
 		<cfoutput query="local.list">
-			<cfif NOT structKeyExists(local.records,"#encrypt(local.list.log_id,variables.key,'AES','hex')#")>
-				<cfset local.records["#encrypt(local.list.log_id,variables.key,'AES','hex')#"] = {
-					"title"={ #local.list.title#="#local.list.tvalue#" },
-					firstname="#local.list.firstname#",
-					lastname="#local.list.lastname#",
-					profile="#local.list.profile#",
-					gender={ #local.list.gender#="#local.list.gvalue#" },
-					date_of_birth="#local.list.date_of_birth#",
-					house_flat="#local.list.house_flat#",
-					street="#local.list.street#",
-					city=local.list.city,
-					state="#local.list.state#",
-					country="#local.list.country#",
-					pincode="#local.list.pincode#",
-					email="#local.list.email#",
-					phone="#local.list.phone#",
-					hobbies={ #local.list.hobbies#="#local.list.hvalue#" }}>
+			<cfset local.id = crypter(local.list.log_id,"encrypt")>
+			<cfif NOT structKeyExists(local.records,#local.id#)>
+				<cfset local.records[#local.id#] = {
+					"title"={ #local.list.title#=local.list.tvalue },
+					"firstname"=local.list.firstname,
+					"lastname"=local.list.lastname,
+					"profile"=local.list.profile,
+					"gender"={ #local.list.gender#=local.list.gvalue },
+					"date_of_birth"=local.list.date_of_birth,
+					"house_flat"=local.list.house_flat,
+					"street"=local.list.street,
+					"city"=local.list.city,
+					"state"=local.list.state,
+					"country"=local.list.country,
+					"pincode"=local.list.pincode,
+					"email"=local.list.email,
+					"phone"=local.list.phone,
+					"hobbies"={ #local.list.hobbies#=local.list.hvalue }}>
 			<cfelse>
-				<cfset StructInsert(local.records["#encrypt(local.list.log_id,variables.key,'AES','hex')#"]["hobbies"],"#local.list.hobbies#","#local.list.hvalue#")>
+				<cfset StructInsert(local.records[#local.id#]["hobbies"],#local.list.hobbies#,#local.list.hvalue#)>
 			</cfif>
 		</cfoutput>
 		<cfreturn local.records>
@@ -255,7 +277,7 @@
 		<cfargument name="email" type="string" required="true">
 		<cfargument name="phone" type="string" required="true">
 		<cfargument name="hobbies" type="string" required="true">
-		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
+		<cfset local.id = crypter(arguments.log_id,"decrypt")>
 		<cfquery name="local.updateInfo" datasource="address">
 			UPDATE
 				log_book
@@ -263,6 +285,11 @@
 				title = <cfqueryparam value="#arguments.title#" cfsqltype="cf_sql_varchar">,
 				firstname = <cfqueryparam value="#arguments.firstname#" cfsqltype="cf_sql_varchar">,
 				lastname = <cfqueryparam value="#arguments.lastname#" cfsqltype="cf_sql_varchar">,
+				profile = CASE
+					WHEN <cfqueryparam value="#arguments.profile#" cfsqltype="cf_sql_varchar"> != ''
+						THEN <cfqueryparam value="#arguments.profile#" cfsqltype="cf_sql_varchar">
+					ELSE profile
+				END,
 				gender = <cfqueryparam value="#arguments.gender#" cfsqltype="cf_sql_varchar">,
 				date_of_birth = <cfqueryparam value="#arguments.date_of_birth#" cfsqltype="cf_sql_varchar">,
 				house_flat = <cfqueryparam value="#arguments.house_flat#" cfsqltype="cf_sql_varchar">,
@@ -282,7 +309,9 @@
 			DELETE FROM
 				contact_hobbies
 			WHERE
-				contact = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">;
+				contact = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
+			AND
+				hobbies NOT IN <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer" list="true">;
 		</cfquery>
 		<cfquery name="local.updateHobbies" datasource="address">
 			INSERT INTO
@@ -290,6 +319,22 @@
 					contact,
 					hobbies
 				)
+			SELECT 
+				<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer"> AS contact,
+				<cfqueryparam value="#i#" cfsqltype="cf_sql_integer"> AS hobbies
+			FROM (
+				<cfloop list="#arguments.hobbies#" index="i">
+					<cfif i EQ arguments.hobbies[1]>
+						SELECT <cfqueryparam value="#i#" cfsqltype="cf_sql_integer">
+					<cfelse>
+						UNION ALL
+						SELECT <cfqueryparam value="#i#" cfsqltype="cf_sql_integer">
+					</cfif>
+				</cfloop>
+			) AS temp
+			WHERE hobbies NOT IN (
+				SELECT hobbies FROM contact_hobbies WHERE contact = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
+			)
 			VALUES
 				<cfloop list="#arguments.hobbies#" index="i">
 					(
@@ -316,7 +361,7 @@
 	<cffunction name="deleteRecord" access="public">
 		<cfargument name="user_id" type="string" required="true">
 		<cfargument name="log_id" type="string" required="true">
-		<cfset local.id = decrypt(arguments.log_id,variables.key,"AES","hex")>
+		<cfset local.id = crypter(arguments.log_id,"decrypt")>
 		<cfquery name="local.deleteRow" datasource="address">
 			DELETE FROM
 				log_book
@@ -331,5 +376,16 @@
 			WHERE
 				contact = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">;
 		</cfquery>
+	</cffunction>
+
+	<cffunction name="crypter" access="private">
+		<cfargument name="id" type="string" required="true">
+		<cfargument name="action" type="string" required="true">
+		<cfif arguments.action EQ "encrypt">
+			<cfset local.result = encrypt(arguments.id,variables.key,'AES','hex')>
+		<cfelseif arguments.action EQ "decrypt">
+			<cfset local.result = decrypt(arguments.id,variables.key,'AES','hex')>
+		</cfif>	
+		<cfreturn local.result>
 	</cffunction>
 </cfcomponent>

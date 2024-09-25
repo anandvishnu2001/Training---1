@@ -3,7 +3,7 @@
       <cfdirectory action="create" directory="#uploadDir#">
 </cfif>
 <cffile action="upload"
-        filefield="a_profile"
+        filefield="profile"
         destination="#uploadDir#"
         nameConflict="makeunique">
 <cfset filename = cffile.serverFile>

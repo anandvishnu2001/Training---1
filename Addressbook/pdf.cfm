@@ -21,14 +21,14 @@
 			<cfoutput>
 				<cfloop collection="#log#" item="i">
 					<tr>
-						<td><img src="./uploads/#log[i].PROFILE#" width="50" height="50"></td>
-						<td>#log[i].TITLE[StructKeyList(log[i].TITLE)[1]]# #log[i].FIRSTNAME# #log[i].LASTNAME#</td>
-						<td>#log[i].EMAIL#</td>
-						<td>#log[i].PHONE#</td>
+						<td><img src="./uploads/#log[i].profile#" width="50" height="50"></td>
+						<td>#log[i].title[StructKeyList(log[i].title)[1]]# #log[i].firstname# #log[i].lastname#</td>
+						<td>#log[i].email#</td>
+						<td>#log[i].phone#</td>
 						<td>
-							<cfloop list="#StructKeyList(log[i].HOBBIES)#" item="j">
-								#log[i].HOBBIES[j]#
-								<cfif j NEQ listLast(StructKeyList(log[i].HOBBIES),",")>,<br></cfif>
+							<cfloop list="#StructKeyList(log[i].hobbies)#" item="j">
+								#log[i].hobbies[j]#
+								<cfif j NEQ listLast(StructKeyList(log[i].hobbies),",")>,<br></cfif>
 							</cfloop>
 						</td>
 					</tr>
