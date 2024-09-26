@@ -182,12 +182,12 @@
 					hobbies
 				)
 			VALUES
-				<cfloop list="#arguments.hobbies#" index="i">
+				<cfloop list="#arguments.hobbies#" index="local.i">
 					(
 						<cfqueryparam value="#res.GENERATEDKEY#" cfsqltype="cf_sql_integer">,
-						<cfqueryparam value="#i#" cfsqltype="cf_sql_integer">
+						<cfqueryparam value="#local.i#" cfsqltype="cf_sql_integer">
 					)
-					<cfif i NEQ listLast(arguments.hobbies,",")>,</cfif>
+					<cfif local.i NEQ listLast(arguments.hobbies,",")>,</cfif>
 				</cfloop>;
 		</cfquery>
 	</cffunction>
@@ -311,7 +311,9 @@
 			WHERE
 				contact = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
 			AND
-				hobbies NOT IN <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer" list="true">;
+				hobbies
+			NOT IN
+				(<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer" list="true">);
 		</cfquery>
 		<cfquery name="local.updateHobbies" datasource="address">
 			INSERT INTO
@@ -321,41 +323,26 @@
 				)
 			SELECT 
 				<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer"> AS contact,
-				<cfqueryparam value="#i#" cfsqltype="cf_sql_integer"> AS hobbies
+				temp.hobby
 			FROM (
-				<cfloop list="#arguments.hobbies#" index="i">
-					<cfif i EQ arguments.hobbies[1]>
-						SELECT <cfqueryparam value="#i#" cfsqltype="cf_sql_integer">
+				<cfloop list="#arguments.hobbies#" index="local.i">
+					<cfif local.i EQ listFirst(arguments.hobbies)>
+						SELECT <cfqueryparam value="#local.i#" cfsqltype="cf_sql_integer"> AS hobby
 					<cfelse>
 						UNION ALL
-						SELECT <cfqueryparam value="#i#" cfsqltype="cf_sql_integer">
+						SELECT <cfqueryparam value="#local.i#" cfsqltype="cf_sql_integer"> AS hobby
 					</cfif>
 				</cfloop>
 			) AS temp
-			WHERE hobbies NOT IN (
-				SELECT hobbies FROM contact_hobbies WHERE contact = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
-			)
-			VALUES
-				<cfloop list="#arguments.hobbies#" index="i">
-					(
-						<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">,
-						<cfqueryparam value="#i#" cfsqltype="cf_sql_integer">
-					)
-					<cfif i NEQ listLast(arguments.hobbies,",")>,</cfif>
-				</cfloop>;
-		</cfquery>
-		<cfif arguments.profile NEQ "">
-			<cfquery name="local.updatePhoto" datasource="address">
-				UPDATE
-					log_book
-				SET
-					profile = <cfqueryparam value="#arguments.profile#" cfsqltype="cf_sql_varchar">
+			WHERE temp.hobby NOT IN (
+				SELECT
+					hobbies
+				FROM
+					contact_hobbies
 				WHERE
-					log_id = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
-				AND
-					user_id = <cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
-			</cfquery>
-		</cfif>
+					contact = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
+			);
+		</cfquery>
 	</cffunction>
 
 	<cffunction name="deleteRecord" access="public">

@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
-	<body class="container-fluid d-flex flex-row align-items-center">
+	<head>
+		<link href="./css/print.css" rel="stylesheet" media="print">
+		<link href="./css/style.css" rel="stylesheet">
+		<link href="./css/bootstrap.min.css" rel="stylesheet">
+	</head>
+	<body class="container-fluid d-flex flex-column align-items-center">
 		<cfinclude template="object.cfm">
 		<cfinclude template="logbook-submit.cfm">
 		<nav class="no-print navbar navbar-expand-sm navbar-dark bg-info fixed-top">
