@@ -8,7 +8,7 @@
 </cfif>
 <cfif structKeyExists(form,"btn")>
 	<cfinclude template="object.cfm">
-	<cfset session.check = manager.checkPass(form.username,form.password)>
+	<cfset manager.checkPass(form.username,form.password)>
 	<cfif session.check.access>
 		<cflocation url="logbook.cfm" addToken="no" statusCode="302">
 	<cfelse>

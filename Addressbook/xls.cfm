@@ -1,5 +1,5 @@
 <cfinclude template="object.cfm">
-<cfset log = manager.getList(session.userid)>
+<cfset log = manager.getList()>
 <cfset spreadsheetObj = SpreadsheetNew("AddressBook","true")>
 <cfset spreadsheetSetCellValue(spreadsheetObj,"#session.username#",1,1)>
 <cfset spreadsheetSetCellValue(spreadsheetObj,"#DateFormat(now(),"long")#",1,5)>

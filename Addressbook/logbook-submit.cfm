@@ -43,13 +43,15 @@
 				<cfset arrayAppend(error,"Input of Date_of_birth field is Invalid")>
 			</cfif>
 		</cfif>
-		<cfif len(form.profile) EQ 0>
+		<cfif len(form.profile) EQ 0 AND structKeyExists(form,"addbtn")>
 			<cfset arrayAppend(error,"*Profile pic field is Empty")>
 		<cfelse>
-			<cfinclude template="imageedit.cfm">
-			<cfset ext = "jpg,jpeg,png,gif,bmp,tiff">
-			<cfif NOT listFindNoCase(ext,listLast(filename,"."))>
-				<cfset arrayAppend(error,"Input of Profile pic field is Invalid")>
+			<cfinclude template="image.cfm">
+			<cfif NOT len(form.profile) EQ 0>
+				<cfset ext = "jpg,jpeg,png,gif,bmp,tiff">
+				<cfif NOT listFindNoCase(ext,listLast(filename,"."))>
+					<cfset arrayAppend(error,"Input of Profile pic field is Invalid")>
+				</cfif>
 			</cfif>
 		</cfif>
 		<cfif len(form.house_flat) EQ 0>
@@ -107,8 +109,7 @@
 			</div>
 		<cfelse>
 			<cfif structKeyExists(form,"addbtn")>
-				<cfset manager.insertContact( session.userid,
-								form.title,
+				<cfset manager.insertContact( form.title,
 								form.firstname,
 								form.lastname,
 								form.gender,
@@ -125,8 +126,7 @@
 								form.hobbies )>
 			</cfif>
 			<cfif structKeyExists(form,"editbtn")>
-				<cfset manager.updateContact( session.userid,
-								form.id,
+				<cfset manager.updateContact( form.id,
 								form.title,
 								form.firstname,
 								form.lastname,
@@ -146,8 +146,7 @@
 		</cfif>
 	</cfif>
 	<cfif structKeyExists(form,"deletebtn")>
-		<cfset manager.deleteRecord( session.userid,
-						form.d_id )>
+		<cfset manager.deleteRecord( form.d_id )>
 	<cfelseif structKeyExists(form,"return")>
 		<cflocation url="logbook.cfm" addToken="no" statusCode="302">
 	</cfif>

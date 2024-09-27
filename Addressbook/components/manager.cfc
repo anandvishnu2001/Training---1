@@ -43,15 +43,13 @@
 				email=<cfqueryparam value="#arguments.id#" cfsqltype="cf_sql_varchar">;
 		</cfquery>
 		<cfset local.givenPass = hasher(arguments.password,local.checker.salt)>
-		<cfset local.check = structNew()>
 		<cfset session.userid = local.checker.user_id>
 		<cfset session.username = local.checker.username>
 		<cfif local.givenPass EQ local.checker.password>
-			<cfset local.check.access=true>
+			<cfset session.check.access=true>
 		<cfelse>
-			<cfset local.check.access=false>
+			<cfset session.check.access=false>
 		</cfif>
-		<cfreturn local.check>
 	</cffunction>
 
 	<cffunction name="exist" access="remote" returnFormat="JSON">
@@ -122,7 +120,6 @@
 	</cffunction>
 
 	<cffunction name="insertContact" access="public">
-		<cfargument name="user_id" type="string" required="true">
 		<cfargument name="title" type="string" required="true">
 		<cfargument name="firstname" type="string" required="true">
 		<cfargument name="lastname" type="string" required="true">
@@ -158,7 +155,7 @@
 					phone
 				)
 			VALUES(
-				<cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">,
+				<cfqueryparam value="#session.userid#" cfsqltype="cf_sql_integer">,
 				<cfqueryparam value="#arguments.title#" cfsqltype="cf_sql_integer">,
 				<cfqueryparam value="#arguments.firstname#" cfsqltype="cf_sql_varchar">,
 				<cfqueryparam value="#arguments.lastname#" cfsqltype="cf_sql_varchar">,
@@ -193,7 +190,6 @@
 	</cffunction>
 
 	<cffunction name="getList" access="remote" returnFormat="JSON" returnType="struct">
-		<cfargument name="userid" type="string" required="true">
 		<cfargument name="logid" type="string" required="false">
 		<cfquery name="local.list" datasource="address">
 			SELECT
@@ -227,17 +223,18 @@
 			LEFT JOIN
 				hobbies h ON c.hobbies=h.id
 			WHERE
-				l.user_id=<cfqueryparam value="#arguments.userid#" cfsqltype="cf_sql_integer">
+				l.user_id=<cfqueryparam value="#session.userid#" cfsqltype="cf_sql_integer">
 			<cfif structKeyExists(arguments,"logid")>
 				AND l.log_id=<cfqueryparam value="#crypter(arguments.logid,'decrypt')#" cfsqltype="cf_sql_integer">
 			</cfif>;
 		</cfquery>
 		<cfset local.records = structNew()>
+		<cfset local.metadata = structNew()>
 		<cfoutput query="local.list">
 			<cfset local.id = crypter(local.list.log_id,"encrypt")>
-			<cfif NOT structKeyExists(local.records,#local.id#)>
-				<cfset local.records[#local.id#] = {
-					"title"={ #local.list.title#=local.list.tvalue },
+			<cfif NOT structKeyExists(local.records,local.id)>
+				<cfset local.records[local.id] = {
+					"title"= structNew(),
 					"firstname"=local.list.firstname,
 					"lastname"=local.list.lastname,
 					"profile"=local.list.profile,
@@ -252,15 +249,15 @@
 					"email"=local.list.email,
 					"phone"=local.list.phone,
 					"hobbies"={ #local.list.hobbies#=local.list.hvalue }}>
+					<cfset local.records[local.id]["title"]={ #local.list.title#=local.list.tvalue }>
 			<cfelse>
-				<cfset StructInsert(local.records[#local.id#]["hobbies"],#local.list.hobbies#,#local.list.hvalue#)>
+				<cfset local.records[local.id]["hobbies"][local.list.hobbies]=local.list.hvalue> 
 			</cfif>
 		</cfoutput>
 		<cfreturn local.records>
 	</cffunction>
 
 	<cffunction name="updateContact" access="public">
-		<cfargument name="user_id" type="string" required="true">
 		<cfargument name="log_id" type="string" required="true">
 		<cfargument name="title" type="string" required="true">
 		<cfargument name="firstname" type="string" required="true">
@@ -303,7 +300,7 @@
 			WHERE
 				log_id = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
 			AND
-				user_id = <cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
+				user_id = <cfqueryparam value="#session.userid#" cfsqltype="cf_sql_integer">;
 		</cfquery>
 		<cfquery name="local.deleteHobbies" datasource="address">
 			DELETE FROM
@@ -346,7 +343,6 @@
 	</cffunction>
 
 	<cffunction name="deleteRecord" access="public">
-		<cfargument name="user_id" type="string" required="true">
 		<cfargument name="log_id" type="string" required="true">
 		<cfset local.id = crypter(arguments.log_id,"decrypt")>
 		<cfquery name="local.deleteRow" datasource="address">
@@ -355,7 +351,7 @@
 			WHERE
 				log_id=<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
 			AND
-				user_id=<cfqueryparam value="#arguments.user_id#" cfsqltype="cf_sql_integer">;
+				user_id=<cfqueryparam value="#session.userid#" cfsqltype="cf_sql_integer">;
 		</cfquery>
 		<cfquery name="local.deleteHobbies" datasource="address">
 			DELETE FROM

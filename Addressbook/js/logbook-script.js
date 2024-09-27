@@ -4,7 +4,6 @@ $(document).ready(function(){
 	$.ajax({
 		url: './components/manager.cfc?method=getList',
 		type: 'GET',
-		data: { userid: user },
 		success: function(data){
 			let listObj = JSON.parse(data);
 			console.log(listObj);
@@ -13,7 +12,6 @@ $(document).ready(function(){
 			}
 			else{
 				$.each(listObj,function(key,record){
-					console.log(record);
 					let row = `<tr>`;
 					row += `<td><img class="img-fluid img-thumbnail rounded-circle mx-auto d-block" src="./uploads/${record.profile}" alt="profile" width="50" height="50"></td>`;
 					row += `<td class="contactname">${Object.values(record.title)[0]+' '+record.firstname+' '+record.lastname}</td>`;
@@ -56,6 +54,7 @@ $(document).ready(function(){
 				$("#addbtn").addClass("d-none");
 			if(!$("#editbtn").hasClass("d-none"))
 				$("#editbtn").addClass("d-none");
+			$('#profile').attr("required", 'true');
 			if(button.data('bs-action') === "add"){
 				$("#header").html("Create Contact");
 				$("#modalForm").removeClass("d-none");
@@ -67,8 +66,7 @@ $(document).ready(function(){
 				$.ajax({
 					url: './components/manager.cfc?method=getList',
 					type: 'GET',
-					data: { userid: user,
-						logid: id },
+					data: { logid: id },
 					success: function(data){
 						let recordObj = JSON.parse(data);
 						if(button.data('bs-action') === "edit"){
@@ -80,6 +78,7 @@ $(document).ready(function(){
 							$('#firstname').val(recordObj[id].firstname);
 							$('#lastname').val(recordObj[id].lastname);
 							$('#gender').val(Object.keys(recordObj[id].gender));
+							$('#profile').removeAttr("required");
 							$("#contact").attr("src",`./uploads/${recordObj[id].profile}`);
 							let date = new Date(recordObj[id].date_of_birth);
 							date.setDate(date.getDate() + 1);
@@ -121,7 +120,7 @@ $(document).ready(function(){
 
 	$(document).on("click",".printpage",function(){
 		let id = $(this).data('bs-id');
-		window.open("print.cfm?id="+id,"_blank");
+		window.open("print.cfm?logid="+id,"_blank");
 	});
 
 	$("#printbtn").click(function(){

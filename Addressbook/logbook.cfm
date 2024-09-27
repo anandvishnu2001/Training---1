@@ -67,6 +67,8 @@
 			</div>
 		</div>
 		<cfinclude template="logbook-modal.cfm">
-		<cfinclude template="logbook-include.cfm">
+		<script type="text/javascript" src="./js/jQuery.js"></script>
+		<script type="text/javascript" src="./js/logbook-script.js"></script>
+		<script type="text/javascript" src="./js/bootstrap.min.js"></script>
 	</body>
 </html>
