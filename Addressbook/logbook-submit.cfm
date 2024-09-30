@@ -8,16 +8,10 @@
 	</cfif>
 	<cfset error = arrayNew(1)>
 	<cfif structKeyExists(form,"addbtn") OR structKeyExists(form,"editbtn")>
-		<cfif structKeyExists(form,"title")>
-			<cfif len(form.title) EQ 0>
-				<cfset arrayAppend(error,"*Title field to be selected")>
-			<cfelse>
-				<cfif NOT listFind(structKeyList(select.title),trim(form.title))>
-					<cfset arrayAppend(error,"*Selection of Title field is Invalid")>
-				</cfif>
-			</cfif>
-		<cfelse>
+		<cfif NOT structKeyExists(form, "title") OR (structKeyExists(form,"title") AND len(form.title) EQ 0)>
 			<cfset arrayAppend(error,"*Title field to be selected")>
+		<cfelseif NOT listFind(structKeyList(select.title),trim(form.title))>
+			<cfset arrayAppend(error,"*Selection of Title field is Invalid")>
 		</cfif>
 		<cfif len(form.firstname) EQ 0>
 			<cfset arrayAppend(error,"*Firstname field is Empty")>
@@ -25,21 +19,15 @@
 		<cfif len(form.lastname) EQ 0>
 			<cfset arrayAppend(error,"*Lastname field is Empty")>
 		</cfif>
-		<cfif structKeyExists(form,"gender")>
-			<cfif len(form.gender) EQ 0>
-				<cfset arrayAppend(error,"*Gender field to be selected")>
-			<cfelse>
-				<cfif NOT listFind(structKeyList(select.gender),trim(form.gender))>
-					<cfset arrayAppend(error,"Selection of Gender field is Invalid")>
-				</cfif>
-			</cfif>
-		<cfelse>
+		<cfif NOT structKeyExists(form, "gender") OR (structKeyExists(form,"gender") AND len(form.gender) EQ 0)>
 			<cfset arrayAppend(error,"*Gender field to be selected")>
+		<cfelseif NOT listFind(structKeyList(select.gender),trim(form.gender))>
+			<cfset arrayAppend(error,"*Selection of Gender field is Invalid")>
 		</cfif>
 		<cfif len(form.date_of_birth) EQ 0>
 			<cfset arrayAppend(error,"*Date_of_birth field is Empty")>
 		<cfelse>
-			<cfif (NOT isDate(form.date_of_birth)) AND CreateDateTime(year(form.date_of_birth),month(form.date_of_birth),day(form.date_of_birth)) GT now()>
+			<cfif (NOT isDate(form.date_of_birth)) OR CreateDateTime(year(form.date_of_birth),month(form.date_of_birth),day(form.date_of_birth)) GT now()>
 				<cfset arrayAppend(error,"Input of Date_of_birth field is Invalid")>
 			</cfif>
 		</cfif>

@@ -179,10 +179,10 @@
 					hobbies
 				)
 			VALUES
-				<cfloop list="#arguments.hobbies#" index="local.i">
+				<cfloop list="#arguments.hobbies#" index="local.i" item="local.j">
 					(
 						<cfqueryparam value="#res.GENERATEDKEY#" cfsqltype="cf_sql_integer">,
-						<cfqueryparam value="#local.i#" cfsqltype="cf_sql_integer">
+						<cfqueryparam value="#local.j#" cfsqltype="cf_sql_integer">
 					)
 					<cfif local.i NEQ listLast(arguments.hobbies,",")>,</cfif>
 				</cfloop>;
@@ -234,7 +234,7 @@
 			<cfset local.id = crypter(local.list.log_id,"encrypt")>
 			<cfif NOT structKeyExists(local.records,local.id)>
 				<cfset local.records[local.id] = {
-					"title"= structNew(),
+					"title"={ #local.list.title#=local.list.tvalue },
 					"firstname"=local.list.firstname,
 					"lastname"=local.list.lastname,
 					"profile"=local.list.profile,
@@ -249,7 +249,20 @@
 					"email"=local.list.email,
 					"phone"=local.list.phone,
 					"hobbies"={ #local.list.hobbies#=local.list.hvalue }}>
-					<cfset local.records[local.id]["title"]={ #local.list.title#=local.list.tvalue }>
+				<cfset structSetMetadata(local.records[local.id],{keys:{"firstname"={type="string"},
+											"lastname":{type:"string"},
+											"profile":{type:"string"},
+											"date_of_birth":{type:"date"},
+											"house_flat":{type:"string"},
+											"street":{type:"string"},
+											"city":{type:"string"},
+											"state":{type:"string"},
+											"country":{type:"string"},
+											"pincode":{type:"numeric"},
+											"country":{type:"string"},
+											"phone"={type="numeric"}}})>
+				<cfset structSetMetadata(local.records[local.id]["title"],{#local.list.title#:{type:"string"}})>
+				<cfset structSetMetadata(local.records[local.id]["gender"],{#local.list.gender#={type="string"}})>
 			<cfelse>
 				<cfset local.records[local.id]["hobbies"][local.list.hobbies]=local.list.hvalue> 
 			</cfif>
@@ -310,7 +323,7 @@
 			AND
 				hobbies
 			NOT IN
-				(<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer" list="true">);
+				(<cfqueryparam value="#arguments.hobbies#" cfsqltype="cf_sql_integer" list="true">);
 		</cfquery>
 		<cfquery name="local.updateHobbies" datasource="address">
 			INSERT INTO
@@ -323,12 +336,10 @@
 				temp.hobby
 			FROM (
 				<cfloop list="#arguments.hobbies#" index="local.i">
-					<cfif local.i EQ listFirst(arguments.hobbies)>
-						SELECT <cfqueryparam value="#local.i#" cfsqltype="cf_sql_integer"> AS hobby
-					<cfelse>
+					<cfif local.i NEQ 1>
 						UNION ALL
-						SELECT <cfqueryparam value="#local.i#" cfsqltype="cf_sql_integer"> AS hobby
 					</cfif>
+						SELECT <cfqueryparam value="#local.i#" cfsqltype="cf_sql_integer"> AS hobby
 				</cfloop>
 			) AS temp
 			WHERE temp.hobby NOT IN (

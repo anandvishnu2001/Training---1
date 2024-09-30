@@ -1,6 +1,6 @@
 <cfinclude template="object.cfm">
 <cfset record=manager.getList( url.logid )>
-<cfset rrr=structGetMetaData(record)>
+<cfset rrr=structGetMetaData(record[url.logid])>
 <cfdump var="#rrr#">
 <cfoutput>
 <div class="row d-flex">
