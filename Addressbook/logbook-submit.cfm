@@ -7,7 +7,7 @@
 		<cflocation url="index.cfm" addToken="no" statusCode="302">
 	</cfif>
 	<cfset error = arrayNew(1)>
-	<cfif structKeyExists(form,"addbtn") OR structKeyExists(form,"editbtn")>
+	<cfif structKeyExists(form,"modalbtn")>
 		<cfif NOT structKeyExists(form, "title") OR (structKeyExists(form,"title") AND len(form.title) EQ 0)>
 			<cfset arrayAppend(error,"*Title field to be selected")>
 		<cfelseif NOT listFind(structKeyList(select.title),trim(form.title))>
@@ -26,18 +26,18 @@
 		</cfif>
 		<cfif len(form.date_of_birth) EQ 0>
 			<cfset arrayAppend(error,"*Date_of_birth field is Empty")>
-		<cfelse>
-			<cfif (NOT isDate(form.date_of_birth)) OR CreateDateTime(year(form.date_of_birth),month(form.date_of_birth),day(form.date_of_birth)) GT now()>
-				<cfset arrayAppend(error,"Input of Date_of_birth field is Invalid")>
-			</cfif>
+		<cfelseif NOT isDate(form.date_of_birth) OR (isDate(form.date_of_birth) AND form.date_of_birth GT now())>
+			<cfset arrayAppend(error,"Input of Date_of_birth field is Invalid")>
 		</cfif>
-		<cfif len(form.profile) EQ 0 AND structKeyExists(form,"addbtn")>
+		<cfif len(form.profile) EQ 0 AND len(form.id) EQ 0>
 			<cfset arrayAppend(error,"*Profile pic field is Empty")>
 		<cfelse>
 			<cfinclude template="image.cfm">
 			<cfif NOT len(form.profile) EQ 0>
 				<cfset ext = "jpg,jpeg,png,gif,bmp,tiff">
 				<cfif NOT listFindNoCase(ext,listLast(filename,"."))>
+					<cffile action = "delete" 
+						file = "#uploadDir##filename#">
 					<cfset arrayAppend(error,"Input of Profile pic field is Invalid")>
 				</cfif>
 			</cfif>
@@ -70,22 +70,18 @@
 		<cfelseif NOT REFindNoCase("[0-9]{10}",form.phone)>
 			<cfset arrayAppend(error,"*Input of Phone field is Invalid")>
 		</cfif>
-		<cfif structKeyExists(form,"hobbies")>
-			<cfif listLen(form.hobbies) EQ 0>
-				<cfset arrayAppend(error,"*Hobbies field to be selected")>
-			<cfelse>
-				<cfset tflag=0>
-				<cfloop list="#form.hobbies#" item="i">
-					<cfif NOT listFind(structKeyList(select.hobbies),i)>
-						<cfset tflag=1>
-					</cfif>
-				</cfloop>
-				<cfif tflag EQ 1>
-					<cfset arrayAppend(error,"*Selection of Hobbies field is Invalid")>
-				</cfif>
-			</cfif>
-		<cfelse>
+		<cfif NOT structKeyExists(form,"hobbies") OR (structKeyExists(form,"hobbies") AND listLen(form.hobbies) EQ 0)>
 			<cfset arrayAppend(error,"*Hobbies field to be selected")>
+		<cfelse>
+			<cfset tflag=0>
+			<cfloop list="#form.hobbies#" item="i">
+				<cfif NOT listFind(structKeyList(select.hobbies),i)>
+					<cfset tflag=1>
+				</cfif>
+			</cfloop>
+			<cfif tflag EQ 1>
+				<cfset arrayAppend(error,"*Selection of Hobbies field is Invalid")>
+			</cfif>
 		</cfif>
 		<cfif arrayLen(error) GT 0>
 			<div class="bg-body d-flex flex-wrap mt-5 mx-3 pt-5">
@@ -95,45 +91,41 @@
 					</cfloop>
 				</cfoutput>
 			</div>
+		<cfelseif len(form.id) EQ 0>
+			<cfset manager.insertContact( form.title,
+							form.firstname,
+							form.lastname,
+							form.gender,
+							form.date_of_birth,
+							filename,
+							form.house_flat,
+							form.street,
+							form.city,
+							form.state,
+							form.country,
+							form.pincode,
+							form.email,
+							form.phone,
+							form.hobbies )>
 		<cfelse>
-			<cfif structKeyExists(form,"addbtn")>
-				<cfset manager.insertContact( form.title,
-								form.firstname,
-								form.lastname,
-								form.gender,
-								form.date_of_birth,
-								filename,
-								form.house_flat,
-								form.street,
-								form.city,
-								form.state,
-								form.country,
-								form.pincode,
-								form.email,
-								form.phone,
-								form.hobbies )>
-			</cfif>
-			<cfif structKeyExists(form,"editbtn")>
-				<cfset manager.updateContact( form.id,
-								form.title,
-								form.firstname,
-								form.lastname,
-								form.gender,
-								form.date_of_birth,
-								filename,
-								form.house_flat,
-								form.street,
-								form.city,
-								form.state,
-								form.country,
-								form.pincode,
-								form.email,
-								form.phone,
-								form.hobbies )>
-			</cfif>
+			<cfset manager.updateContact( form.id,
+							form.title,
+							form.firstname,
+							form.lastname,
+							form.gender,
+							form.date_of_birth,
+							filename,
+							form.house_flat,
+							form.street,
+							form.city,
+							form.state,
+							form.country,
+							form.pincode,
+							form.email,
+							form.phone,
+							form.hobbies )>
 		</cfif>
-	</cfif>
-	<cfif structKeyExists(form,"deletebtn")>
+	<cfelseif structKeyExists(form,"deletebtn")>
 		<cfset manager.deleteRecord( form.d_id )>
 	<cfelseif structKeyExists(form,"return")>
 		<cflocation url="logbook.cfm" addToken="no" statusCode="302">

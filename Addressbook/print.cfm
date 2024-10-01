@@ -1,7 +1,5 @@
 <cfinclude template="object.cfm">
 <cfset record=manager.getList( url.logid )>
-<cfset rrr=structGetMetaData(record[url.logid])>
-<cfdump var="#rrr#">
 <cfoutput>
 <div class="row d-flex">
 	<div class="bg-secondary col-4 d-flex flex-column justify-content-stretch p-5">

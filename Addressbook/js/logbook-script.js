@@ -50,16 +50,12 @@ $(document).ready(function(){
 				$("#modalForm").addClass("d-none");
 			if(!$("#modalView").hasClass("d-none"))
 				$("#modalView").addClass("d-none");
-			if(!$("#addbtn").hasClass("d-none"))
-				$("#addbtn").addClass("d-none");
-			if(!$("#editbtn").hasClass("d-none"))
-				$("#editbtn").addClass("d-none");
 			$('#profile').attr("required", 'true');
 			if(button.data('bs-action') === "add"){
 				$("#header").html("Create Contact");
 				$("#modalForm").removeClass("d-none");
 				$("#modalForm")[0].reset();
-				$("#addbtn").removeClass("d-none");
+				$("#modalbtn").html("Save");
 				
 			}
 			else{
@@ -72,7 +68,7 @@ $(document).ready(function(){
 						if(button.data('bs-action') === "edit"){
 							$("#header").html("Edit Contact");
 							$("#modalForm").removeClass("d-none");
-							$("#editbtn").removeClass("d-none");
+							$("#modalbtn").html("Edit");
 							$('#id').val(id);
 							$('#title').val(Object.keys(recordObj[id].title));
 							$('#firstname').val(recordObj[id].firstname);

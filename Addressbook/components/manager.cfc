@@ -184,7 +184,7 @@
 						<cfqueryparam value="#res.GENERATEDKEY#" cfsqltype="cf_sql_integer">,
 						<cfqueryparam value="#local.j#" cfsqltype="cf_sql_integer">
 					)
-					<cfif local.i NEQ listLast(arguments.hobbies,",")>,</cfif>
+					<cfif local.i NEQ listLen(arguments.hobbies)>,</cfif>
 				</cfloop>;
 		</cfquery>
 	</cffunction>
@@ -335,11 +335,11 @@
 				<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer"> AS contact,
 				temp.hobby
 			FROM (
-				<cfloop list="#arguments.hobbies#" index="local.i">
+				<cfloop list="#arguments.hobbies#" index="local.i" item="local.j">
 					<cfif local.i NEQ 1>
 						UNION ALL
 					</cfif>
-						SELECT <cfqueryparam value="#local.i#" cfsqltype="cf_sql_integer"> AS hobby
+						SELECT <cfqueryparam value="#local.j#" cfsqltype="cf_sql_integer"> AS hobby
 				</cfloop>
 			) AS temp
 			WHERE temp.hobby NOT IN (

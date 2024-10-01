@@ -106,8 +106,7 @@
 							</div>
 					</fieldset>
 					<input name="id" id="id" type="hidden">
-					<button name="addbtn" id="addbtn" type="submit" class="btn btn-success mt-5">Save</button>
-					<button name="editbtn" id="editbtn" type="submit" class="btn btn-success mt-5">Edit</button>
+					<button name="modalbtn" id="modalbtn" type="submit" class="btn btn-success mt-5"></button>
 				</form>
 				<div id="modalView" class="d-flex flex-column gap-2">
                         		<div class="row">
