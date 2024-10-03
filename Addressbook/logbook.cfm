@@ -57,9 +57,10 @@
 				<div class="no-print col-6 col-lg-3 rounded-start-3">
 					<div class="glow card bg-body p-3">
 						<img class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book" width="200" height="200">
-						<div class="card-body d-flex flex-column justify-content-center">
+						<div class="card-body d-flex flex-column justify-content-center gap-1">
 							<cfoutput><h3 id="user" class="card-title text-center text-info">#session.username#</h3></cfoutput>
 							<button class="btn btn-outline-primary btn-block" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="add">Create Contact</button>
+							<button class="btn btn-outline-success btn-block" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="upload">Upload <img src="./images/xls-data.png" width="30" height="30"></button>
 						</div>
 					</div>
 				</div>

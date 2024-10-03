@@ -33,14 +33,19 @@ $(document).ready(function(){
 	});
 
 	$('#modal').on('show.bs.modal',function(event){
-		$("#contact").attr("src","./uploads/signup.png");
+		$("#contact").attr("src","./images/signup.png");
 		let button = $(event.relatedTarget);
 		let id = button.data('bs-id');
 		if(!$(".contentEdit").hasClass("d-none"))
 			$(".contentEdit").addClass("d-none");
 		if(!$(".contentDelete").hasClass("d-none"))
 			$(".contentDelete").addClass("d-none");
-		if(button.data('bs-action') === "delete"){
+		if(!$(".contentUpload").hasClass("d-none"))
+			$(".contentUpload").addClass("d-none");
+		if(button.data('bs-action') === "upload"){
+			$(".contentUpload").removeClass("d-none");
+		}
+		else if(button.data('bs-action') === "delete"){
 			$(".contentDelete").removeClass("d-none");
 			$('#d_id').val(id);
 		}
@@ -52,7 +57,7 @@ $(document).ready(function(){
 				$("#modalView").addClass("d-none");
 			$('#profile').attr("required", 'true');
 			if(button.data('bs-action') === "add"){
-				$("#header").html("Create Contact");
+				$("#modalhead").html("Create Contact");
 				$("#modalForm").removeClass("d-none");
 				$("#modalForm")[0].reset();
 				$("#modalbtn").html("Save");
@@ -66,7 +71,7 @@ $(document).ready(function(){
 					success: function(data){
 						let recordObj = JSON.parse(data);
 						if(button.data('bs-action') === "edit"){
-							$("#header").html("Edit Contact");
+							$("#modalhead").html("Edit Contact");
 							$("#modalForm").removeClass("d-none");
 							$("#modalbtn").html("Edit");
 							$('#id').val(id);
@@ -94,7 +99,7 @@ $(document).ready(function(){
 							});
 						}
 						else if(button.data('bs-action') === "view"){
-							$("#header").html("Contact Details");
+							$("#modalhead").html("Contact Details");
 							$("#modalView").removeClass("d-none");
 							$('#v-name').html(Object.values(recordObj[id].title)+" "+recordObj[id].firstname+" "+recordObj[id].lastname);
 							$('#v-gender').html(Object.values(recordObj[id].gender));

@@ -1,11 +1,11 @@
 <div class="modal fade" id="modal">
  	<div class="contentEdit modal-dialog d-flex bg-body modal-lg modal-dialog-scrollable">
 		<div class="card-body col-5 rounded-start-3 bg-secondary p-3 d-flex flex-column justify-content-stretch">
-			<img id="contact" class="img-fluid rounded-circle img-card-top d-block" src="./images/signup.png" alt="Address Book">
+			<img id="contact" class="img-fluid rounded-circle img-card-top d-block" src="./images/signup.png" alt="Contact">
 		</div>
 		<div class="modal-content flex-grow-1 d-flex p-3">
 			<div class="modal-header d-flex">
-				<h2 id="header" class="modal-title flex-grow-1 fw-bold text-center text-primary"></h2>
+				<h2 id="moadlhead" class="modal-title flex-grow-1 fw-bold text-center text-primary"></h2>
 				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="row modal-body d-flex justify-content-between">
@@ -145,10 +145,24 @@
 			</div>
 		</div>
 	</div>
+	<div class="contentUpload modal-dialog bg-body">
+		<div class="modal-content flex-grow-1 d-flex p-3">
+			<div class="modal-header d-flex">
+				<h2 id="uploadhead" class="modal-title flex-grow-1 fw-bold text-center text-warning">Upload Excel Sheet</h2>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+			<form id="uploadExcel" name="uploadExcel" class="d-flex flex-column gap-1" action="" method="post" enctype="multipart/form-data">
+				<div class="form-floating">
+					<input type="file" name="upload" id="upload" class="form-control">
+				</div>
+				<button name="uploadbtn" id="uploadbtn" type="submit" class="btn btn-outline-success">Upload</button>
+			<form>
+		</div>
+	</div>
 	<div class="contentDelete modal-dialog bg-body">
 		<div class="modal-content flex-grow-1 d-flex p-3">
 			<div class="modal-header d-flex">
-				<h2 id="h-add" class="modal-title flex-grow-1 fw-bold text-center text-warning">Are you sure you want to delete this contact?</h2>
+				<h2 id="deletehead" class="modal-title flex-grow-1 fw-bold text-center text-warning">Are you sure you want to delete this contact?</h2>
 				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<form id="confirmDelete" name="confirmDelete" class="d-flex flex-column" action="" method="post">

@@ -1,86 +1,106 @@
 <cfinclude template="object.cfm">
 <cfset log = manager.getList()>
-<cfset spreadsheetObj = SpreadsheetNew("AddressBook","true")>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"#session.username#",1,1)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"#DateFormat(now(),"long")#",1,15)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"Profile",2,1)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"Title",2,2)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"Firstname",2,3)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"Lastname",2,4)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"Gender",2,5)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"DOB",2,6)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"House",2,7)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"Street",2,8)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"City",2,9)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"State",2,10)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"Country",2,11)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"Pincode",2,12)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"Email",2,13)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"Phone",2,14)>
-<cfset spreadsheetSetCellValue(spreadsheetObj,"Hobbies",2,15)>
 
-<cfset SpreadsheetMergeCells(spreadsheetObj,1,1,1,14)>
+<cffile action="upload"
+	filefield="form.upload"
+	destination="#expandPath('./uploads/')#"
+	nameConflict="makeunique">
+<cfdump var="#cffile#">
 
-<cfset title={color="dark_red",fgcolor="aqua",bold="true",alignment="center",fontsize="23"}>
-<cfset date={fgcolor="aqua",bold="true",alignment="right",verticalalignment="vertical_top"}>
-<cfset head={color="gold",fgcolor="teal",bold="true",alignment="center",fontsize="13"}>
+<cfspreadsheet
+	action="read"
+	headerrow="2"
+	src="#expandPath('./uploads/')##cffile.ServerFile#"
+	query="quer">
 
-<cfset SpreadsheetFormatCell(spreadsheetObj,title,1,1)>
-<cfset SpreadsheetFormatCell(spreadsheetObj,date,1,15)>
-<cfset SpreadsheetFormatRow(spreadsheetObj,head,2)>
-
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,1,13)>
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,2,6)>
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,3,13)>
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,4,13)>
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,5,8)>
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,6,13)>
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,7,25)>
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,8,15)>
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,9,15)>
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,10,15)>
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,11,15)>
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,12,10)>
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,13,25)>
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,14,13)>
-<cfset SpreadSheetSetColumnWidth(spreadsheetobj,15,35)>
-
-<cfset j=1>
-<cfloop collection="#log#" item="i">
-	<cfset image = expandPath("uploads/#log[i].profile#")>
-	<cfset SpreadsheetSetRowHeight(spreadsheetObj,j+2,40)>
-    	<cfset SpreadsheetAddImage(spreadsheetObj,image,"#j+2#,1,#j+3#,2")>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].title[StructKeyList(log[i].title)[1]]#",j+2,2)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].firstname#",j+2,3)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].lastname#",j+2,4)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].gender[StructKeyList(log[i].gender)[1]]#",j+2,5)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].date_of_birth#",j+2,6)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].house_flat#",j+2,7)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].street#",j+2,8)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].city#",j+2,9)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].state#",j+2,10)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].country#",j+2,11)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].pincode#",j+2,12)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].email#",j+2,13)>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].phone#",j+2,14)>
-	<cfset hobbies="">
-	<cfloop list="#StructKeyList(log[i].hobbies)#" item="k">
-		<cfset hobbies&="#log[i].hobbies[k]#">
-		<cfif k NEQ listLast(StructKeyList(log[i].hobbies),",")>
-			<cfset hobbies&=", ">
-		</cfif>
-	</cfloop>
-	<cfset spreadsheetSetCellValue(spreadsheetObj,"#hobbies#",j+2,15)>
-	<cfset j++>
-</cfloop>
-<cfloop from="3" to="#3+structCount(log)#" index="i">
-	<cfif i%2 EQ 0>
-		<cfset SpreadsheetFormatRow(spreadsheetObj,{fgcolor="grey_25_percent",verticalalignment="vertical_center"},i)>
+<cfoutput query="quer">
+		<cfif quer.currentRow GT 2><cfdump var="#quer.currentRow#"><cfif QueryKeyExists(quer, "profile") >
+	<cfdump var="#quer.profile#"></cfif>
+<!---
+OR (structKeyExists(form,"title") AND len(form.title) EQ 0)>
+		<cfset arrayAppend(error,"*Title field to be selected")>
+	<cfelseif NOT listFind(structKeyList(select.title),trim(form.title))>
+		<cfset arrayAppend(error,"*Selection of Title field is Invalid")>
 	</cfif>
-</cfloop>
+	<cfif len(form.firstname) EQ 0>
+		<cfset arrayAppend(error,"*Firstname field is Empty")>
+	</cfif>
+	<cfif len(form.lastname) EQ 0>
+		<cfset arrayAppend(error,"*Lastname field is Empty")>
+	</cfif>
+	<cfif NOT structKeyExists(form, "gender") OR (structKeyExists(form,"gender") AND len(form.gender) EQ 0)>
+		<cfset arrayAppend(error,"*Gender field to be selected")>
+	<cfelseif NOT listFind(structKeyList(select.gender),trim(form.gender))>
+		<cfset arrayAppend(error,"*Selection of Gender field is Invalid")>
+	</cfif>
+	<cfif len(form.date_of_birth) EQ 0>
+		<cfset arrayAppend(error,"*Date_of_birth field is Empty")>
+	<cfelseif NOT isDate(form.date_of_birth) OR (isDate(form.date_of_birth) AND form.date_of_birth GT now())>
+		<cfset arrayAppend(error,"Input of Date_of_birth field is Invalid")>
+	</cfif>
+	<cfif len(form.profile) EQ 0 AND len(form.id) EQ 0>
+		<cfset arrayAppend(error,"*Profile pic field is Empty")>
+	<cfelse>
+		<cfinclude template="image.cfm">
+		<cfif NOT len(form.profile) EQ 0>
+			<cfset ext = "jpg,jpeg,png,gif,bmp,tiff">
+			<cfif NOT listFindNoCase(ext,listLast(filename,"."))>
+				<cffile action = "delete" 
+					file = "#uploadDir##filename#">
+				<cfset arrayAppend(error,"Input of Profile pic field is Invalid")>
+			</cfif>
+		</cfif>
+	</cfif>
+	<cfif len(form.house_flat) EQ 0>
+		<cfset arrayAppend(error,"*House_flat field is Empty")>
+	</cfif>
+	<cfif len(form.street) EQ 0>
+		<cfset arrayAppend(error,"*Street field is Empty")>
+	</cfif>
+	<cfif len(form.city) EQ 0>
+		<cfset arrayAppend(error,"*City field is Empty")>
+	</cfif>
+	<cfif len(form.state) EQ 0>
+		<cfset arrayAppend(error,"*State field is Empty")>
+	</cfif>
+	<cfif len(form.country) EQ 0>
+		<cfset arrayAppend(error,"*Country field is Empty")>
+	</cfif>
+	<cfif len(form.pincode) EQ 0>
+		<cfset arrayAppend(error,"*Pincode field is Empty")>
+	</cfif>
+	<cfif len(form.email) EQ 0>
+		<cfset arrayAppend(error,"*Email field is Empty")>
+	<cfelseif NOT REFindNoCase("^[\w]+@[\w]+\.[a-zA-Z]{2,}$",form.email)>
+		<cfset arrayAppend(error,"Input of Email field is Invalid")>
+	</cfif>
+	<cfif len(form.phone) EQ 0>
+		<cfset arrayAppend(error,"*Phone field is Empty")>
+	<cfelseif NOT REFindNoCase("[0-9]{10}",form.phone)>
+		<cfset arrayAppend(error,"*Input of Phone field is Invalid")>
+	</cfif>
+	<cfif NOT structKeyExists(form,"hobbies") OR (structKeyExists(form,"hobbies") AND listLen(form.hobbies) EQ 0)>
+		<cfset arrayAppend(error,"*Hobbies field to be selected")>
+	<cfelse>
+		<cfset tflag=0>
+		<cfloop list="#form.hobbies#" item="i">
+			<cfif NOT listFind(structKeyList(select.hobbies),i)>
+				<cfset tflag=1>
+				</cfif>
+		</cfloop>
+		<cfif tflag EQ 1>
+			<cfset arrayAppend(error,"*Selection of Hobbies field is Invalid")>
+		</cfif>
+	</cfif>--->
+</cfif>
+</cfoutput><!---
+<cfset SpreadsheetAddColumn(quer,"Result")>
 
-<cfset binary = SpreadsheetReadBinary(spreadsheetObj)>
+<cfset binary = SpreadsheetReadBinary(quer)>
 
-<cfheader name="Content-Disposition" value="attachment; filename=AddressBook-DataIncluded-Template.xlsx">
+<cfheader name="Content-Disposition" value="attachment; filename=AddressBook-Upload-Result.xlsx">
 
-<cfcontent type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" variable="#binary#">
+<cfcontent type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" variable="#binary#">--->
+
+
+

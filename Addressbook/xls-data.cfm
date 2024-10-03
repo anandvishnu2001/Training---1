@@ -49,6 +49,7 @@
 <cfloop collection="#log#" item="i">
 	<cfset image = expandPath("uploads/#log[i].profile#")>
 	<cfset SpreadsheetSetRowHeight(spreadsheetObj,j+2,40)>
+	<cfset spreadsheetSetCellValue(spreadsheetObj,"uploads/#log[i].profile#",j+2,1) />
     	<cfset SpreadsheetAddImage(spreadsheetObj,image,"#j+2#,1,#j+3#,2")>
 	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].title[StructKeyList(log[i].title)[1]]#",j+2,2)>
 	<cfset spreadsheetSetCellValue(spreadsheetObj,"#log[i].firstname#",j+2,3)>
