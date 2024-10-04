@@ -122,7 +122,7 @@ $(document).ready(function(){
 	$("#uploadbtn").click(function() {
 		setTimeout(function() {
 			window.location.href="logbook.cfm";
-		},1000);
+		},500);
 	});
 
 	$(document).on("click",".printpage",function(){

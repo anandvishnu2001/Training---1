@@ -94,11 +94,8 @@
 				<cfset tflag=0>
 				<cfloop collection="#select.hobbies#" item="j">
 					<cfif trim(select.hobbies[j]) EQ trim(k)>
-						<cfset hobby = hobby & j>
+						<cfset hobby = listAppend(hobby,j,",")>
 						<cfset tflag=1>
-						<cfif i NEQ listLen(quer.hobbies)>
-							<cfset hobby = hobby & ",">
-						</cfif>
 						<cfbreak>
 					</cfif>
 				</cfloop>
