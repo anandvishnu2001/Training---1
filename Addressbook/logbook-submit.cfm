@@ -132,6 +132,7 @@
 			</div>
 		<cfelse>
 			<cfinclude template="xls-upload.cfm">
+			<cflocation url="logbook.cfm" addToken="no" statusCode="302">
 		</cfif>
 	<cfelseif structKeyExists(form,"deletebtn")>
 		<cfset manager.deleteRecord( form.d_id )>

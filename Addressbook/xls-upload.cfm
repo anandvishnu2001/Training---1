@@ -1,110 +1,180 @@
 <cfinclude template="object.cfm">
 <cfset log = manager.getList()>
+<cfset theDir = expandPath('./uploads/')>
 
 <cffile action="upload"
 	filefield="form.upload"
-	destination="#expandPath('./uploads/')#"
+	destination="#theDir#"
 	nameConflict="makeunique">
-<cfdump var="#cffile#">
 
 <cfspreadsheet
 	action="read"
-	headerrow="2"
+	headerrow="1"
+	excludeHeaderRow = "true"
 	src="#expandPath('./uploads/')##cffile.ServerFile#"
 	query="quer">
+<cfdump var="#quer#">
+
+<cfset quer.addColumn("Result","varchar",arrayNew(1))>
 
 <cfoutput query="quer">
-		<cfif quer.currentRow GT 2>
-			<cfdump var="#quer.currentRow#">
-			<cfset pending = "">
-			<cfif NOT queryKeyExists(quer, "profile") OR (queryKeyExists(quer, "profile") AND len(quer.profile) EQ 0)>
-				<cfset pending = pending & "Profile,">
-			</cfif>
-<!---
-<cfif NOT queryKeyExists(quer, "title") OR (queryKeyExists(quer,"title") AND len(quer.title) EQ 0)>
-		<cfset cfset pending = pending & "Title,">
-	<cfelseif NOT listFind(structKeyList(select.title),trim(form.title))>
-		<cfset arrayAppend(error,"*Selection of Title field is Invalid")>
-	</cfif>
-	<cfif len(form.firstname) EQ 0>
-		<cfset arrayAppend(error,"*Firstname field is Empty")>
-	</cfif>
-	<cfif len(form.lastname) EQ 0>
-		<cfset arrayAppend(error,"*Lastname field is Empty")>
-	</cfif>
-	<cfif NOT structKeyExists(form, "gender") OR (structKeyExists(form,"gender") AND len(form.gender) EQ 0)>
-		<cfset arrayAppend(error,"*Gender field to be selected")>
-	<cfelseif NOT listFind(structKeyList(select.gender),trim(form.gender))>
-		<cfset arrayAppend(error,"*Selection of Gender field is Invalid")>
-	</cfif>
-	<cfif len(form.date_of_birth) EQ 0>
-		<cfset arrayAppend(error,"*Date_of_birth field is Empty")>
-	<cfelseif NOT isDate(form.date_of_birth) OR (isDate(form.date_of_birth) AND form.date_of_birth GT now())>
-		<cfset arrayAppend(error,"Input of Date_of_birth field is Invalid")>
-	</cfif>
-	<cfif len(form.profile) EQ 0 AND len(form.id) EQ 0>
-		<cfset arrayAppend(error,"*Profile pic field is Empty")>
-	<cfelse>
-		<cfinclude template="image.cfm">
-		<cfif NOT len(form.profile) EQ 0>
-			<cfset ext = "jpg,jpeg,png,gif,bmp,tiff">
-			<cfif NOT listFindNoCase(ext,listLast(filename,"."))>
-				<cffile action = "delete" 
-					file = "#uploadDir##filename#">
-				<cfset arrayAppend(error,"Input of Profile pic field is Invalid")>
-			</cfif>
-		</cfif>
-	</cfif>
-	<cfif len(form.house_flat) EQ 0>
-		<cfset arrayAppend(error,"*House_flat field is Empty")>
-	</cfif>
-	<cfif len(form.street) EQ 0>
-		<cfset arrayAppend(error,"*Street field is Empty")>
-	</cfif>
-	<cfif len(form.city) EQ 0>
-		<cfset arrayAppend(error,"*City field is Empty")>
-	</cfif>
-	<cfif len(form.state) EQ 0>
-		<cfset arrayAppend(error,"*State field is Empty")>
-	</cfif>
-	<cfif len(form.country) EQ 0>
-		<cfset arrayAppend(error,"*Country field is Empty")>
-	</cfif>
-	<cfif len(form.pincode) EQ 0>
-		<cfset arrayAppend(error,"*Pincode field is Empty")>
-	</cfif>
-	<cfif len(form.email) EQ 0>
-		<cfset arrayAppend(error,"*Email field is Empty")>
-	<cfelseif NOT REFindNoCase("^[\w]+@[\w]+\.[a-zA-Z]{2,}$",form.email)>
-		<cfset arrayAppend(error,"Input of Email field is Invalid")>
-	</cfif>
-	<cfif len(form.phone) EQ 0>
-		<cfset arrayAppend(error,"*Phone field is Empty")>
-	<cfelseif NOT REFindNoCase("[0-9]{10}",form.phone)>
-		<cfset arrayAppend(error,"*Input of Phone field is Invalid")>
-	</cfif>
-	<cfif NOT structKeyExists(form,"hobbies") OR (structKeyExists(form,"hobbies") AND listLen(form.hobbies) EQ 0)>
-		<cfset arrayAppend(error,"*Hobbies field to be selected")>
-	<cfelse>
-		<cfset tflag=0>
-		<cfloop list="#form.hobbies#" item="i">
-			<cfif NOT listFind(structKeyList(select.hobbies),i)>
-				<cfset tflag=1>
+		<cfset pending = "">
+		<cfif NOT queryKeyExists(quer,"title") OR len(quer.title) EQ 0>
+			<cfset pending = pending & "Title,">
+		<cfelse>
+			<cfset tflag=0>
+			<cfloop collection="#select.title#" item="i">
+				<cfif select.title[i] EQ trim(quer.title)>
+					<cfset qtitle=val(i)>
+					<cfbreak>
 				</cfif>
-		</cfloop>
-		<cfif tflag EQ 1>
-			<cfset arrayAppend(error,"*Selection of Hobbies field is Invalid")>
+			</cfloop>
+			<cfif NOT structKeyExists(variables,"qtitle")>
+				<cfset pending = pending & "Title(Invalid),">
+			</cfif>
 		</cfif>
-	</cfif>--->
-</cfif>
-</cfoutput><!---
-<cfset SpreadsheetAddColumn(quer,"Result")>
+		<cfif NOT queryKeyExists(quer,"firstname") OR len(quer.firstname) EQ 0>
+			<cfset pending = pending & "Firstname,">
+		</cfif>
+		<cfif NOT queryKeyExists(quer,"lastname") OR len(quer.lastname) EQ 0>
+			<cfset pending = pending & "Lastname,">
+		</cfif>
+		<cfif NOT queryKeyExists(quer,"gender") OR len(quer.gender) EQ 0>
+			<cfset pending = pending & "Gender,">
+		<cfelse>
+			<cfloop collection="#select.gender#" item="i">
+				<cfif select.gender[i] EQ trim(quer.gender)>
+					<cfset qgender=val(i)>
+					<cfbreak>
+				</cfif>
+			</cfloop>
+			<cfif NOT structKeyExists(variables,"qgender")>
+				<cfset pending = pending & "Gender(Invalid),">
+			</cfif>
+		</cfif>
+		<cfif NOT queryKeyExists(quer,"DOB") OR len(quer.DOB) EQ 0>
+			<cfset pending = pending & "DOB,">
+		<cfelseif NOT isDate(quer.DOB) OR (isDate(quer.DOB) AND quer.DOB GT now())>
+			<cfset pending = pending & "DOB(Invalid),">
+		</cfif>
+		<cfif NOT queryKeyExists(quer,"house") OR len(quer.house) EQ 0>
+			<cfset pending = pending & "House,">
+		</cfif>
+		<cfif NOT queryKeyExists(quer,"street") OR len(quer.street) EQ 0>
+			<cfset pending = pending & "Street,">
+		</cfif>
+		<cfif NOT queryKeyExists(quer,"city") OR len(quer.city) EQ 0>
+			<cfset pending = pending & "City,">
+		</cfif>
+		<cfif NOT queryKeyExists(quer,"state") OR len(quer.state) EQ 0>
+			<cfset pending = pending & "State,">
+		</cfif>
+		<cfif NOT queryKeyExists(quer,"country") OR len(quer.country) EQ 0>
+			<cfset pending = pending & "Country,">
+		</cfif>
+		<cfif NOT queryKeyExists(quer,"pincode") OR len(quer.pincode) EQ 0>
+			<cfset pending = pending & "Pincode,">
+		</cfif>
+		<cfif NOT queryKeyExists(quer,"email") OR len(quer.email) EQ 0>
+			<cfset pending = pending & "Email,">
+		<cfelseif NOT REFindNoCase("^[\w]+@[\w]+\.[a-zA-Z]{2,}$",quer.email)>
+			<cfset pending = pending & "Email(Invalid),">
+		</cfif>
+		<cfif NOT queryKeyExists(quer,"phone") OR len(quer.phone) EQ 0>
+			<cfset pending = pending & "Phone,">
+		<cfelseif NOT REFindNoCase("[0-9]{10}",quer.phone)>
+			<cfset pending = pending & "Phone(Invalid),">
+		</cfif>
+		<cfif NOT queryKeyExists(quer,"hobbies") OR listLen(quer.hobbies) EQ 0>
+			<cfset pending = pending & "Hobbies,">
+		<cfelse>
+			<cfset flag=0>
+			<cfset hobby="">
+			<cfloop list="#quer.hobbies#" index="i" item="k">
+				<cfset tflag=0>
+				<cfloop collection="#select.hobbies#" item="j">
+					<cfif trim(select.hobbies[j]) EQ trim(k)>
+						<cfset hobby = hobby & j>
+						<cfset tflag=1>
+						<cfif i NEQ listLen(quer.hobbies)>
+							<cfset hobby = hobby & ",">
+						</cfif>
+						<cfbreak>
+					</cfif>
+				</cfloop>
+				<cfif tflag NEQ 1>
+					<cfset flag=1>
+				</cfif>
+			</cfloop>
+			<cfif flag EQ 1>
+				<cfset pending = pending & "Hobbies(Invalid),">
+			</cfif>
+		</cfif>
+		<cfif listLen(pending) NEQ 0>
+			<div class="bg-body d-flex flex-wrap mt-5 mx-3 pt-5">
+				<cfoutput>
+					<cfloop list="#pending#" index="i">
+						<p class="border my-1 mx-2">#i##quer.firstname#</p>
+					</cfloop>
+				</cfoutput>
+			</div>
+			<cfset quer.setCell("Result",pending,quer.currentRow)>
+		<cfelse>
+			<cfset eflag=0>
+			<cfloop collection="#log#" item="i">
+				<cfif log[i].email EQ quer.email>
+					<cfset eflag=1>
+					<cfbreak>
+				</cfif>
+			</cfloop>
+			<cfif eflag EQ 1>
+				<cfset manager.updateContact( #i#,
+						qtitle,
+						quer.firstname,
+						quer.lastname,
+						qgender,
+						dateformat(quer.DOB,"yyyy-mm-dd"),
+						log[i].profile,
+						quer.house,
+						quer.street,
+						quer.city,
+						quer.state,
+						quer.country,
+						quer.pincode,
+						quer.email,
+						quer.phone,
+						hobby )>
+				<cfset quer.setCell("Result","updated",quer.currentRow)>
+			<cfelse>
+				<cfset manager.insertContact( qtitle,
+						quer.firstname,
+						quer.lastname,
+						qgender,
+						dateformat(quer.DOB,"yyyy-mm-dd"),
+						"signup.png",
+						quer.house,
+						quer.street,
+						quer.city,
+						quer.state,
+						quer.country,
+						quer.pincode,
+						quer.email,
+						quer.phone,
+						hobby )>
+				<cfset quer.setCell("Result","added",quer.currentRow)>
+			</cfif>
+		</cfif>
+</cfoutput>
+<cfspreadsheet
+	action="write"
+	query="quer"
+	filename="#theDir#output.xlsx"
+	overwrite="true">
 
-<cfset binary = SpreadsheetReadBinary(quer)>
+<cfset outputfile = SpreadsheetRead("#theDir#output.xlsx",1)>
+
+<cfset binary = SpreadsheetReadBinary(outputfile)>
 
 <cfheader name="Content-Disposition" value="attachment; filename=AddressBook-Upload-Result.xlsx">
 
-<cfcontent type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" variable="#binary#">--->
-
-
-
+<cfcontent type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" variable="#binary#">

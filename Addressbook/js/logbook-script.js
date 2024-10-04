@@ -119,6 +119,12 @@ $(document).ready(function(){
 		}
 	});
 
+	$("#uploadbtn").click(function() {
+		setTimeout(function() {
+			window.location.href="logbook.cfm";
+		},1000);
+	});
+
 	$(document).on("click",".printpage",function(){
 		let id = $(this).data('bs-id');
 		window.open("print.cfm?logid="+id,"_blank");
