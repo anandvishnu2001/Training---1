@@ -14,11 +14,15 @@
 	query="quer">
 
 <cfoutput query="quer">
-		<cfif quer.currentRow GT 2><cfdump var="#quer.currentRow#"><cfif QueryKeyExists(quer, "profile") >
-	<cfdump var="#quer.profile#"></cfif>
+		<cfif quer.currentRow GT 2>
+			<cfdump var="#quer.currentRow#">
+			<cfset pending = "">
+			<cfif NOT queryKeyExists(quer, "profile") OR (queryKeyExists(quer, "profile") AND len(quer.profile) EQ 0)>
+				<cfset pending = pending & "Profile,">
+			</cfif>
 <!---
-OR (structKeyExists(form,"title") AND len(form.title) EQ 0)>
-		<cfset arrayAppend(error,"*Title field to be selected")>
+<cfif NOT queryKeyExists(quer, "title") OR (queryKeyExists(quer,"title") AND len(quer.title) EQ 0)>
+		<cfset cfset pending = pending & "Title,">
 	<cfelseif NOT listFind(structKeyList(select.title),trim(form.title))>
 		<cfset arrayAppend(error,"*Selection of Title field is Invalid")>
 	</cfif>
