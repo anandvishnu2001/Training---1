@@ -151,6 +151,20 @@
 				<h2 id="uploadhead" class="modal-title flex-grow-1 fw-bold text-center text-warning">Upload Excel Sheet</h2>
 				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
+			<nav class="navbar navbar-expand-lg fw-bold justify-content-end">
+				<ul class="navbar-nav nav-tabs">
+					<li class="nav-item">
+						<a class="nav-link text-success" href="xls-template.cfm">
+							Plain Template<img src="./images/xls-template.png" width="40" height="40">
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link text-success" href="xls-data.cfm">
+							Template with Data<img src="./images/xls-data.png" width="40" height="40">
+						</a>
+					</li>
+				</ul>
+			</nav>
 			<form id="uploadExcel" name="uploadExcel" class="d-flex flex-column gap-1" action="" method="post" enctype="multipart/form-data">
 				<div class="form-floating">
 					<input type="file" name="upload" id="upload" class="form-control">

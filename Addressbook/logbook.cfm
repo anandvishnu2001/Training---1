@@ -31,11 +31,6 @@
 				<nav class="navbar navbar-expand-lg fw-bold justify-content-end">
 					<ul class="navbar-nav nav-tabs">
 						<li class="nav-item">
-							<a class="nav-link text-success" href="xls-template.cfm">
-								<img src="./images/xls-template.png" width="40" height="40">
-							</a>
-						</li>
-						<li class="nav-item">
 							<a class="nav-link text-success" href="xls-data.cfm">
 								<img src="./images/xls-data.png" width="40" height="40">
 							</a>
