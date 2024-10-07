@@ -6,29 +6,31 @@
 	filefield="form.upload"
 	destination="#theDir#"
 	nameConflict="makeunique">
-
 <cfspreadsheet
 	action="read"
 	headerrow="1"
 	excludeHeaderRow = "true"
-	src="#expandPath('./uploads/')##cffile.ServerFile#"
+	src="#theDir##cffile.ServerFile#"
 	query="quer">
 <cfdump var="#quer#">
 
 <cfset quer.addColumn("Result","varchar",arrayNew(1))>
 
 <cfoutput query="quer">
-		<cfset pending = "">
+		<cfset pending = ""><cfset t=StructFindValue(select.title,trim(quer.title))>
+			<cfdump var="#t#">
 		<cfif NOT queryKeyExists(quer,"title") OR len(quer.title) EQ 0>
 			<cfset pending = pending & "Title,">
 		<cfelse>
 			<cfset tflag=0>
+			<cfset t=StructFindValue(select.title,trim(quer.title))[1]>
+			<cfdump var="#t#"><!---
 			<cfloop collection="#select.title#" item="i">
 				<cfif select.title[i] EQ trim(quer.title)>
 					<cfset qtitle=val(i)>
 					<cfbreak>
 				</cfif>
-			</cfloop>
+			</cfloop>--->
 			<cfif NOT structKeyExists(variables,"qtitle")>
 				<cfset pending = pending & "Title(Invalid),">
 			</cfif>
@@ -123,7 +125,7 @@
 					<cfset eflag=1>
 					<cfbreak>
 				</cfif>
-			</cfloop>
+			</cfloop><!---
 			<cfif eflag EQ 1>
 				<cfset manager.updateContact( #i#,
 						qtitle,
@@ -159,7 +161,7 @@
 						quer.phone,
 						hobby )>
 				<cfset quer.setCell("Result","added",quer.currentRow)>
-			</cfif>
+			</cfif>--->
 		</cfif>
 </cfoutput>
 <cfspreadsheet
@@ -167,11 +169,11 @@
 	query="quer"
 	filename="#theDir#output.xlsx"
 	overwrite="true">
-
+<!---
 <cfset outputfile = SpreadsheetRead("#theDir#output.xlsx",1)>
 
 <cfset binary = SpreadsheetReadBinary(outputfile)>
 
 <cfheader name="Content-Disposition" value="attachment; filename=AddressBook-Upload-Result.xlsx">
 
-<cfcontent type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" variable="#binary#">
+<cfcontent type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" variable="#binary#">--->
