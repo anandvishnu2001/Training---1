@@ -91,24 +91,8 @@
 					</cfloop>
 				</cfoutput>
 			</div>
-		<cfelseif len(form.id) EQ 0>
-			<cfset manager.insertContact( form.title,
-							form.firstname,
-							form.lastname,
-							form.gender,
-							form.date_of_birth,
-							filename,
-							form.house_flat,
-							form.street,
-							form.city,
-							form.state,
-							form.country,
-							form.pincode,
-							form.email,
-							form.phone,
-							form.hobbies )>
 		<cfelse>
-			<cfset manager.updateContact( form.id,
+			<cfset manager.modifyContact( (len(form.id) NEQ 0 ? form.id : ""),
 							form.title,
 							form.firstname,
 							form.lastname,

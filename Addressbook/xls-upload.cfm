@@ -6,6 +6,7 @@
 	filefield="form.upload"
 	destination="#theDir#"
 	nameConflict="makeunique">
+
 <cfspreadsheet
 	action="read"
 	headerrow="1"
@@ -17,123 +18,96 @@
 <cfset quer.addColumn("Result","varchar",arrayNew(1))>
 
 <cfoutput query="quer">
-		<cfset pending = ""><cfset t=StructFindValue(select.title,trim(quer.title))>
-			<cfdump var="#t#">
-		<cfif NOT queryKeyExists(quer,"title") OR len(quer.title) EQ 0>
-			<cfset pending = pending & "Title,">
+		<cfset pending = "">
+		<cfif (NOT queryKeyExists(quer,"title")) OR len(quer.title) EQ 0>
+			<cfset pending = listAppend(pending,"Title",",")>
 		<cfelse>
-			<cfset tflag=0>
-			<cfset t=StructFindValue(select.title,trim(quer.title))[1]>
-			<cfdump var="#t#"><!---
-			<cfloop collection="#select.title#" item="i">
-				<cfif select.title[i] EQ trim(quer.title)>
-					<cfset qtitle=val(i)>
-					<cfbreak>
-				</cfif>
-			</cfloop>--->
-			<cfif NOT structKeyExists(variables,"qtitle")>
-				<cfset pending = pending & "Title(Invalid),">
+			<cfset structDelete(variables,"qtitle")>
+			<cfset checkTitle=StructFindValue(select.title,trim(quer.title))>
+			<cfif arrayLen(checkTitle) NEQ 0>
+				<cfset qtitle=val(checkTitle[1].key)>
+			<cfelse>
+				<cfset pending = listAppend(pending,"Title(Invalid)",",")>
 			</cfif>
 		</cfif>
-		<cfif NOT queryKeyExists(quer,"firstname") OR len(quer.firstname) EQ 0>
-			<cfset pending = pending & "Firstname,">
+		<cfif (NOT queryKeyExists(quer,"firstname")) OR len(quer.firstname) EQ 0>
+			<cfset pending = listAppend(pending,"Firstname",",")>
 		</cfif>
-		<cfif NOT queryKeyExists(quer,"lastname") OR len(quer.lastname) EQ 0>
-			<cfset pending = pending & "Lastname,">
+		<cfif (NOT queryKeyExists(quer,"lastname")) OR len(quer.lastname) EQ 0>
+			<cfset pending = listAppend(pending,"Lastname",",")>
 		</cfif>
-		<cfif NOT queryKeyExists(quer,"gender") OR len(quer.gender) EQ 0>
-			<cfset pending = pending & "Gender,">
+		<cfif (NOT queryKeyExists(quer,"gender")) OR len(quer.gender) EQ 0>
+			<cfset pending = listAppend(pending,"Gender",",")>
 		<cfelse>
-			<cfloop collection="#select.gender#" item="i">
-				<cfif select.gender[i] EQ trim(quer.gender)>
-					<cfset qgender=val(i)>
-					<cfbreak>
-				</cfif>
-			</cfloop>
-			<cfif NOT structKeyExists(variables,"qgender")>
-				<cfset pending = pending & "Gender(Invalid),">
+			<cfset structDelete(variables,"qgender")>
+			<cfset checkGender=StructFindValue(select.gender,trim(quer.gender))>
+			<cfif arrayLen(checkGender) NEQ 0>
+				<cfset qgender=val(checkGender[1].key)>
+			<cfelse>
+				<cfset pending = listAppend(pending,"Gender(Invalid)",",")>
 			</cfif>
 		</cfif>
 		<cfif NOT queryKeyExists(quer,"DOB") OR len(quer.DOB) EQ 0>
-			<cfset pending = pending & "DOB,">
+			<cfset pending = listAppend(pending,"DOB",",")>
 		<cfelseif NOT isDate(quer.DOB) OR (isDate(quer.DOB) AND quer.DOB GT now())>
-			<cfset pending = pending & "DOB(Invalid),">
+			<cfset pending = listAppend(pending,"DOB(Invalid)",",")>
 		</cfif>
 		<cfif NOT queryKeyExists(quer,"house") OR len(quer.house) EQ 0>
-			<cfset pending = pending & "House,">
+			<cfset pending = listAppend(pending,"House",",")>
 		</cfif>
 		<cfif NOT queryKeyExists(quer,"street") OR len(quer.street) EQ 0>
-			<cfset pending = pending & "Street,">
+			<cfset pending = listAppend(pending,"Street",",")>
 		</cfif>
 		<cfif NOT queryKeyExists(quer,"city") OR len(quer.city) EQ 0>
-			<cfset pending = pending & "City,">
+			<cfset pending = listAppend(pending,"City",",")>
 		</cfif>
 		<cfif NOT queryKeyExists(quer,"state") OR len(quer.state) EQ 0>
-			<cfset pending = pending & "State,">
+			<cfset pending = listAppend(pending,"State",",")>
 		</cfif>
 		<cfif NOT queryKeyExists(quer,"country") OR len(quer.country) EQ 0>
-			<cfset pending = pending & "Country,">
+			<cfset pending = listAppend(pending,"Country",",")>
 		</cfif>
 		<cfif NOT queryKeyExists(quer,"pincode") OR len(quer.pincode) EQ 0>
-			<cfset pending = pending & "Pincode,">
+			<cfset pending = listAppend(pending,"Pincode",",")>
 		</cfif>
 		<cfif NOT queryKeyExists(quer,"email") OR len(quer.email) EQ 0>
-			<cfset pending = pending & "Email,">
+			<cfset pending = listAppend(pending,"Email",",")>
 		<cfelseif NOT REFindNoCase("^[\w]+@[\w]+\.[a-zA-Z]{2,}$",quer.email)>
-			<cfset pending = pending & "Email(Invalid),">
+			<cfset pending = listAppend(pending,"Email(Invalid)",",")>
 		</cfif>
 		<cfif NOT queryKeyExists(quer,"phone") OR len(quer.phone) EQ 0>
-			<cfset pending = pending & "Phone,">
+			<cfset pending = listAppend(pending,"Phone",",")>
 		<cfelseif NOT REFindNoCase("[0-9]{10}",quer.phone)>
-			<cfset pending = pending & "Phone(Invalid),">
+			<cfset pending = listAppend(pending,"Phone(Invalid)",",")>
 		</cfif>
 		<cfif NOT queryKeyExists(quer,"hobbies") OR listLen(quer.hobbies) EQ 0>
-			<cfset pending = pending & "Hobbies,">
+			<cfset pending = listAppend(pending,"Hobbies",",")>
 		<cfelse>
-			<cfset flag=0>
 			<cfset hobby="">
-			<cfloop list="#quer.hobbies#" index="i" item="k">
-				<cfset tflag=0>
-				<cfloop collection="#select.hobbies#" item="j">
-					<cfif trim(select.hobbies[j]) EQ trim(k)>
-						<cfset hobby = listAppend(hobby,j,",")>
-						<cfset tflag=1>
-						<cfbreak>
-					</cfif>
-				</cfloop>
-				<cfif tflag NEQ 1>
-					<cfset flag=1>
-				</cfif>
-			</cfloop>
+			<cfset flag=0>
+			<cfset arrayHobbies=listToArray(quer.hobbies)>
+			<cfset arrayEach(arrayHobbies,function(value){
+					checkHobbies=StructFindValue(select.hobbies,trim(value));
+					if(arrayLen(checkHobbies) NEQ 0)
+						hobby = listAppend(hobby,checkHobbies[1].key,",");
+					else
+						flag = 1;
+				})>
 			<cfif flag EQ 1>
-				<cfset pending = pending & "Hobbies(Invalid),">
+				<cfset pending = listAppend(pending,"Hobbies(Invalid)",",")>
 			</cfif>
 		</cfif>
-		<cfif listLen(pending) NEQ 0>
-			<div class="bg-body d-flex flex-wrap mt-5 mx-3 pt-5">
-				<cfoutput>
-					<cfloop list="#pending#" index="i">
-						<p class="border my-1 mx-2">#i##quer.firstname#</p>
-					</cfloop>
-				</cfoutput>
-			</div>
-			<cfset quer.setCell("Result",pending,quer.currentRow)>
+		<cfif len(pending) NEQ 0>
+			<cfset QuerySetCell(quer,"Result",pending&" missing",quer.currentRow)>
 		<cfelse>
-			<cfset eflag=0>
-			<cfloop collection="#log#" item="i">
-				<cfif log[i].email EQ quer.email>
-					<cfset eflag=1>
-					<cfbreak>
-				</cfif>
-			</cfloop><!---
-			<cfif eflag EQ 1>
-				<cfset manager.updateContact( #i#,
+			<cfset idStruct=manager.getIdByEmail(quer.email)>
+				<cfset manager.modifyContact( (idStruct.check ? idStruct.id : ""),
 						qtitle,
 						quer.firstname,
 						quer.lastname,
 						qgender,
 						dateformat(quer.DOB,"yyyy-mm-dd"),
-						log[i].profile,
+						(idStruct.check ? log[idStruct.id].profile : "signup.png"),
 						quer.house,
 						quer.street,
 						quer.city,
@@ -143,36 +117,93 @@
 						quer.email,
 						quer.phone,
 						hobby )>
-				<cfset quer.setCell("Result","updated",quer.currentRow)>
+			<cfif idStruct.check>
+				<cfset QuerySetCell(quer,"Result","updated",quer.currentRow)>
 			<cfelse>
-				<cfset manager.insertContact( qtitle,
-						quer.firstname,
-						quer.lastname,
-						qgender,
-						dateformat(quer.DOB,"yyyy-mm-dd"),
-						"signup.png",
-						quer.house,
-						quer.street,
-						quer.city,
-						quer.state,
-						quer.country,
-						quer.pincode,
-						quer.email,
-						quer.phone,
-						hobby )>
-				<cfset quer.setCell("Result","added",quer.currentRow)>
-			</cfif>--->
+				<cfset QuerySetCell(quer,"Result","added",quer.currentRow)>
+			</cfif>
 		</cfif>
 </cfoutput>
-<cfspreadsheet
-	action="write"
-	query="quer"
-	filename="#theDir#output.xlsx"
-	overwrite="true">
-<!---
-<cfset outputfile = SpreadsheetRead("#theDir#output.xlsx",1)>
+<cfset spreadsheetObj = SpreadsheetNew("AddressBook","true")>
 
-<cfset binary = SpreadsheetReadBinary(outputfile)>
+<cfdump var="#quer#">
+
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,1,6)>
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,2,13)>
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,3,13)>
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,4,8)>
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,5,13)>
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,6,25)>
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,7,15)>
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,8,15)>
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,9,15)>
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,10,15)>
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,11,10)>
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,12,25)>
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,13,13)>
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,14,35)>
+<cfset SpreadSheetSetColumnWidth(spreadsheetobj,15,35)>
+
+<cfset head={color="gold",fgcolor="teal",bold="true",alignment="center",fontsize="13"}>
+
+<cfset SpreadsheetFormatRow(spreadsheetObj,head,1)>
+
+<cfset row={miss=2,add=2,update=2}>
+
+<cfoutput query="quer">
+	<cfset q=QueryGetRow(quer,quer.currentRow)>
+	<cfif find("missing",q.result)>
+		<cfset cur=row.miss>
+		<cfset row.miss++>
+		<cfdump var="#cur#">
+	<cfelseif q.result EQ "added>
+		<cfset cur=row.add>
+		<cfset row.add++>
+		<cfdump var="#cur#">
+	<cfelseif q.result EQ "updated">
+		<cfset cur=row.update>
+		<cfset row.update++>
+		<cfdump var="#cur#">
+	</cfif><!---
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,1),missStart,1)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,2),missStart,2)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,3),missStart,3)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,4),missStart,4)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,5),missStart,5)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,6),missStart,6)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,7),missStart,7)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,8),missStart,8)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,9),missStart,9)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,10),missStart,10)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,11),missStart,11)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,12),missStart,12)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,13),missStart,13)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,14),missStart,14)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,15),missStart,15)>--->
+</cfoutput>
+<!---
+<cfloop from="2" to="#spreadsheetObj.ROWCOUNT#" index="i">
+	<cfif find("issing",spreadsheetGetCellValue(spreadsheetObj,i,15))>
+		<cfset SpreadsheetShiftRows(spreadsheetObj,missStart,#spreadsheetObj.ROWCOUNT#,1)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,1),missStart,1)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,2),missStart,2)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,3),missStart,3)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,4),missStart,4)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,5),missStart,5)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,6),missStart,6)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,7),missStart,7)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,8),missStart,8)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,9),missStart,9)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,10),missStart,10)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,11),missStart,11)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,12),missStart,12)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,13),missStart,13)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,14),missStart,14)>
+		<cfset spreadsheetSetCellValue(spreadsheetObj,spreadsheetGetCellValue(spreadsheetObj,i,15),missStart,15)>
+		<cfset missStart++>
+	</cfif>
+</cfloop>
+<cfset binary = SpreadsheetReadBinary(spreadsheetObj)>
 
 <cfheader name="Content-Disposition" value="attachment; filename=AddressBook-Upload-Result.xlsx">
 

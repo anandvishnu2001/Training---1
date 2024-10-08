@@ -119,13 +119,14 @@
 		<cfreturn local.list>
 	</cffunction>
 
-	<cffunction name="insertContact" access="public">
+	<cffunction name="modifyContact" access="public">
+		<cfargument name="log_id" type="string" required="false">
 		<cfargument name="title" type="string" required="true">
 		<cfargument name="firstname" type="string" required="true">
 		<cfargument name="lastname" type="string" required="true">
 		<cfargument name="gender" type="string" required="true">
 		<cfargument name="date_of_birth" type="string" required="true">
-		<cfargument name="profile" type="string" required="true">
+		<cfargument name="profile" type="string" required="false">
 		<cfargument name="house_flat" type="string" required="true">
 		<cfargument name="street" type="string" required="true">
 		<cfargument name="city" type="string" required="true">
@@ -135,58 +136,125 @@
 		<cfargument name="email" type="string" required="true">
 		<cfargument name="phone" type="string" required="true">
 		<cfargument name="hobbies" type="string" required="true">
-		<cfquery name="local.insertData" result="res">
-			INSERT INTO
-				log_book(
-					user_id,
-					title,
-					firstname,
-					lastname,
-					profile,
-					gender,
-					date_of_birth,
-					house_flat,
-					street,
-					city,
-					state,
-					country,
-					pincode,
-					email,
-					phone
-				)
-			VALUES(
-				<cfqueryparam value="#session.userid#" cfsqltype="cf_sql_integer">,
-				<cfqueryparam value="#arguments.title#" cfsqltype="cf_sql_integer">,
-				<cfqueryparam value="#arguments.firstname#" cfsqltype="cf_sql_varchar">,
-				<cfqueryparam value="#arguments.lastname#" cfsqltype="cf_sql_varchar">,
-				<cfqueryparam value="#arguments.profile#" cfsqltype="cf_sql_varchar">,
-				<cfqueryparam value="#arguments.gender#" cfsqltype="cf_sql_integer">,
-				<cfqueryparam value="#arguments.date_of_birth#" cfsqltype="cf_sql_date">,
-				<cfqueryparam value="#arguments.house_flat#" cfsqltype="cf_sql_varchar">,
-				<cfqueryparam value="#arguments.street#" cfsqltype="cf_sql_varchar">,
-				<cfqueryparam value="#arguments.city#" cfsqltype="cf_sql_varchar">,
-				<cfqueryparam value="#arguments.state#" cfsqltype="cf_sql_varchar">,
-				<cfqueryparam value="#arguments.country#" cfsqltype="cf_sql_varchar">,
-				<cfqueryparam value="#arguments.pincode#" cfsqltype="cf_sql_varchar">,
-				<cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar">,
-				<cfqueryparam value="#arguments.phone#" cfsqltype="cf_sql_varchar">
-			);
-		</cfquery>
-		<cfquery name="local.insertHobbies" datasource="address">
-			INSERT INTO
-				contact_hobbies(
-					contact,
+		<cfif structKeyExists(arguments,"log_id") AND arguments.log_id NEQ "">
+			<cfset local.id = crypter(arguments.log_id,"decrypt")>
+			<cfquery name="local.updateInfo" datasource="address">
+				UPDATE
+					log_book
+				SET
+					title = <cfqueryparam value="#arguments.title#" cfsqltype="cf_sql_varchar">,
+					firstname = <cfqueryparam value="#arguments.firstname#" cfsqltype="cf_sql_varchar">,
+					lastname = <cfqueryparam value="#arguments.lastname#" cfsqltype="cf_sql_varchar">,
+					profile = CASE
+						WHEN <cfqueryparam value="#arguments.profile#" cfsqltype="cf_sql_varchar"> != ''
+							THEN <cfqueryparam value="#arguments.profile#" cfsqltype="cf_sql_varchar">
+						ELSE profile
+					END,
+					gender = <cfqueryparam value="#arguments.gender#" cfsqltype="cf_sql_varchar">,
+					date_of_birth = <cfqueryparam value="#arguments.date_of_birth#" cfsqltype="cf_sql_varchar">,
+					house_flat = <cfqueryparam value="#arguments.house_flat#" cfsqltype="cf_sql_varchar">,
+					street = <cfqueryparam value="#arguments.street#" cfsqltype="cf_sql_varchar">,
+					city = <cfqueryparam value="#arguments.city#" cfsqltype="cf_sql_varchar">,
+					state = <cfqueryparam value="#arguments.state#" cfsqltype="cf_sql_varchar">,
+					country = <cfqueryparam value="#arguments.country#" cfsqltype="cf_sql_varchar">,
+					pincode = <cfqueryparam value="#arguments.pincode#" cfsqltype="cf_sql_varchar">,
+					email = <cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar">,
+					phone = <cfqueryparam value="#arguments.phone#" cfsqltype="cf_sql_varchar">
+				WHERE
+					log_id = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
+				AND
+					user_id = <cfqueryparam value="#session.userid#" cfsqltype="cf_sql_integer">;
+			</cfquery>
+			<cfquery name="local.deleteHobbies" datasource="address">
+				DELETE FROM
+					contact_hobbies
+				WHERE
+					contact = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
+				AND
 					hobbies
-				)
-			VALUES
-				<cfloop list="#arguments.hobbies#" index="local.i" item="local.j">
-					(
-						<cfqueryparam value="#res.GENERATEDKEY#" cfsqltype="cf_sql_integer">,
-						<cfqueryparam value="#local.j#" cfsqltype="cf_sql_integer">
+				NOT IN
+					(<cfqueryparam value="#arguments.hobbies#" cfsqltype="cf_sql_integer" list="true">);
+			</cfquery>
+			<cfquery name="local.updateHobbies" datasource="address">
+				INSERT INTO
+					contact_hobbies(
+						contact,
+						hobbies
 					)
-					<cfif local.i NEQ listLen(arguments.hobbies)>,</cfif>
-				</cfloop>;
-		</cfquery>
+				SELECT 
+					<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer"> AS contact,
+					temp.hobby
+				FROM (
+					<cfloop list="#arguments.hobbies#" index="local.i" item="local.j">
+						<cfif local.i NEQ 1>
+							UNION ALL
+						</cfif>
+							SELECT <cfqueryparam value="#local.j#" cfsqltype="cf_sql_integer"> AS hobby
+					</cfloop>
+				) AS temp
+				WHERE temp.hobby NOT IN (
+					SELECT
+						hobbies
+					FROM
+						contact_hobbies
+					WHERE
+						contact = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
+				);
+			</cfquery>
+		<cfelse>
+			<cfquery name="local.insertData" result="res">
+				INSERT INTO
+					log_book(
+						user_id,
+						title,
+						firstname,
+						lastname,
+						profile,
+						gender,
+						date_of_birth,
+						house_flat,
+						street,
+						city,
+						state,
+						country,
+						pincode,
+						email,
+						phone
+					)
+				VALUES(
+					<cfqueryparam value="#session.userid#" cfsqltype="cf_sql_integer">,
+					<cfqueryparam value="#arguments.title#" cfsqltype="cf_sql_integer">,
+					<cfqueryparam value="#arguments.firstname#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#arguments.lastname#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#arguments.profile#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#arguments.gender#" cfsqltype="cf_sql_integer">,
+					<cfqueryparam value="#arguments.date_of_birth#" cfsqltype="cf_sql_date">,
+					<cfqueryparam value="#arguments.house_flat#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#arguments.street#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#arguments.city#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#arguments.state#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#arguments.country#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#arguments.pincode#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar">,
+					<cfqueryparam value="#arguments.phone#" cfsqltype="cf_sql_varchar">
+				);
+			</cfquery>
+			<cfquery name="local.insertHobbies" datasource="address">
+				INSERT INTO
+					contact_hobbies(
+						contact,
+						hobbies
+					)
+				VALUES
+					<cfloop list="#arguments.hobbies#" index="local.i" item="local.j">
+						(
+							<cfqueryparam value="#res.GENERATEDKEY#" cfsqltype="cf_sql_integer">,
+							<cfqueryparam value="#local.j#" cfsqltype="cf_sql_integer">
+						)
+						<cfif local.i NEQ listLen(arguments.hobbies)>,</cfif>
+					</cfloop>;
+			</cfquery>
+		</cfif>
 	</cffunction>
 
 	<cffunction name="getList" access="remote" returnFormat="JSON" returnType="struct">
@@ -249,20 +317,6 @@
 					"email"=local.list.email,
 					"phone"=local.list.phone,
 					"hobbies"={ #local.list.hobbies#=local.list.hvalue }}>
-				<cfset structSetMetadata(local.records[local.id],{keys:{"firstname"={type="string"},
-											"lastname":{type:"string"},
-											"profile":{type:"string"},
-											"date_of_birth":{type:"date"},
-											"house_flat":{type:"string"},
-											"street":{type:"string"},
-											"city":{type:"string"},
-											"state":{type:"string"},
-											"country":{type:"string"},
-											"pincode":{type:"numeric"},
-											"country":{type:"string"},
-											"phone"={type="numeric"}}})>
-				<cfset structSetMetadata(local.records[local.id]["title"],{#local.list.title#:{type:"string"}})>
-				<cfset structSetMetadata(local.records[local.id]["gender"],{#local.list.gender#={type="string"}})>
 			<cfelse>
 				<cfset local.records[local.id]["hobbies"][local.list.hobbies]=local.list.hvalue> 
 			</cfif>
@@ -270,87 +324,25 @@
 		<cfreturn local.records>
 	</cffunction>
 
-	<cffunction name="updateContact" access="public">
-		<cfargument name="log_id" type="string" required="true">
-		<cfargument name="title" type="string" required="true">
-		<cfargument name="firstname" type="string" required="true">
-		<cfargument name="lastname" type="string" required="true">
-		<cfargument name="gender" type="string" required="true">
-		<cfargument name="date_of_birth" type="string" required="true">
-		<cfargument name="profile" type="string">
-		<cfargument name="house_flat" type="string" required="true">
-		<cfargument name="street" type="string" required="true">
-		<cfargument name="city" type="string" required="true">
-		<cfargument name="state" type="string" required="true">
-		<cfargument name="country" type="string" required="true">
-		<cfargument name="pincode" type="string" required="true">
+	<cffunction name="getIdByEmail" access="public">
 		<cfargument name="email" type="string" required="true">
-		<cfargument name="phone" type="string" required="true">
-		<cfargument name="hobbies" type="string" required="true">
-		<cfset local.id = crypter(arguments.log_id,"decrypt")>
-		<cfquery name="local.updateInfo" datasource="address">
-			UPDATE
-				log_book
-			SET
-				title = <cfqueryparam value="#arguments.title#" cfsqltype="cf_sql_varchar">,
-				firstname = <cfqueryparam value="#arguments.firstname#" cfsqltype="cf_sql_varchar">,
-				lastname = <cfqueryparam value="#arguments.lastname#" cfsqltype="cf_sql_varchar">,
-				profile = CASE
-					WHEN <cfqueryparam value="#arguments.profile#" cfsqltype="cf_sql_varchar"> != ''
-						THEN <cfqueryparam value="#arguments.profile#" cfsqltype="cf_sql_varchar">
-					ELSE profile
-				END,
-				gender = <cfqueryparam value="#arguments.gender#" cfsqltype="cf_sql_varchar">,
-				date_of_birth = <cfqueryparam value="#arguments.date_of_birth#" cfsqltype="cf_sql_varchar">,
-				house_flat = <cfqueryparam value="#arguments.house_flat#" cfsqltype="cf_sql_varchar">,
-				street = <cfqueryparam value="#arguments.street#" cfsqltype="cf_sql_varchar">,
-				city = <cfqueryparam value="#arguments.city#" cfsqltype="cf_sql_varchar">,
-				state = <cfqueryparam value="#arguments.state#" cfsqltype="cf_sql_varchar">,
-				country = <cfqueryparam value="#arguments.country#" cfsqltype="cf_sql_varchar">,
-				pincode = <cfqueryparam value="#arguments.pincode#" cfsqltype="cf_sql_varchar">,
-				email = <cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar">,
-				phone = <cfqueryparam value="#arguments.phone#" cfsqltype="cf_sql_varchar">
-			WHERE
-				log_id = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
-			AND
-				user_id = <cfqueryparam value="#session.userid#" cfsqltype="cf_sql_integer">;
-		</cfquery>
-		<cfquery name="local.deleteHobbies" datasource="address">
-			DELETE FROM
-				contact_hobbies
-			WHERE
-				contact = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
-			AND
-				hobbies
-			NOT IN
-				(<cfqueryparam value="#arguments.hobbies#" cfsqltype="cf_sql_integer" list="true">);
-		</cfquery>
-		<cfquery name="local.updateHobbies" datasource="address">
-			INSERT INTO
-				contact_hobbies(
-					contact,
-					hobbies
-				)
+		<cfquery name="local.getID" datasource="address">
 			SELECT 
-				<cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer"> AS contact,
-				temp.hobby
-			FROM (
-				<cfloop list="#arguments.hobbies#" index="local.i" item="local.j">
-					<cfif local.i NEQ 1>
-						UNION ALL
-					</cfif>
-						SELECT <cfqueryparam value="#local.j#" cfsqltype="cf_sql_integer"> AS hobby
-				</cfloop>
-			) AS temp
-			WHERE temp.hobby NOT IN (
-				SELECT
-					hobbies
-				FROM
-					contact_hobbies
-				WHERE
-					contact = <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">
-			);
+				log_id
+			FROM
+				log_book
+			WHERE
+				user_id=<cfqueryparam value="#session.userid#" cfsqltype="cf_sql_varchar">
+			AND
+				email=<cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar">;
 		</cfquery>
+		<cfif len(local.getId.log_id) NEQ 0>
+			<cfset local.access={ check: true,
+						id: crypter(local.getId.log_id,"encrypt") }>
+		<cfelse>
+			<cfset local.access={ check: false }>
+		</cfif>
+		<cfreturn local.access>
 	</cffunction>
 
 	<cffunction name="deleteRecord" access="public">
