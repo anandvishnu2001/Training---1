@@ -109,13 +109,22 @@
 							form.phone,
 							form.hobbies )>
 		</cfif>
+	<cfelseif structKeyExists(form,"plainbtn")>
+		<cfset manager.createExcel("plain")>
+	<cfelseif structKeyExists(form,"databtn")>
+		<cfset manager.createExcel("data")>
 	<cfelseif structKeyExists(form,"uploadbtn")>
 		<cfif len(form.upload) EQ 0>
 			<div class="bg-body d-flex flex-wrap mt-5 mx-3 pt-5">
 				<p class="border my-1 mx-2">*Excel File Not Uploaded</p>
 			</div>
 		<cfelse>
-			<cfinclude template="xls-upload.cfm">
+			<cfset theDir = expandPath('./uploads/')>
+			<cffile action="upload"
+				filefield="form.upload"
+				destination="#theDir#"
+				nameConflict="makeunique">
+			<cfset manager.createExcel("upload","#theDir##cffile.ServerFile#")>
 		</cfif>
 	<cfelseif structKeyExists(form,"deletebtn")>
 		<cfset manager.deleteRecord( form.d_id )>

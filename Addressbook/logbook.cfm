@@ -62,7 +62,15 @@
 				<div class="glow bg-body card flex-grow-1 d-flex col-9 flex-column p-3">
 					<p class="h1 fw-bold text-center text-success mb-3">CONTACTS</p>
 					<div class="table-responsive">
-						<cfinclude template="logbook-list.cfm">
+						<table class="table align-middle table-responsive table-borderless table-sm table-hover">	
+							<thead>
+								<th></th>
+								<th class="header text-primary">Name</th>
+								<th class="header text-primary">Email</th>
+								<th class="header text-primary">Phone</th>
+							</thead>
+							<tbody name="contactList" id="contactList"></tbody>
+						</table>
 					</div>
 				</div>
 			</div>
