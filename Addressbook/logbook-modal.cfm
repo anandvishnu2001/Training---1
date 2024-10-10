@@ -151,18 +151,18 @@
 				<h2 id="uploadhead" class="modal-title flex-grow-1 fw-bold text-center text-warning">Upload Excel Sheet</h2>
 				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
-			<nav class="navbar navbar-expand-lg fw-bold justify-content-center">
-				<ul class="navbar-nav nav-tabs">
+			<nav class="navbar navbar-expand-lg my-3 fw-bold justify-content-center">
+				<ul class="navbar-nav nav-pills w-100 justify-content-between">
 					<li class="nav-item">
 						<form id="plainTemplate" name="plainTemplate" action="" method="post">
-							<button name="plainbtn" id="plainbtn" type="submit" class="btn btn-outline-success">
+							<button name="plainbtn" id="plainbtn" type="submit" class="btn btn-outline-success fw-bold">
 								Plain Template<img src="./images/xls-plain.png" width="40" height="40">
 							</button>
 						</form>
 					</li>
 					<li class="nav-item">
 						<form id="dataTemplate" name="dataTemplate" action="" method="post">
-							<button name="databtn" id="databtn" type="submit" class="btn btn-outline-success">
+							<button name="databtn" id="databtn" type="submit" class="btn btn-outline-success fw-bold">
 								Template with Data<img src="./images/xls-data.png" width="40" height="40">
 							</button>
 						</form>
@@ -171,9 +171,11 @@
 			</nav>
 			<form id="uploadExcel" name="uploadExcel" class="d-flex flex-column gap-1" action="" method="post" enctype="multipart/form-data">
 				<div class="form-floating">
-					<input type="file" name="upload" id="upload" class="form-control">
+					<input type="file" name="upload" id="upload" class="form-control" required>
 				</div>
-				<button name="uploadbtn" id="uploadbtn" type="submit" class="btn btn-outline-success">Upload</button>
+				<button name="uploadbtn" id="uploadbtn" type="submit" class="btn btn-outline-success fw-bold">
+					Update Template <img src="./images/xls-data.png" width="40" height="40">
+				</button>
 			</form>
 		</div>
 	</div>

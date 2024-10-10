@@ -368,8 +368,6 @@
 		<cfargument name="action" type="string" required="true">
 		<cfargument name="excel" type="string" required="false">
 		<cfset local.spreadsheetObj = SpreadsheetNew("AddressBook","true")>
-		<cfset local.head={color="gold",fgcolor="teal",bold="true",alignment="center",fontsize="13"}>
-		<cfset SpreadsheetFormatRow(local.spreadsheetObj,local.head,1)>
 		<cfset SpreadSheetSetColumnWidth(local.spreadsheetObj,1,6)>
 		<cfset SpreadSheetSetColumnWidth(local.spreadsheetObj,2,13)>
 		<cfset SpreadSheetSetColumnWidth(local.spreadsheetObj,3,13)>
@@ -384,7 +382,10 @@
 		<cfset SpreadSheetSetColumnWidth(local.spreadsheetObj,12,25)>
 		<cfset SpreadSheetSetColumnWidth(local.spreadsheetObj,13,13)>
 		<cfset SpreadSheetSetColumnWidth(local.spreadsheetObj,14,35)>
-		<cfif arguments.action EQ "plain" OR arguments.action EQ "data">
+		<cfif arguments.action NEQ "plain">
+			<cfset local.log = getList()>
+		</cfif>
+		<cfif arguments.action NEQ "upload">
 			<cfset spreadsheetSetCellValue(local.spreadsheetObj,"Title",1,1)>
 			<cfset spreadsheetSetCellValue(local.spreadsheetObj,"Firstname",1,2)>
 			<cfset spreadsheetSetCellValue(local.spreadsheetObj,"Lastname",1,3)>
@@ -399,9 +400,6 @@
 			<cfset spreadsheetSetCellValue(local.spreadsheetObj,"Email",1,12)>
 			<cfset spreadsheetSetCellValue(local.spreadsheetObj,"Phone",1,13)>
 			<cfset spreadsheetSetCellValue(local.spreadsheetObj,"Hobbies",1,14)>
-		</cfif>
-		<cfif arguments.action EQ "data" OR arguments.action EQ "upload">
-			<cfset local.log = getList()>
 		</cfif>
 		<cfif arguments.action EQ "plain">
 			<cfheader name="Content-Disposition" value="attachment; filename=AddressBook-Plain-Template.xlsx">
@@ -421,8 +419,8 @@
 				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].pincode#",local.j+1,11)>
 				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].email#",local.j+1,12)>
 				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].phone#",local.j+1,13)>
-				<cfset local.hobbies = listMap(StructKeyList(local.log[local.i].hobbies), function(key) {
-						return local.log[local.i].hobbies[key];
+				<cfset local.hobbies = listMap(StructKeyList(local.log[local.i].hobbies), function(item) {
+						return log[i].hobbies[item];
 					})>
 				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.hobbies#",local.j+1,14)>
 				<cfset local.j++>
@@ -433,7 +431,7 @@
 				</cfif>
 			</cfloop>
 			<cfheader name="Content-Disposition" value="attachment; filename=AddressBook-DataIncluded-Template.xlsx">
-		<cfelseif arguments.action EQ "upload">
+		<cfelseif arguments.action EQ "upload" AND structKeyExists(arguments,"excel")>
 			<cfset local.select = selectSet()>
 			<cfspreadsheet
 				action="read"
@@ -512,9 +510,9 @@
 					<cfset local.flag=0>
 					<cfset local.arrayHobbies=listToArray(local.quer.hobbies)>
 					<cfset arrayEach(local.arrayHobbies,function(value){
-							local.checkHobbies=StructFindValue(local.select.hobbies,trim(value));
+							local.checkHobbies=StructFindValue(select.hobbies,trim(value));
 							if(arrayLen(local.checkHobbies) NEQ 0)
-								local.hobby = listAppend(local.hobby,local.checkHobbies[1].key,",");
+								hobby = listAppend(hobby,local.checkHobbies[1].key,",");
 							else
 								local.flag = 1;
 						})>
@@ -567,6 +565,8 @@
 			<cfset SpreadsheetAddRows(local.spreadsheetObj,local.sortquer,1,1,true,[],true)>
 			<cfheader name="Content-Disposition" value="attachment; filename=AddressBook-Upload-Result.xlsx">
 		</cfif>
+		<cfset local.head={color="gold",fgcolor="teal",bold="true",alignment="center",fontsize="13"}>
+		<cfset SpreadsheetFormatRow(local.spreadsheetObj,local.head,1)>
 		<cfset local.binary = SpreadsheetReadBinary(local.spreadsheetObj)>
 		<cfcontent type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" variable="#local.binary#">
 	</cffunction>

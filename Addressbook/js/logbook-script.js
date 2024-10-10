@@ -6,7 +6,6 @@ $(document).ready(function(){
 		type: 'GET',
 		success: function(data){
 			let listObj = JSON.parse(data);
-			console.log(listObj);
 			if (listObj == ''){
 				alert('Contacts is Empty');
 			}
@@ -17,10 +16,10 @@ $(document).ready(function(){
 					row += `<td class="contactname">${Object.values(record.title)[0]+' '+record.firstname+' '+record.lastname}</td>`;
 					row += `<td class="contactemail">${record.email}</td>`;
 					row += `<td class="contactphone">${record.phone}</td>`;
-					row += `<td class="no-print"><button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="view" data-bs-id="${key}">View</button></td>`;
-					row += `<td class="no-print"><button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="edit" data-bs-id="${key}">Edit</button></td>`;
-					row += `<td class="no-print"><button class="1dlt btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="delete" data-bs-id="${key}">Delete</button></td>`;
-					row += `<td class="no-print"><button class="printpage btn btn-sm btn-outline-primary" data-bs-id="${key}">Print</button></td>`;
+					row += `<td class="no-print"><button class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="view" data-bs-id="${key}">View</button></td>`;
+					row += `<td class="no-print"><button class="btn btn-sm btn-outline-warning fw-bold" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="edit" data-bs-id="${key}">Edit</button></td>`;
+					row += `<td class="no-print"><button class="1dlt btn btn-sm btn-outline-danger fw-bold" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="delete" data-bs-id="${key}">Delete</button></td>`;
+					row += `<td class="no-print"><button class="printpage btn btn-sm btn-outline-primary fw-bold" data-bs-id="${key}">Print</button></td>`;
 					row += `</tr>`;
 					$("#contactList").append(row);
 				});
@@ -30,6 +29,7 @@ $(document).ready(function(){
 
 	$('#modal').on('hidden.bs.modal', function() {
 		$('#id').val();
+		window.location.href="logbook.cfm";
 	});
 
 	$('#modal').on('show.bs.modal',function(event){
@@ -118,13 +118,7 @@ $(document).ready(function(){
 			}
 		}
 	});
-/*
-	$("#uploadbtn").click(function() {
-		setTimeout(function() {
-			window.location.href="logbook.cfm";
-		},500);
-	});
-*/
+
 	$(document).on("click",".printpage",function(){
 		let id = $(this).data('bs-id');
 		window.open("print.cfm?logid="+id,"_blank");
