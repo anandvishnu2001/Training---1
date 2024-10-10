@@ -406,26 +406,26 @@
 		<cfif arguments.action EQ "plain">
 			<cfheader name="Content-Disposition" value="attachment; filename=AddressBook-Plain-Template.xlsx">
 		<cfelseif arguments.action EQ "data">
-			<cfset j=1>
+			<cfset local.j=1>
 			<cfloop collection="#local.log#" item="local.i">
-				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].title[StructKeyList(local.log[local.i].title)[1]]#",j+1,1)>
-				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].firstname#",j+1,2)>
-				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].lastname#",j+1,3)>
-				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].gender[StructKeyList(local.log[local.i].gender)[1]]#",j+1,4)>
-				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].date_of_birth#",j+1,5)>
-				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].house_flat#",j+1,6)>
-				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].street#",j+1,7)>
-				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].city#",j+1,8)>
-				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].state#",j+1,9)>
-				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].country#",j+1,10)>
-				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].pincode#",j+1,11)>
-				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].email#",j+1,12)>
-				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].phone#",j+1,13)>
-				<cfset hobbies = listMap(StructKeyList(local.log[local.i].hobbies), function(key) {
+				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].title[StructKeyList(local.log[local.i].title)[1]]#",local.j+1,1)>
+				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].firstname#",local.j+1,2)>
+				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].lastname#",local.j+1,3)>
+				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].gender[StructKeyList(local.log[local.i].gender)[1]]#",local.j+1,4)>
+				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].date_of_birth#",local.j+1,5)>
+				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].house_flat#",local.j+1,6)>
+				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].street#",local.j+1,7)>
+				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].city#",local.j+1,8)>
+				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].state#",local.j+1,9)>
+				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].country#",local.j+1,10)>
+				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].pincode#",local.j+1,11)>
+				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].email#",local.j+1,12)>
+				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.log[local.i].phone#",local.j+1,13)>
+				<cfset local.hobbies = listMap(StructKeyList(local.log[local.i].hobbies), function(key) {
 						return local.log[local.i].hobbies[key];
 					})>
-				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#hobbies#",j+1,14)>
-				<cfset j++>
+				<cfset spreadsheetSetCellValue(local.spreadsheetObj,"#local.hobbies#",local.j+1,14)>
+				<cfset local.j++>
 			</cfloop>
 			<cfloop from="1" to="#1+structCount(local.log)#" index="local.i">
 				<cfif local.i%2 EQ 0>
@@ -443,96 +443,96 @@
 				query="local.quer">
 			<cfset local.quer.addColumn("Result","varchar",arrayNew(1))>
 			<cfoutput query="local.quer">
-				<cfset pending = "">
+				<cfset local.pending = "">
 				<cfif (NOT queryKeyExists(local.quer,"title")) OR len(local.quer.title) EQ 0>
-					<cfset pending = listAppend(pending,"Title",",")>
+					<cfset local.pending = listAppend(local.pending,"Title",",")>
 				<cfelse>
-					<cfset structDelete(variables,"qtitle")>
-					<cfset checkTitle=StructFindValue(select.title,trim(local.quer.title))>
-					<cfif arrayLen(checkTitle) NEQ 0>
-						<cfset qtitle=val(checkTitle[1].key)>
+					<cfset structDelete(variables,"local.qtitle")>
+					<cfset local.checkTitle=StructFindValue(local.select.title,trim(local.quer.title))>
+					<cfif arrayLen(local.checkTitle) NEQ 0>
+						<cfset local.qtitle=val(local.checkTitle[1].key)>
 					<cfelse>
-						<cfset pending = listAppend(pending,"Title(Valid)",",")>
+						<cfset local.pending = listAppend(local.pending,"Title(Valid)",",")>
 					</cfif>
 				</cfif>
 				<cfif (NOT queryKeyExists(local.quer,"firstname")) OR len(local.quer.firstname) EQ 0>
-					<cfset pending = listAppend(pending,"Firstname",",")>
+					<cfset local.pending = listAppend(local.pending,"Firstname",",")>
 				</cfif>
 				<cfif (NOT queryKeyExists(local.quer,"lastname")) OR len(local.quer.lastname) EQ 0>
-					<cfset pending = listAppend(pending,"Lastname",",")>
+					<cfset local.pending = listAppend(local.pending,"Lastname",",")>
 				</cfif>
 				<cfif (NOT queryKeyExists(local.quer,"gender")) OR len(local.quer.gender) EQ 0>
-					<cfset pending = listAppend(pending,"Gender",",")>
+					<cfset local.pending = listAppend(local.pending,"Gender",",")>
 				<cfelse>
-					<cfset structDelete(variables,"qgender")>
-					<cfset checkGender=StructFindValue(select.gender,trim(local.quer.gender))>
-					<cfif arrayLen(checkGender) NEQ 0>
-						<cfset qgender=val(checkGender[1].key)>
+					<cfset structDelete(variables,"local.qgender")>
+					<cfset local.checkGender=StructFindValue(local.select.gender,trim(local.quer.gender))>
+					<cfif arrayLen(local.checkGender) NEQ 0>
+						<cfset local.qgender=val(local.checkGender[1].key)>
 					<cfelse>
-						<cfset pending = listAppend(pending,"Gender(Valid)",",")>
+						<cfset local.pending = listAppend(local.pending,"Gender(Valid)",",")>
 					</cfif>
 				</cfif>
 				<cfif NOT queryKeyExists(local.quer,"DOB") OR len(local.quer.DOB) EQ 0>
-					<cfset pending = listAppend(pending,"DOB",",")>
+					<cfset local.pending = listAppend(local.pending,"DOB",",")>
 				<cfelseif NOT isDate(local.quer.DOB) OR (isDate(local.quer.DOB) AND local.quer.DOB GT now())>
-					<cfset pending = listAppend(pending,"DOB(Valid)",",")>
+					<cfset local.pending = listAppend(local.pending,"DOB(Valid)",",")>
 				</cfif>
 				<cfif NOT queryKeyExists(local.quer,"house") OR len(local.quer.house) EQ 0>
-					<cfset pending = listAppend(pending,"House",",")>
+					<cfset local.pending = listAppend(local.pending,"House",",")>
 				</cfif>
 				<cfif NOT queryKeyExists(local.quer,"street") OR len(local.quer.street) EQ 0>
-					<cfset pending = listAppend(pending,"Street",",")>
+					<cfset local.pending = listAppend(local.pending,"Street",",")>
 				</cfif>
 				<cfif NOT queryKeyExists(local.quer,"city") OR len(local.quer.city) EQ 0>
-					<cfset pending = listAppend(pending,"City",",")>
+					<cfset local.pending = listAppend(local.pending,"City",",")>
 				</cfif>
 				<cfif NOT queryKeyExists(local.quer,"state") OR len(local.quer.state) EQ 0>
-					<cfset pending = listAppend(pending,"State",",")>
+					<cfset local.pending = listAppend(local.pending,"State",",")>
 				</cfif>
 				<cfif NOT queryKeyExists(local.quer,"country") OR len(local.quer.country) EQ 0>
-					<cfset pending = listAppend(pending,"Country",",")>
+					<cfset local.pending = listAppend(local.pending,"Country",",")>
 				</cfif>
 				<cfif NOT queryKeyExists(local.quer,"pincode") OR len(local.quer.pincode) EQ 0>
-					<cfset pending = listAppend(pending,"Pincode",",")>
+					<cfset local.pending = listAppend(local.pending,"Pincode",",")>
 				</cfif>
 				<cfif NOT queryKeyExists(local.quer,"email") OR len(local.quer.email) EQ 0>
-					<cfset pending = listAppend(pending,"Email",",")>
+					<cfset local.pending = listAppend(local.pending,"Email",",")>
 				<cfelseif NOT REFindNoCase("^[\w]+@[\w]+\.[a-zA-Z]{2,}$",local.quer.email)>
-					<cfset pending = listAppend(pending,"Email(Valid)",",")>
+					<cfset local.pending = listAppend(local.pending,"Email(Valid)",",")>
 				</cfif>
 				<cfif NOT queryKeyExists(local.quer,"phone") OR len(local.quer.phone) EQ 0>
-					<cfset pending = listAppend(pending,"Phone",",")>
+					<cfset local.pending = listAppend(local.pending,"Phone",",")>
 				<cfelseif NOT REFindNoCase("[0-9]{10}",local.quer.phone)>
-					<cfset pending = listAppend(pending,"Phone(Valid)",",")>
+					<cfset local.pending = listAppend(local.pending,"Phone(Valid)",",")>
 				</cfif>
 				<cfif NOT queryKeyExists(local.quer,"hobbies") OR listLen(local.quer.hobbies) EQ 0>
-					<cfset pending = listAppend(pending,"Hobbies",",")>
+					<cfset local.pending = listAppend(local.pending,"Hobbies",",")>
 				<cfelse>
-					<cfset hobby="">
-					<cfset flag=0>
-					<cfset arrayHobbies=listToArray(local.quer.hobbies)>
-					<cfset arrayEach(arrayHobbies,function(value){
-							checkHobbies=StructFindValue(select.hobbies,trim(value));
-							if(arrayLen(checkHobbies) NEQ 0)
-								hobby = listAppend(hobby,checkHobbies[1].key,",");
+					<cfset local.hobby="">
+					<cfset local.flag=0>
+					<cfset local.arrayHobbies=listToArray(local.quer.hobbies)>
+					<cfset arrayEach(local.arrayHobbies,function(value){
+							local.checkHobbies=StructFindValue(local.select.hobbies,trim(value));
+							if(arrayLen(local.checkHobbies) NEQ 0)
+								local.hobby = listAppend(local.hobby,local.checkHobbies[1].key,",");
 							else
-								flag = 1;
+								local.flag = 1;
 						})>
-					<cfif flag EQ 1>
-						<cfset pending = listAppend(pending,"Hobbies(Valid)",",")>
+					<cfif local.flag EQ 1>
+						<cfset local.pending = listAppend(local.pending,"Hobbies(Valid)",",")>
 					</cfif>
 				</cfif>
-				<cfif len(pending) NEQ 0>
-					<cfset QuerySetCell(local.quer,"Result",pending&" missing",local.quer.currentRow)>
+				<cfif len(local.pending) NEQ 0>
+					<cfset QuerySetCell(local.quer,"Result",local.pending&" missing",local.quer.currentRow)>
 				<cfelse>
-					<cfset idStruct=manager.getIdByEmail(local.quer.email)>
-					<cfset manager.modifyContact( (idStruct.check ? idStruct.id : ""),
-						qtitle,
+					<cfset local.idStruct=getIdByEmail(local.quer.email)>
+					<cfset modifyContact( (local.idStruct.check ? local.idStruct.id : ""),
+						local.qtitle,
 						local.quer.firstname,
 						local.quer.lastname,
-						qgender,
+						local.qgender,
 						dateformat(local.quer.DOB,"yyyy-mm-dd"),
-						(idStruct.check ? local.log[idStruct.id].profile : "signup.png"),
+						(local.idStruct.check ? local.log[local.idStruct.id].profile : "signup.png"),
 						local.quer.house,
 						local.quer.street,
 						local.quer.city,
@@ -541,8 +541,8 @@
 						local.quer.pincode,
 						local.quer.email,
 						local.quer.phone,
-						hobby )>
-					<cfif idStruct.check>
+						local.hobby )>
+					<cfif local.idStruct.check>
 						<cfset QuerySetCell(local.quer,"Result","updated",local.quer.currentRow)>
 					<cfelse>
 						<cfset QuerySetCell(local.quer,"Result","added",local.quer.currentRow)>
@@ -567,8 +567,8 @@
 			<cfset SpreadsheetAddRows(local.spreadsheetObj,local.sortquer,1,1,true,[],true)>
 			<cfheader name="Content-Disposition" value="attachment; filename=AddressBook-Upload-Result.xlsx">
 		</cfif>
-		<cfset binary = SpreadsheetReadBinary(local.spreadsheetObj)>
-		<cfcontent type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" variable="#binary#">
+		<cfset local.binary = SpreadsheetReadBinary(local.spreadsheetObj)>
+		<cfcontent type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" variable="#local.binary#">
 	</cffunction>
 
 	<cffunction name="crypter" access="private">
