@@ -154,26 +154,24 @@
 			<nav class="navbar navbar-expand-lg my-3 fw-bold justify-content-center">
 				<ul class="navbar-nav nav-pills w-100 justify-content-between">
 					<li class="nav-item">
-						<form id="plainTemplate" name="plainTemplate" action="" method="post">
-							<button name="plainbtn" id="plainbtn" type="submit" class="btn btn-outline-success fw-bold">
+							<a name="plainbtn" id="plainbtn" class="btn btn-outline-success fw-bold" href="xls.cfm?action=plain">
 								Plain Template<img src="./images/xls-plain.png" width="40" height="40">
-							</button>
-						</form>
+							</a>
 					</li>
 					<li class="nav-item">
 						<form id="dataTemplate" name="dataTemplate" action="" method="post">
-							<button name="databtn" id="databtn" type="submit" class="btn btn-outline-success fw-bold">
+							<a name="databtn" id="databtn" class="btn btn-outline-success fw-bold" href="xls.cfm?action=data">
 								Template with Data<img src="./images/xls-data.png" width="40" height="40">
-							</button>
+							</a>
 						</form>
 					</li>
 				</ul>
 			</nav>
-			<form id="uploadExcel" name="uploadExcel" class="d-flex flex-column gap-1" action="" method="post" enctype="multipart/form-data">
+			<form id="uploadExcel" name="uploadExcel" class="d-flex flex-column gap-1" action="xls.cfm?action=upload" method="post" enctype="multipart/form-data">
 				<div class="form-floating">
 					<input type="file" name="upload" id="upload" class="form-control" required>
 				</div>
-				<button name="uploadbtn" id="uploadbtn" type="submit" class="btn btn-outline-success fw-bold">
+				<button name="uplodbtn" id="uplodbtn" type="submit" class="btn btn-outline-success fw-bold">
 					Update Template <img src="./images/xls-data.png" width="40" height="40">
 				</button>
 			</form>

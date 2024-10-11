@@ -92,39 +92,22 @@
 				</cfoutput>
 			</div>
 		<cfelse>
-			<cfset manager.modifyContact( (len(form.id) NEQ 0 ? form.id : ""),
-							form.title,
-							form.firstname,
-							form.lastname,
-							form.gender,
-							form.date_of_birth,
-							filename,
-							form.house_flat,
-							form.street,
-							form.city,
-							form.state,
-							form.country,
-							form.pincode,
-							form.email,
-							form.phone,
-							form.hobbies )>
-		</cfif>
-	<cfelseif structKeyExists(form,"plainbtn")>
-		<cfset manager.createExcel("plain")>
-	<cfelseif structKeyExists(form,"databtn")>
-		<cfset manager.createExcel("data")>
-	<cfelseif structKeyExists(form,"uploadbtn")>
-		<cfif len(form.upload) EQ 0>
-			<div class="bg-body d-flex flex-wrap mt-5 mx-3 pt-5">
-				<p class="border my-1 mx-2">*Excel File Not Uploaded</p>
-			</div>
-		<cfelse>
-			<cfset theDir = expandPath('./uploads/')>
-			<cffile action="upload"
-				filefield="form.upload"
-				destination="#theDir#"
-				nameConflict="makeunique">
-			<cfset manager.createExcel("upload","#theDir##cffile.ServerFile#")>
+			<cfset manager.modifyContact( log_id=(len(form.id) NEQ 0 ? form.id : ""),
+							title=form.title,
+							firstname=form.firstname,
+							lastname=form.lastname,
+							gender=form.gender,
+							date_of_birth=form.date_of_birth,
+							profile=filename,
+							house_flat=form.house_flat,
+							street=form.street,
+							city=form.city,
+							state=form.state,
+							country=form.country,
+							pincode=form.pincode,
+							email=form.email,
+							phone=form.phone,
+							hobbies=form.hobbies )>
 		</cfif>
 	<cfelseif structKeyExists(form,"deletebtn")>
 		<cfset manager.deleteRecord( form.d_id )>
