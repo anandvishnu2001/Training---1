@@ -53,8 +53,11 @@
 						<img class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book" width="200" height="200">
 						<div class="card-body d-flex flex-column justify-content-center gap-1">
 							<cfoutput><h3 id="user" class="card-title text-center text-info">#session.username#</h3></cfoutput>
-							<button class="btn btn-outline-primary btn-block fw-bold" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="add">Create Contact</button>
-							<button class="btn btn-outline-success btn-block fw-bold" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="upload">Upload <img src="./images/xls-data.png" width="40" height="40"></button>
+							<button id="createbtn" class="btn btn-outline-primary btn-block fw-bold" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="add">Create Contact</button>
+							<button id="excelUpload" class="btn btn-outline-success btn-block fw-bold" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="upload">Upload <img src="./images/xls-data.png" width="40" height="40"></button>
+							<cfif structKeyExists(session,"excel")>
+								<a id="result" href="xls.cfm?action=download" class="btn btn-outline-success btn-block fw-bold">Result <img src="./images/xls-data.png" width="40" height="40"></a>
+							</cfif>
 						</div>
 					</div>
 				<div class="glow bg-body card flex-grow-1 d-flex col-8 flex-column p-3">

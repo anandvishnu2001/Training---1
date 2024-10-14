@@ -29,7 +29,6 @@ $(document).ready(function(){
 
 	$('#modal').on('hidden.bs.modal', function() {
 		$('#id').val();
-		window.location.href="logbook.cfm";
 	});
 
 	$('#modal').on('show.bs.modal',function(event){

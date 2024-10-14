@@ -167,11 +167,11 @@
 					</li>
 				</ul>
 			</nav>
-			<form id="uploadExcel" name="uploadExcel" class="d-flex flex-column gap-1" action="xls.cfm?action=upload" method="post" enctype="multipart/form-data">
+			<form id="uploadExcel" name="uploadExcel" class="d-flex flex-column gap-1" action="" method="post" enctype="multipart/form-data">
 				<div class="form-floating">
 					<input type="file" name="upload" id="upload" class="form-control" required>
 				</div>
-				<button name="uplodbtn" id="uplodbtn" type="submit" class="btn btn-outline-success fw-bold">
+				<button name="uploadbtn" id="uploadbtn" type="submit" class="btn btn-outline-success fw-bold">
 					Update Template <img src="./images/xls-data.png" width="40" height="40">
 				</button>
 			</form>
@@ -189,7 +189,7 @@
 					<button name="deletebtn" id="deletebtn" type="submit" class="btn btn-outline-success">Yes</button>
 					<button name="return" id="return" type="submit" class="btn btn-outline-danger">No</button>
 				</div>
-			<form>
+			</form>
 		</div>
 	</div>
 </div>

@@ -2,12 +2,11 @@
 	<cfinvoke component="components.manager"
 			method="selectSet"
 			returnVariable="select">
+	<cfset error = arrayNew(1)>
 	<cfif structKeyExists(form,"btn")>
 		<cfset session.check.access = false>
 		<cflocation url="index.cfm" addToken="no" statusCode="302">
-	</cfif>
-	<cfset error = arrayNew(1)>
-	<cfif structKeyExists(form,"modalbtn")>
+	<cfelseif structKeyExists(form,"modalbtn")>
 		<cfif NOT structKeyExists(form, "title") OR (structKeyExists(form,"title") AND len(form.title) EQ 0)>
 			<cfset arrayAppend(error,"*Title field to be selected")>
 		<cfelseif NOT listFind(structKeyList(select.title),trim(form.title))>
@@ -108,6 +107,20 @@
 							email=form.email,
 							phone=form.phone,
 							hobbies=form.hobbies )>
+		</cfif>
+	<cfelseif structKeyExists(form,"uploadbtn")>
+		<cfif form.upload NEQ "">
+			<cfset theDir = expandPath('./uploads/')>
+			<cffile action="upload"
+				filefield="form.upload"
+				destination="#theDir#"
+				nameConflict="makeunique">
+			<cflocation url="xls.cfm?action=upload&excel=#URLEncodedFormat(theDir)##URLEncodedFormat(cffile.SERVERFILE)#" addToken="no" statusCode="302">
+			<cflocation url="logbook.cfm" addToken="no" statusCode="302">
+		<cfelse>
+			<div class="bg-body d-flex flex-wrap mt-5 mx-3 pt-5">
+				<p class="border my-1 mx-2">*Excel file not uploaded</p>
+			</div>
 		</cfif>
 	<cfelseif structKeyExists(form,"deletebtn")>
 		<cfset manager.deleteRecord( form.d_id )>
