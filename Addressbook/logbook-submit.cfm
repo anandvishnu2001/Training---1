@@ -1,15 +1,13 @@
 <cfif structKeyExists(session,"check") AND session.check.access>
-	<cfinvoke component="components.manager"
-			method="selectSet"
-			returnVariable="select">
-	<cfset error = arrayNew(1)>
+	<cfset error = []>
 	<cfif structKeyExists(form,"btn")>
 		<cfset session.check.access = false>
-		<cflocation url="index.cfm" addToken="no" statusCode="302">
+		<cflocation url="index.cfm" addToken="no">
 	<cfelseif structKeyExists(form,"modalbtn")>
+		<cfset variables.title = manager.selectTitle>
 		<cfif NOT structKeyExists(form, "title") OR (structKeyExists(form,"title") AND len(form.title) EQ 0)>
 			<cfset arrayAppend(error,"*Title field to be selected")>
-		<cfelseif NOT listFind(structKeyList(select.title),trim(form.title))>
+		<cfelseif NOT listFind(structKeyList(variables.title),trim(form.title))>
 			<cfset arrayAppend(error,"*Selection of Title field is Invalid")>
 		</cfif>
 		<cfif len(form.firstname) EQ 0>
@@ -18,9 +16,10 @@
 		<cfif len(form.lastname) EQ 0>
 			<cfset arrayAppend(error,"*Lastname field is Empty")>
 		</cfif>
+		<cfset variables.gender = manager.selectGender>
 		<cfif NOT structKeyExists(form, "gender") OR (structKeyExists(form,"gender") AND len(form.gender) EQ 0)>
 			<cfset arrayAppend(error,"*Gender field to be selected")>
-		<cfelseif NOT listFind(structKeyList(select.gender),trim(form.gender))>
+		<cfelseif NOT listFind(structKeyList(variables.gender),trim(form.gender))>
 			<cfset arrayAppend(error,"*Selection of Gender field is Invalid")>
 		</cfif>
 		<cfif len(form.date_of_birth) EQ 0>
@@ -31,7 +30,19 @@
 		<cfif len(form.profile) EQ 0 AND len(form.id) EQ 0>
 			<cfset arrayAppend(error,"*Profile pic field is Empty")>
 		<cfelse>
-			<cfinclude template="image.cfm">
+			<cfif form.profile NEQ "">
+				<cfset uploadDir = expandPath('./uploads/')>        
+				<cfif not directoryExists(uploadDir)>
+					<cfdirectory action="create" directory="#uploadDir#">
+				</cfif>
+				<cffile action="upload"
+					filefield="profile"
+					destination="#uploadDir#"
+					nameConflict="makeunique">
+				<cfset filename = cffile.serverFile>
+			<cfelse>
+				<cfset filename = "">
+			</cfif>
 			<cfif NOT len(form.profile) EQ 0>
 				<cfset ext = "jpg,jpeg,png,gif,bmp,tiff">
 				<cfif NOT listFindNoCase(ext,listLast(filename,"."))>
@@ -69,12 +80,13 @@
 		<cfelseif NOT REFindNoCase("[0-9]{10}",form.phone)>
 			<cfset arrayAppend(error,"*Input of Phone field is Invalid")>
 		</cfif>
+		<cfset variables.hobbies = manager.selectHobbies>
 		<cfif NOT structKeyExists(form,"hobbies") OR (structKeyExists(form,"hobbies") AND listLen(form.hobbies) EQ 0)>
 			<cfset arrayAppend(error,"*Hobbies field to be selected")>
 		<cfelse>
 			<cfset tflag=0>
 			<cfloop list="#form.hobbies#" item="i">
-				<cfif NOT listFind(structKeyList(select.hobbies),i)>
+				<cfif NOT listFind(structKeyList(variables.hobbies),i)>
 					<cfset tflag=1>
 				</cfif>
 			</cfloop>
@@ -91,22 +103,24 @@
 				</cfoutput>
 			</div>
 		<cfelse>
-			<cfset manager.modifyContact( log_id=(len(form.id) NEQ 0 ? form.id : ""),
-							title=form.title,
-							firstname=form.firstname,
-							lastname=form.lastname,
-							gender=form.gender,
-							date_of_birth=form.date_of_birth,
-							profile=filename,
-							house_flat=form.house_flat,
-							street=form.street,
-							city=form.city,
-							state=form.state,
-							country=form.country,
-							pincode=form.pincode,
-							email=form.email,
-							phone=form.phone,
-							hobbies=form.hobbies )>
+			<cfset manager.modifyContact(
+				log_id = (len(form.id) NEQ 0 ? form.id : ""),
+				title = form.title,
+				firstname = form.firstname,
+				lastname = form.lastname,
+				gender = form.gender,
+				date_of_birth = form.date_of_birth,
+				profile = filename,
+				house_flat = form.house_flat,
+				street = form.street,
+				city = form.city,
+				state = form.state,
+				country = form.country,
+				pincode = form.pincode,
+				email = form.email,
+				phone = form.phone,
+				hobbies = form.hobbies
+			)>
 		</cfif>
 	<cfelseif structKeyExists(form,"uploadbtn")>
 		<cfif form.upload NEQ "">
@@ -115,8 +129,8 @@
 				filefield="form.upload"
 				destination="#theDir#"
 				nameConflict="makeunique">
-			<cflocation url="xls.cfm?action=upload&excel=#URLEncodedFormat(theDir)##URLEncodedFormat(cffile.SERVERFILE)#" addToken="no" statusCode="302">
-			<cflocation url="logbook.cfm" addToken="no" statusCode="302">
+			<cflocation url="xls.cfm?action=upload&excel=#URLEncodedFormat(theDir)##URLEncodedFormat(cffile.SERVERFILE)#" addToken="no">
+			<cflocation url="logbook.cfm" addToken="no">
 		<cfelse>
 			<div class="bg-body d-flex flex-wrap mt-5 mx-3 pt-5">
 				<p class="border my-1 mx-2">*Excel file not uploaded</p>
@@ -125,8 +139,8 @@
 	<cfelseif structKeyExists(form,"deletebtn")>
 		<cfset manager.deleteRecord( form.d_id )>
 	<cfelseif structKeyExists(form,"return")>
-		<cflocation url="logbook.cfm" addToken="no" statusCode="302">
+		<cflocation url="logbook.cfm" addToken="no">
 	</cfif>
 <cfelse>
-	<cflocation url="index.cfm" addToken="no" statusCode="302">
+	<cflocation url="index.cfm" addToken="no">
 </cfif>

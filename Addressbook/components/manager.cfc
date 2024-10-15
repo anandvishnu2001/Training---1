@@ -84,8 +84,8 @@
 		<cfreturn local.hashedPass>
 	</cffunction>
 
-	<cffunction name="selectSet" access="public" returnType="struct">
-		<cfset local.list = structNew()>
+	<cffunction name="selectTitle" access="public" returnType="struct">
+		<cfset local.list = {}>
 		<cfquery name="local.title" datasource="address">
 			SELECT
 				id,
@@ -94,8 +94,13 @@
 				title;
 		</cfquery>
 		<cfoutput query="local.title">
-			<cfset local.list.title["#local.title.id#"]=local.title.value>
+			<cfset local.list["#local.title.id#"]=local.title.value>
 		</cfoutput>
+		<cfreturn local.list>
+	</cffunction>
+
+	<cffunction name="selectGender" access="public" returnType="struct">
+		<cfset local.list = {}>
 		<cfquery name="local.gender" datasource="address">
 			SELECT
 				id,
@@ -104,8 +109,13 @@
 				gender;
 		</cfquery>
 		<cfoutput query="local.gender">
-			<cfset local.list.gender["#local.gender.id#"]=local.gender.value>
+			<cfset local.list["#local.gender.id#"]=local.gender.value>
 		</cfoutput>
+		<cfreturn local.list>
+	</cffunction>
+
+	<cffunction name="selectHobbies" access="public" returnType="struct">
+		<cfset local.list = {}>
 		<cfquery name="local.hobbies" datasource="address">
 			SELECT
 				id,
@@ -114,7 +124,7 @@
 				hobbies;
 		</cfquery>
 		<cfoutput query="local.hobbies">
-			<cfset local.list.hobbies["#local.hobbies.id#"]=local.hobbies.value>
+			<cfset local.list["#local.hobbies.id#"]=local.hobbies.value>
 		</cfoutput>
 		<cfreturn local.list>
 	</cffunction>

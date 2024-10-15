@@ -1,4 +1,4 @@
-//-- Confirm Password in logbook.cfm
+//-- logbook.cfm
 
 $(document).ready(function(){
 	$.ajax({

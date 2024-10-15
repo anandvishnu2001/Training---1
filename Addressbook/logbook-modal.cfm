@@ -16,8 +16,9 @@
 							<div class="form-floating col-3">
 								<select class="form-select invalid" id="title" name="title" required>
 									<option value="" disabled selected></option>
-									<cfloop list="#structKeyList(select.title)#" item="i">
-										<cfoutput><option value="#i#">#select.title[i]#</option></cfoutput>
+									<cfset variables.title = manager.selectTitle>
+									<cfloop list="#structKeyList(variables.title)#" item="i">
+										<cfoutput><option value="#i#">#variables.title[i]#</option></cfoutput>
 									</cfloop>
 								</select>
 								<label class="form-label" for="title">Title</label>
@@ -35,8 +36,9 @@
 							<div class="form-floating col-5">
 								<select class="form-select" id="gender" name="gender" required>
 									<option value="" disabled selected></option>
-									<cfloop list="#structKeyList(select.gender)#" item="i">
-										<cfoutput><option value="#i#">#select.gender[i]#</option></cfoutput>
+									<cfset variables.gender = manager.selectGender>
+									<cfloop list="#structKeyList(variables.gender)#" item="i">
+										<cfoutput><option value="#i#">#variables.gender[i]#</option></cfoutput>
 									</cfloop>
 								</select>
 								<label class="form-label" for="gender">Gender</label>
@@ -99,8 +101,9 @@
 							<div class="col-8">
 								<select multiple class="form-select" id="hobbies" name="hobbies" required>
 									<option value="" disabled selected></option>
-									<cfloop list="#structKeyList(select.hobbies)#" item="i">
-										<cfoutput><option value="#i#">#select.hobbies[i]#</option></cfoutput>
+									<cfset variables.hobbies = manager.selectHobbies>
+									<cfloop list="#structKeyList(variables.hobbies)#" item="i">
+										<cfoutput><option value="#i#">#variables.hobbies[i]#</option></cfoutput>
 									</cfloop>
 								</select>
 							</div>
