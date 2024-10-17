@@ -38,11 +38,9 @@
 		<cfset spreadsheetSetCellValue(spreadsheetObj, "Result", 1, 15, "STRING")>
 		<cfset SpreadSheetSetColumnWidth(spreadsheetObj,15,35)>
 		<cfset SpreadsheetAddRows(spreadsheetObj, url.sheet, 1, 1, true, [], true)>
-		<cfset binary = SpreadsheetReadBinary(spreadsheetObj)>
 		<cfheader name="Content-Disposition" value="attachment; filename=AddressBook-Upload-Result.xlsx">
 	<cfelse>
 		<cfif url.action EQ "plain">
-			<cfset binary = SpreadsheetReadBinary(spreadsheetObj)>
 			<cfheader name="Content-Disposition" value="attachment; filename=AddressBook-Plain-Template.xlsx">
 		<cfelseif url.action EQ "data">
 			<cfset j=1>
@@ -75,9 +73,9 @@
 				</cfif>
 				<cfset j++>
 			</cfloop>
-			<cfset binary = SpreadsheetReadBinary(spreadsheetObj)>
 			<cfheader name="Content-Disposition" value="attachment; filename=AddressBook-DataIncluded-Template.xlsx">
 		</cfif>
+		<cfset binary = SpreadsheetReadBinary(spreadsheetObj)>
 	</cfif>
 	<cfcontent type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" variable="#binary#">
 </cfif>
