@@ -306,29 +306,46 @@
 				AND l.log_id=<cfqueryparam value="#crypter(arguments.logid,'decrypt')#" cfsqltype="cf_sql_integer">
 			</cfif>;
 		</cfquery>
-		<cfset local.records = structNew()>
+		<cfset local.records = []>
 		<cfset local.metadata = structNew()>
 		<cfoutput query="local.list">
-			<cfset local.id = crypter(local.list.log_id,"encrypt")>
-			<cfif NOT structKeyExists(local.records,local.id)>
-				<cfset local.records[local.id] = {
-					"title"={ #local.list.title#=local.list.tvalue },
-					"firstname"=local.list.firstname,
-					"lastname"=local.list.lastname,
-					"profile"=local.list.profile,
-					"gender"={ #local.list.gender#=local.list.gvalue },
-					"date_of_birth"=local.list.date_of_birth,
-					"house_flat"=local.list.house_flat,
-					"street"=local.list.street,
-					"city"=local.list.city,
-					"state"=local.list.state,
-					"country"=local.list.country,
-					"pincode"=local.list.pincode,
-					"email"=local.list.email,
-					"phone"=local.list.phone,
-					"hobbies"={ #local.list.hobbies#=local.list.hvalue }}>
+			<cfset foundIndex = -1>
+			<cfset foundIndex = arrayFind(local.records, function(value){
+				return value["log_id"] == crypter(local.list.log_id,"encrypt");
+			})>
+			<cfif foundIndex GT 0>
+				<cfset arrayAppend(local.reords["hobbies"], {
+					"id" : local.list.hobbies,
+					"value" : local.list,hvalue
+				})>
 			<cfelse>
-				<cfset local.records[local.id]["hobbies"][local.list.hobbies]=local.list.hvalue> 
+				<cfset arrayAppend(local.records, {
+					"log_id" = crypter(local.list.log_id,"encrypt"),
+					"title" = {
+						"id" : local.list.title,
+						"value" : local.list.tvalue
+					},
+					"firstname" = local.list.firstname,
+					"lastname" = local.list.lastname,
+					"profile" = local.list.profile,
+					"gender" = {
+						"id" : local.list.gender,
+						"value" : local.list.gvalue
+					},
+					"date_of_birth" = local.list.date_of_birth,
+					"house_flat" = local.list.house_flat,
+					"street" = local.list.street,
+					"city" = local.list.city,
+					"state" = local.list.state,
+					"country" = local.list.country,
+					"pincode" = local.list.pincode,
+					"email" = local.list.email,
+					"phone" = local.list.phone,
+					"hobbies" = [{
+						"id" : local.list.hobbies,
+						"value" : local.list.hvalue
+					}]
+				})
 			</cfif>
 		</cfoutput>
 		<cfreturn local.records>

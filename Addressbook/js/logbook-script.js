@@ -10,16 +10,16 @@ $(document).ready(function(){
 				alert('Contacts is Empty');
 			}
 			else{
-				$.each(listObj,function(key,record){
+				$.each(listObj,function(_,value){
 					let row = `<tr>`;
-					row += `<td><img class="img-fluid img-thumbnail rounded-circle mx-auto d-block" src="./uploads/${record.profile}" alt="profile" width="50" height="50"></td>`;
-					row += `<td class="contactname">${Object.values(record.title)[0]+' '+record.firstname+' '+record.lastname}</td>`;
-					row += `<td class="contactemail">${record.email}</td>`;
-					row += `<td class="contactphone">${record.phone}</td>`;
-					row += `<td class="no-print"><button class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="view" data-bs-id="${key}">View</button></td>`;
-					row += `<td class="no-print"><button class="btn btn-sm btn-outline-warning fw-bold" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="edit" data-bs-id="${key}">Edit</button></td>`;
-					row += `<td class="no-print"><button class="1dlt btn btn-sm btn-outline-danger fw-bold" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="delete" data-bs-id="${key}">Delete</button></td>`;
-					row += `<td class="no-print"><button class="printpage btn btn-sm btn-outline-primary fw-bold" data-bs-id="${key}">Print</button></td>`;
+					row += `<td><img class="img-fluid img-thumbnail rounded-circle mx-auto d-block" src="./uploads/${value.profile}" alt="profile" width="50" height="50"></td>`;
+					row += `<td class="contactname">${value.title.value+' '+value.firstname+' '+value.lastname}</td>`;
+					row += `<td class="contactemail">${value.email}</td>`;
+					row += `<td class="contactphone">${value.phone}</td>`;
+					row += `<td class="no-print"><button class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="view" data-bs-id="${value.log_id}">View</button></td>`;
+					row += `<td class="no-print"><button class="btn btn-sm btn-outline-warning fw-bold" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="edit" data-bs-id="${value.log_id}">Edit</button></td>`;
+					row += `<td class="no-print"><button class="1dlt btn btn-sm btn-outline-danger fw-bold" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="delete" data-bs-id="${value.log_id}">Delete</button></td>`;
+					row += `<td class="no-print"><button class="printpage btn btn-sm btn-outline-primary fw-bold" data-bs-id="${value.log_id}">Print</button></td>`;
 					row += `</tr>`;
 					$("#contactList").append(row);
 				});
@@ -74,43 +74,43 @@ $(document).ready(function(){
 							$("#modalForm").removeClass("d-none");
 							$("#modalbtn").html("Edit");
 							$('#id').val(id);
-							$('#title').val(Object.keys(recordObj[id].title));
-							$('#firstname').val(recordObj[id].firstname);
-							$('#lastname').val(recordObj[id].lastname);
-							$('#gender').val(Object.keys(recordObj[id].gender));
+							$('#title').val(recordObj[0].title.id);
+							$('#firstname').val(recordObj[0].firstname);
+							$('#lastname').val(recordObj[0].lastname);
+							$('#gender').val(recordObj[0].gender.id);
 							$('#profile').removeAttr("required");
-							$("#contact").attr("src",`./uploads/${recordObj[id].profile}`);
-							let date = new Date(recordObj[id].date_of_birth);
+							$("#contact").attr("src",`./uploads/${recordObj[0].profile}`);
+							let date = new Date(recordObj[0].date_of_birth);
 							date.setDate(date.getDate() + 1);
 							$('#date_of_birth').val(date.toISOString().split('T')[0]);
-							$('#house_flat').val(recordObj[id].house_flat);
-							$('#street').val(recordObj[id].street);
-							$('#city').val(recordObj[id].city);
-							$('#state').val(recordObj[id].state);
-							$('#country').val(recordObj[id].country);
-							$('#pincode').val(recordObj[id].pincode);
-							$('#email').val(recordObj[id].email);
-							$('#phone').val(recordObj[id].phone);
+							$('#house_flat').val(recordObj[0].house_flat);
+							$('#street').val(recordObj[0].street);
+							$('#city').val(recordObj[0].city);
+							$('#state').val(recordObj[0].state);
+							$('#country').val(recordObj[0].country);
+							$('#pincode').val(recordObj[0].pincode);
+							$('#email').val(recordObj[0].email);
+							$('#phone').val(recordObj[0].phone);
 							$('#hobbies').val();
 							$('#hobbies option').prop('selected', false);
-							Object.keys(recordObj[id].hobbies).forEach(function(value){
-								$('#hobbies option[value="' + value + '"]').prop('selected', true);
+							recordObj[0].hobbies.forEach(function(value){
+								$('#hobbies option[value="' + value.id + '"]').prop('selected', true);
 							});
 						}
 						else if(button.data('bs-action') === "view"){
 							$("#modalhead").html("Contact Details");
 							$("#modalView").removeClass("d-none");
-							$('#v-name').html(Object.values(recordObj[id].title)+" "+recordObj[id].firstname+" "+recordObj[id].lastname);
-							$('#v-gender').html(Object.values(recordObj[id].gender));
-							$("#contact").attr("src",`./uploads/${recordObj[id].profile}`);
-							let date = new Date(recordObj[id].date_of_birth);
+							$('#v-name').html(Object.valuesrecordObj[0].title.value+" "+recordObj[0].firstname+" "+recordObj[0].lastname);
+							$('#v-gender').html(recordObj[0].gender.value);
+							$("#contact").attr("src",`./uploads/${recordObj[0].profile}`);
+							let date = new Date(recordObj[0].date_of_birth);
 							date.setDate(date.getDate() + 1);
 							$('#v-dob').html(date.toISOString().split('T')[0]);
-							$('#v-address').html(`${recordObj[id].house_flat}, <br>${recordObj[id].street}, <br>${recordObj[id].city}, <br>${recordObj[id].state}, <br>${recordObj[id].country}`);
-							$('#v-pincode').html(recordObj[id].pincode);
-							$('#v-mail').html(recordObj[id].email);
-							$('#v-phone').html(recordObj[id].phone);
-							$('#v-hobbies').html(Object.values(recordObj[id].hobbies).join(',<br>'));
+							$('#v-address').html(`${recordObj[0].house_flat}, <br>${recordObj[0].street}, <br>${recordObj[0].city}, <br>${recordObj[0].state}, <br>${recordObj[0].country}`);
+							$('#v-pincode').html(recordObj[0].pincode);
+							$('#v-mail').html(recordObj[0].email);
+							$('#v-phone').html(recordObj[0].phone);
+							$('#v-hobbies').html(recordObj[0].hobbies.join(',<br>'));
 						}
 					}
 				});
