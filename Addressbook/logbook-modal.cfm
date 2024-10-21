@@ -157,12 +157,12 @@
 			<nav class="navbar navbar-expand-lg my-3 fw-bold justify-content-center">
 				<ul class="navbar-nav nav-pills w-100 justify-content-between">
 					<li class="nav-item">
-							<a name="plainbtn" id="plainbtn" class="btn btn-outline-success fw-bold" href="xls.cfm?action=plain">
+							<a name="plainbtn" id="plainbtn" class="btn btn-outline-success fw-bold" href="export-list.cfm?action=excelPlain">
 								Plain Template<img src="./images/xls-plain.png" width="40" height="40">
 							</a>
 					</li>
 					<li class="nav-item">
-						<a name="databtn" id="databtn" class="btn btn-outline-success fw-bold" href="xls.cfm?action=data">
+						<a name="databtn" id="databtn" class="btn btn-outline-success fw-bold" href="export-list.cfm?action=excelData">
 							Template with Data<img src="./images/xls-data.png" width="40" height="40">
 						</a>
 					</li>

@@ -316,7 +316,7 @@
 			<cfif foundIndex GT 0>
 				<cfset arrayAppend(local.records[foundIndex]["hobbies"], {
 					"id" : local.list.hobbies,
-					"value" : local.list,hvalue
+					"value" : local.list.hvalue
 				})>
 			<cfelse>
 				<cfset arrayAppend(local.records, {
@@ -341,10 +341,12 @@
 					"pincode" = local.list.pincode,
 					"email" = local.list.email,
 					"phone" = local.list.phone,
-					"hobbies" = [{
-						"id" : local.list.hobbies,
-						"value" : local.list.hvalue
-					}]
+					"hobbies" = [
+						{
+							"id" : local.list.hobbies,
+							"value" : local.list.hvalue
+						}
+					]
 				})>
 			</cfif>
 		</cfoutput>
@@ -355,7 +357,8 @@
 		<cfargument name="email" type="string" required="true">
 		<cfquery name="local.getID" datasource="address">
 			SELECT 
-				log_id
+				log_id,
+				profile
 			FROM
 				log_book
 			WHERE
@@ -364,8 +367,11 @@
 				email=<cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar">;
 		</cfquery>
 		<cfif len(local.getId.log_id) NEQ 0>
-			<cfset local.access={ check: true,
-						id: crypter(local.getId.log_id,"encrypt") }>
+			<cfset local.access={
+				"check": true,
+				"id": crypter(local.getId.log_id,"encrypt"),
+				"image": local.getId.profile
+			}>
 		<cfelse>
 			<cfset local.access={ check: false }>
 		</cfif>

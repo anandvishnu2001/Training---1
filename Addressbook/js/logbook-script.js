@@ -6,7 +6,6 @@ $(document).ready(function(){
 		type: 'GET',
 		success: function(data){
 			let listObj = JSON.parse(data);
-			console.log(listObj);
 			if (listObj == ''){
 				alert('Contacts is Empty');
 			}
@@ -70,6 +69,7 @@ $(document).ready(function(){
 					data: { logid: id },
 					success: function(data){
 						let recordObj = JSON.parse(data);
+						console.log(recordObj);
 						if(button.data('bs-action') === "edit"){
 							$("#modalhead").html("Edit Contact");
 							$("#modalForm").removeClass("d-none");
@@ -101,7 +101,7 @@ $(document).ready(function(){
 						else if(button.data('bs-action') === "view"){
 							$("#modalhead").html("Contact Details");
 							$("#modalView").removeClass("d-none");
-							$('#v-name').html(Object.valuesrecordObj[0].title.value+" "+recordObj[0].firstname+" "+recordObj[0].lastname);
+							$('#v-name').html(recordObj[0].title.value+" "+recordObj[0].firstname+" "+recordObj[0].lastname);
 							$('#v-gender').html(recordObj[0].gender.value);
 							$("#contact").attr("src",`./uploads/${recordObj[0].profile}`);
 							let date = new Date(recordObj[0].date_of_birth);

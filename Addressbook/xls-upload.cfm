@@ -1,5 +1,4 @@
 <cfinclude template="object.cfm">
-<cfset log = manager.getList()>
 <cfset theDir = expandPath('./uploads/')>
 
 <cffile action="upload"
@@ -101,22 +100,24 @@
 			<cfset QuerySetCell(quer,"Result",pending&" missing",quer.currentRow)>
 		<cfelse>
 			<cfset idStruct=manager.getIdByEmail(quer.email)>
-				<cfset manager.modifyContact( (idStruct.check ? idStruct.id : ""),
-						qtitle,
-						quer.firstname,
-						quer.lastname,
-						qgender,
-						dateformat(quer.DOB,"yyyy-mm-dd"),
-						(idStruct.check ? log[idStruct.id].profile : "signup.png"),
-						quer.house,
-						quer.street,
-						quer.city,
-						quer.state,
-						quer.country,
-						quer.pincode,
-						quer.email,
-						quer.phone,
-						hobby )>
+				<cfset manager.modifyContact(
+					"log_id" = (idStruct.check ? idStruct.id : ""),
+					"title"= qtitle,
+					"firstname" = quer.firstname,
+					"lastname" = quer.lastname,
+					"gender" = qgender,
+					"date_of_birth" = dateformat(quer.DOB,"yyyy-mm-dd"),
+					"profile" = (idStruct.check ? idStruct.image : "signup.png"),
+					"house_flat" = quer.house,
+					"street" = quer.street,
+					"city" = quer.city,
+					"state" = quer.state,
+					"country" = quer.country,
+					"pincode" = quer.pincode,
+					"email" = quer.email,
+					"phone" = quer.phone,
+					"hobbies" = hobby
+				)>
 			<cfif idStruct.check>
 				<cfset QuerySetCell(quer,"Result","updated",quer.currentRow)>
 			<cfelse>
