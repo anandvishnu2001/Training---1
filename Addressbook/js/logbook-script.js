@@ -6,6 +6,7 @@ $(document).ready(function(){
 		type: 'GET',
 		success: function(data){
 			let listObj = JSON.parse(data);
+			console.log(listObj);
 			if (listObj == ''){
 				alert('Contacts is Empty');
 			}
@@ -110,7 +111,7 @@ $(document).ready(function(){
 							$('#v-pincode').html(recordObj[0].pincode);
 							$('#v-mail').html(recordObj[0].email);
 							$('#v-phone').html(recordObj[0].phone);
-							$('#v-hobbies').html(recordObj[0].hobbies.join(',<br>'));
+							$('#v-hobbies').html(recordObj[0].hobbies.map(hobby => hobby.value).join(',<br>'));
 						}
 					}
 				});

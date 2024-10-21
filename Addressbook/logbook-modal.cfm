@@ -16,7 +16,7 @@
 							<div class="form-floating col-3">
 								<select class="form-select invalid" id="title" name="title" required>
 									<option value="" disabled selected></option>
-									<cfset variables.title = manager.selectTitle>
+									<cfset variables.title = manager.selectTitle()>
 									<cfloop list="#structKeyList(variables.title)#" item="i">
 										<cfoutput><option value="#i#">#variables.title[i]#</option></cfoutput>
 									</cfloop>
@@ -36,7 +36,7 @@
 							<div class="form-floating col-5">
 								<select class="form-select" id="gender" name="gender" required>
 									<option value="" disabled selected></option>
-									<cfset variables.gender = manager.selectGender>
+									<cfset variables.gender = manager.selectGender()>
 									<cfloop list="#structKeyList(variables.gender)#" item="i">
 										<cfoutput><option value="#i#">#variables.gender[i]#</option></cfoutput>
 									</cfloop>
@@ -101,7 +101,7 @@
 							<div class="col-8">
 								<select multiple class="form-select" id="hobbies" name="hobbies" required>
 									<option value="" disabled selected></option>
-									<cfset variables.hobbies = manager.selectHobbies>
+									<cfset variables.hobbies = manager.selectHobbies()>
 									<cfloop list="#structKeyList(variables.hobbies)#" item="i">
 										<cfoutput><option value="#i#">#variables.hobbies[i]#</option></cfoutput>
 									</cfloop>
@@ -162,11 +162,9 @@
 							</a>
 					</li>
 					<li class="nav-item">
-						<form id="dataTemplate" name="dataTemplate" action="" method="post">
-							<a name="databtn" id="databtn" class="btn btn-outline-success fw-bold" href="xls.cfm?action=data">
-								Template with Data<img src="./images/xls-data.png" width="40" height="40">
-							</a>
-						</form>
+						<a name="databtn" id="databtn" class="btn btn-outline-success fw-bold" href="xls.cfm?action=data">
+							Template with Data<img src="./images/xls-data.png" width="40" height="40">
+						</a>
 					</li>
 				</ul>
 			</nav>

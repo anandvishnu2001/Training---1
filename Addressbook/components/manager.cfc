@@ -267,7 +267,7 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="getList" access="remote" returnFormat="JSON" returnType="struct">
+	<cffunction name="getList" access="remote" returnFormat="JSON">
 		<cfargument name="logid" type="string" required="false">
 		<cfquery name="local.list" datasource="address">
 			SELECT
@@ -311,10 +311,10 @@
 		<cfoutput query="local.list">
 			<cfset foundIndex = -1>
 			<cfset foundIndex = arrayFind(local.records, function(value){
-				return value["log_id"] == crypter(local.list.log_id,"encrypt");
+				return value["log_id"] == crypter(list.log_id,"encrypt");
 			})>
 			<cfif foundIndex GT 0>
-				<cfset arrayAppend(local.reords["hobbies"], {
+				<cfset arrayAppend(local.records[foundIndex]["hobbies"], {
 					"id" : local.list.hobbies,
 					"value" : local.list,hvalue
 				})>
@@ -345,7 +345,7 @@
 						"id" : local.list.hobbies,
 						"value" : local.list.hvalue
 					}]
-				})
+				})>
 			</cfif>
 		</cfoutput>
 		<cfreturn local.records>
