@@ -1,37 +1,61 @@
-//---form
-<cfif structKeyExists(session,"check") AND session.check.access>
-	<cfset error = []>
-	<cfif structKeyExists(form,"btn")>
-		<cfset session.check.access = false>
-		<cflocation url="index.cfm" addToken="no">
-	<cfelseif structKeyExists(form,"modalbtn")>
+//---arguments
+<cfset local.message = {
+	error = [],
+	pending = ""
+}>
 		<cfset variables.title = manager.selectTitle>
-		<cfif NOT structKeyExists(form, "title") OR (structKeyExists(form,"title") AND len(form.title) EQ 0)>
-			<cfset arrayAppend(error,"*Title field to be selected")>
-		<cfelseif NOT listFind(structKeyList(variables.title),trim(form.title))>
-			<cfset arrayAppend(error,"*Selection of Title field is Invalid")>
+		<cfif structKeyExists(arguments.data,'title')>
+			<cfif len(trim(arguments.data.title)) EQ 0>
+				<cfset arrayAppend(local.message.errors,"*title field is required.")>
+			<cfelseif NOT listFind(local.result.titleList,arguments.data.title)>
+				<cfset arrayAppend(local.message.errors,"*invalid value for title field")>
+			</cfif>
+		<cfelseif structKeyExists(arguments.data,'titleName')>
+			<cfif len(trim(arguments.data.titleName)) EQ 0>
+				<cfset arrayAppend(local.message.errors,"*title field is required.")>
+			<cfelseif NOT listFind(local.result.titleNameList,arguments.data.titleName)>
+				<cfset arrayAppend(local.message.errors,"*invalid value for title field")>
+			</cfif>			
+		<cfelse>
+			<cfset arrayAppend(local.message.errors,"*title field is missing")>
 		</cfif>
-		<cfif len(form.firstname) EQ 0>
+		<cfif NOT structKeyExists(arguments, "title") OR (structKeyExists(arguments,"title") AND len(arguments.title) EQ 0)>
+			<cfset arrayAppend(error,"*Title field to be selected")>
+		<cfelseif NOT listFind(structKeyList(variables.title),trim(arguments.title))>
+			<cfset arrayAppend(error,"*Selection of Title field is Invalid")>
+		<cfelseif (NOT queryKeyExists(quer,"title")) OR len(quer.title) EQ 0>
+			<cfset pending = arrayAppend(pending,"Title",",")>
+		<cfelse>
+			<cfset structDelete(variables,"qtitle")>
+			<cfset checkTitle=StructFindValue(variables.title,trim(quer.title))>
+			<cfif arrayLen(checkTitle) NEQ 0>
+				<cfset qtitle=val(checkTitle[1].key)>
+			<cfelse>
+				<cfset pending = arrayAppend(pending,"Title(Valid)",",")>
+			</cfif>
+		</cfif>
+		</cfif>
+		<cfif len(arguments.firstname) EQ 0>
 			<cfset arrayAppend(error,"*Firstname field is Empty")>
 		</cfif>
-		<cfif len(form.lastname) EQ 0>
+		<cfif len(arguments.lastname) EQ 0>
 			<cfset arrayAppend(error,"*Lastname field is Empty")>
 		</cfif>
 		<cfset variables.gender = manager.selectGender>
-		<cfif NOT structKeyExists(form, "gender") OR (structKeyExists(form,"gender") AND len(form.gender) EQ 0)>
+		<cfif NOT structKeyExists(arguments, "gender") OR (structKeyExists(arguments,"gender") AND len(arguments.gender) EQ 0)>
 			<cfset arrayAppend(error,"*Gender field to be selected")>
-		<cfelseif NOT listFind(structKeyList(variables.gender),trim(form.gender))>
+		<cfelseif NOT listFind(structKeyList(variables.gender),trim(arguments.gender))>
 			<cfset arrayAppend(error,"*Selection of Gender field is Invalid")>
 		</cfif>
-		<cfif len(form.date_of_birth) EQ 0>
+		<cfif len(arguments.date_of_birth) EQ 0>
 			<cfset arrayAppend(error,"*Date_of_birth field is Empty")>
-		<cfelseif NOT isDate(form.date_of_birth) OR (isDate(form.date_of_birth) AND form.date_of_birth GT now())>
+		<cfelseif NOT isDate(arguments.date_of_birth) OR (isDate(arguments.date_of_birth) AND arguments.date_of_birth GT now())>
 			<cfset arrayAppend(error,"Input of Date_of_birth field is Invalid")>
 		</cfif>
-		<cfif len(form.profile) EQ 0 AND len(form.id) EQ 0>
+		<cfif len(arguments.profile) EQ 0 AND len(arguments.id) EQ 0>
 			<cfset arrayAppend(error,"*Profile pic field is Empty")>
 		<cfelse>
-			<cfif form.profile NEQ "">
+			<cfif arguments.profile NEQ "">
 				<cfset uploadDir = expandPath('./uploads/')>        
 				<cfif not directoryExists(uploadDir)>
 					<cfdirectory action="create" directory="#uploadDir#">
@@ -44,7 +68,7 @@
 			<cfelse>
 				<cfset filename = "">
 			</cfif>
-			<cfif NOT len(form.profile) EQ 0>
+			<cfif NOT len(arguments.profile) EQ 0>
 				<cfset ext = "jpg,jpeg,png,gif,bmp,tiff">
 				<cfif NOT listFindNoCase(ext,listLast(filename,"."))>
 					<cffile action = "delete" 
@@ -53,40 +77,40 @@
 				</cfif>
 			</cfif>
 		</cfif>
-		<cfif len(form.house_flat) EQ 0>
+		<cfif len(arguments.house_flat) EQ 0>
 			<cfset arrayAppend(error,"*House_flat field is Empty")>
 		</cfif>
-		<cfif len(form.street) EQ 0>
+		<cfif len(arguments.street) EQ 0>
 			<cfset arrayAppend(error,"*Street field is Empty")>
 		</cfif>
-		<cfif len(form.city) EQ 0>
+		<cfif len(arguments.city) EQ 0>
 			<cfset arrayAppend(error,"*City field is Empty")>
 		</cfif>
-		<cfif len(form.state) EQ 0>
+		<cfif len(arguments.state) EQ 0>
 			<cfset arrayAppend(error,"*State field is Empty")>
 		</cfif>
-		<cfif len(form.country) EQ 0>
+		<cfif len(arguments.country) EQ 0>
 			<cfset arrayAppend(error,"*Country field is Empty")>
 		</cfif>
-		<cfif len(form.pincode) EQ 0>
+		<cfif len(arguments.pincode) EQ 0>
 			<cfset arrayAppend(error,"*Pincode field is Empty")>
 		</cfif>
-		<cfif len(form.email) EQ 0>
+		<cfif len(arguments.email) EQ 0>
 			<cfset arrayAppend(error,"*Email field is Empty")>
-		<cfelseif NOT REFindNoCase("^[\w]+@[\w]+\.[a-zA-Z]{2,}$",form.email)>
+		<cfelseif NOT REFindNoCase("^[\w]+@[\w]+\.[a-zA-Z]{2,}$",arguments.email)>
 			<cfset arrayAppend(error,"Input of Email field is Invalid")>
 		</cfif>
-		<cfif len(form.phone) EQ 0>
+		<cfif len(arguments.phone) EQ 0>
 			<cfset arrayAppend(error,"*Phone field is Empty")>
-		<cfelseif NOT REFindNoCase("[0-9]{10}",form.phone)>
+		<cfelseif NOT REFindNoCase("[0-9]{10}",arguments.phone)>
 			<cfset arrayAppend(error,"*Input of Phone field is Invalid")>
 		</cfif>
 		<cfset variables.hobbies = manager.selectHobbies>
-		<cfif NOT structKeyExists(form,"hobbies") OR (structKeyExists(form,"hobbies") AND listLen(form.hobbies) EQ 0)>
+		<cfif NOT structKeyExists(arguments,"hobbies") OR (structKeyExists(arguments,"hobbies") AND listLen(arguments.hobbies) EQ 0)>
 			<cfset arrayAppend(error,"*Hobbies field to be selected")>
 		<cfelse>
 			<cfset tflag=0>
-			<cfloop list="#form.hobbies#" item="i">
+			<cfloop list="#arguments.hobbies#" item="i">
 				<cfif NOT listFind(structKeyList(variables.hobbies),i)>
 					<cfset tflag=1>
 				</cfif>
@@ -95,29 +119,8 @@
 				<cfset arrayAppend(error,"*Selection of Hobbies field is Invalid")>
 			</cfif>
 		</cfif>
-		<cfif arrayLen(error) GT 0>
-			<div class="bg-body d-flex flex-wrap mt-5 mx-3 pt-5">
-				<cfoutput>
-					<cfloop array="#error#" index="i">
-						<p class="border my-1 mx-2">#i#</p>
-					</cfloop>
-				</cfoutput>
-			</div>
 
 //---xls
-<cfoutput query="quer">
-		<cfset pending = "">
-		<cfif (NOT queryKeyExists(quer,"title")) OR len(quer.title) EQ 0>
-			<cfset pending = listAppend(pending,"Title",",")>
-		<cfelse>
-			<cfset structDelete(variables,"qtitle")>
-			<cfset checkTitle=StructFindValue(select.title,trim(quer.title))>
-			<cfif arrayLen(checkTitle) NEQ 0>
-				<cfset qtitle=val(checkTitle[1].key)>
-			<cfelse>
-				<cfset pending = listAppend(pending,"Title(Valid)",",")>
-			</cfif>
-		</cfif>
 		<cfif (NOT queryKeyExists(quer,"firstname")) OR len(quer.firstname) EQ 0>
 			<cfset pending = listAppend(pending,"Firstname",",")>
 		</cfif>

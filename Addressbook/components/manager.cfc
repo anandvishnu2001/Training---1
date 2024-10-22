@@ -129,6 +129,15 @@
 		<cfreturn local.list>
 	</cffunction>
 
+	<cffunction name="contactValidate" access="public">
+		<cfargument name="data" type="struct" required="true">
+		<cfset local.message = {
+			error = [],
+			pending = ""
+		}>
+		<cfreturn local.messages>
+	</cffunction>
+
 	<cffunction name="modifyContact" access="public">
 		<cfargument name="log_id" type="string" required="false">
 		<cfargument name="title" type="string" required="true">
