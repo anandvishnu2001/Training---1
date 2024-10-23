@@ -85,7 +85,6 @@
 	</cffunction>
 
 	<cffunction name="selectTitle" access="public" returnType="struct">
-		<cfset local.list = {}>
 		<cfquery name="local.title" datasource="address">
 			SELECT
 				id,
@@ -93,14 +92,14 @@
 			FROM
 				title;
 		</cfquery>
-		<cfoutput query="local.title">
-			<cfset local.list["#local.title.id#"]=local.title.value>
-		</cfoutput>
+		<cfset local.list = {
+			"id" = valueList(local.title.id),
+			"value" = valueList(local.title.value)
+		}>
 		<cfreturn local.list>
 	</cffunction>
 
 	<cffunction name="selectGender" access="public" returnType="struct">
-		<cfset local.list = {}>
 		<cfquery name="local.gender" datasource="address">
 			SELECT
 				id,
@@ -108,14 +107,14 @@
 			FROM
 				gender;
 		</cfquery>
-		<cfoutput query="local.gender">
-			<cfset local.list["#local.gender.id#"]=local.gender.value>
-		</cfoutput>
+		<cfset local.list = {
+			"id" = valueList(local.gender.id),
+			"value" = valueList(local.gender.value)
+		}>
 		<cfreturn local.list>
 	</cffunction>
 
 	<cffunction name="selectHobbies" access="public" returnType="struct">
-		<cfset local.list = {}>
 		<cfquery name="local.hobbies" datasource="address">
 			SELECT
 				id,
@@ -123,18 +122,16 @@
 			FROM
 				hobbies;
 		</cfquery>
-		<cfoutput query="local.hobbies">
-			<cfset local.list["#local.hobbies.id#"]=local.hobbies.value>
-		</cfoutput>
+		<cfset local.list = {
+			"id" = valueList(local.hobbies.id),
+			"value" = valueList(local.hobbies.value)
+		}>
 		<cfreturn local.list>
 	</cffunction>
 
 	<cffunction name="contactValidate" access="public">
 		<cfargument name="data" type="struct" required="true">
-		<cfset local.message = {
-			error = [],
-			pending = ""
-		}>
+		<cfset local.error = []>
 		<cfreturn local.messages>
 	</cffunction>
 

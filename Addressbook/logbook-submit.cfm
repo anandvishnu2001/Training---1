@@ -5,10 +5,10 @@
 		<cflocation url="index.cfm" addToken="no">
 	<cfelseif structKeyExists(form,"modalbtn")>
 		<cfset formData = {
-			"title" = form.title,
+			"titleId" = form.title,
 			"firstname" = form.firstname,
 			"lastname" = form.lastname,
-			"gender" = form.gender,
+			"genderId" = form.gender,
 			"DOB" = form.date_of_birth,
 			"profile" = form.profile,
 			"house" = form.house_flat,
@@ -19,12 +19,12 @@
 			"pincode" = form.pincode,
 			"email" = form.email,
 			"phone" = form.phone,
-			"hobbies" = listToArray(form.hobbies)
+			"hobbyIds" = listToArray(form.hobbies)
 		}>
 		<cfif len(form.id) NEQ 0>
 			<cfset formData["id"] = form.id>
 		</cfif>
-		<cfset errors = manager.contactValidate(formData)>
+		<cfset messages = manager.contactValidate(formData)>
 		<cfset variables.title = manager.selectTitle>
 		<cfif NOT structKeyExists(form, "title") OR (structKeyExists(form,"title") AND len(form.title) EQ 0)>
 			<cfset arrayAppend(error,"*Title field to be selected")>

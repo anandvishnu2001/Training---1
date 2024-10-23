@@ -27,7 +27,7 @@
 			</div>
 		</nav>
 		<div class="container-fluid d-flex flex-column align-items-center w-100 mx-auto mt-4 p-5 mb-3">
-			<div class="no-print glow w-100 row bg-body rounded-3 mb-3 px-3">
+			<div class="no-print glow card w-100 row rounded-3 mb-3 px-3">
 				<nav class="navbar navbar-expand-lg fw-bold justify-content-end">
 					<ul class="navbar-nav nav-tabs flex-row">
 						<li class="nav-item">
@@ -49,7 +49,7 @@
 				</nav>
 			</div>
 			<div class="row d-flex w-100 gap-1 flex-wrap justify-content-around">
-					<div class="no-print col-12 col-lg-3 h-25 glow card bg-body rounded-start-3 p-3">
+					<div class="no-print col-12 col-lg-3 h-25 glow card rounded-start-3 p-3">
 						<img class="img-fluid rounded-circle img-card-top mx-auto d-block" src="./images/signup.png" alt="Address Book" width="200" height="200">
 						<div class="card-body d-flex flex-column justify-content-center gap-1">
 							<cfoutput><h3 id="user" class="card-title text-center text-info">#session.username#</h3></cfoutput>
@@ -60,7 +60,7 @@
 							</cfif>
 						</div>
 					</div>
-				<div class="glow bg-body card flex-grow-1 d-flex col-8 flex-column p-3">
+				<div class="glow card flex-grow-1 d-flex col-8 flex-column p-3">
 					<p class="h1 fw-bold text-center text-success mb-3">CONTACTS</p>
 					<div class="table-responsive">
 						<table class="table align-middle table-responsive table-borderless table-sm table-hover">	

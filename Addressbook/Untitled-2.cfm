@@ -1,61 +1,58 @@
 //---arguments
 <cfset local.message = {
-	error = [],
-	pending = ""
+	errors = []
 }>
-		<cfset variables.title = manager.selectTitle>
-		<cfif structKeyExists(arguments.data,'title')>
-			<cfif len(trim(arguments.data.title)) EQ 0>
-				<cfset arrayAppend(local.message.errors,"*title field is required.")>
-			<cfelseif NOT listFind(local.result.titleList,arguments.data.title)>
-				<cfset arrayAppend(local.message.errors,"*invalid value for title field")>
+		<cfset local.title = selectTitle()>
+		<cfif structKeyExists(arguments.data,'titleId')>
+			<cfif len(trim(arguments.data.titleId)) EQ 0>
+				<cfset arrayAppend(local.message.errors,"*Title field is required.")>
+			<cfelseif NOT listFind(local.title.id,arguments.data.titleId)>
+				<cfset arrayAppend(local.message.errors,"*Invalid value for title field")>
 			</cfif>
 		<cfelseif structKeyExists(arguments.data,'titleName')>
 			<cfif len(trim(arguments.data.titleName)) EQ 0>
-				<cfset arrayAppend(local.message.errors,"*title field is required.")>
-			<cfelseif NOT listFind(local.result.titleNameList,arguments.data.titleName)>
-				<cfset arrayAppend(local.message.errors,"*invalid value for title field")>
+				<cfset arrayAppend(local.message.errors,"*Title")>
+			<cfelseif NOT listFind(local.title.value,arguments.data.titleName)>
+				<cfset arrayAppend(local.message.errors,"*Title(Valid)")>
 			</cfif>			
 		<cfelse>
-			<cfset arrayAppend(local.message.errors,"*title field is missing")>
+			<cfset arrayAppend(local.message.errors,"*Title field is not found")>
 		</cfif>
-		<cfif NOT structKeyExists(arguments, "title") OR (structKeyExists(arguments,"title") AND len(arguments.title) EQ 0)>
-			<cfset arrayAppend(error,"*Title field to be selected")>
-		<cfelseif NOT listFind(structKeyList(variables.title),trim(arguments.title))>
-			<cfset arrayAppend(error,"*Selection of Title field is Invalid")>
-		<cfelseif (NOT queryKeyExists(quer,"title")) OR len(quer.title) EQ 0>
-			<cfset pending = arrayAppend(pending,"Title",",")>
-		<cfelse>
-			<cfset structDelete(variables,"qtitle")>
-			<cfset checkTitle=StructFindValue(variables.title,trim(quer.title))>
-			<cfif arrayLen(checkTitle) NEQ 0>
-				<cfset qtitle=val(checkTitle[1].key)>
-			<cfelse>
-				<cfset pending = arrayAppend(pending,"Title(Valid)",",")>
-			</cfif>
-		</cfif>
-		</cfif>
-		<cfif len(arguments.firstname) EQ 0>
+		<cfif structKeyExists(arguments.data,'firstname')>
+			<cfset arrayAppend(error,"*Firstname field is not found")>
+		<cfelseif len(arguments.data.firstname) EQ 0>
 			<cfset arrayAppend(error,"*Firstname field is Empty")>
 		</cfif>
-		<cfif len(arguments.lastname) EQ 0>
+		<cfif structKeyExists(arguments.data,'firstname')>
+			<cfset arrayAppend(error,"*Lastname field is not found")>
+		<cfelseif len(arguments.data.lastname) EQ 0>
 			<cfset arrayAppend(error,"*Lastname field is Empty")>
 		</cfif>
-		<cfset variables.gender = manager.selectGender>
-		<cfif NOT structKeyExists(arguments, "gender") OR (structKeyExists(arguments,"gender") AND len(arguments.gender) EQ 0)>
-			<cfset arrayAppend(error,"*Gender field to be selected")>
-		<cfelseif NOT listFind(structKeyList(variables.gender),trim(arguments.gender))>
-			<cfset arrayAppend(error,"*Selection of Gender field is Invalid")>
+		<cfset local.gender = selectGender()>
+		<cfif structKeyExists(arguments.data,'genderId')>
+			<cfif len(trim(arguments.data.genderId)) EQ 0>
+				<cfset arrayAppend(local.message.errors,"*Gender field is required.")>
+			<cfelseif NOT listFind(local.gender.id,arguments.data.genderId)>
+				<cfset arrayAppend(local.message.errors,"*Invalid value for gender field")>
+			</cfif>
+		<cfelseif structKeyExists(arguments.data,'genderName')>
+			<cfif len(trim(arguments.data.genderName)) EQ 0>
+				<cfset arrayAppend(local.message.errors,"*Gender")>
+			<cfelseif NOT listFind(local.gender.value,arguments.data.genderName)>
+				<cfset arrayAppend(local.message.errors,"*Gender(Valid)")>
+			</cfif>			
+		<cfelse>
+			<cfset arrayAppend(local.message.errors,"*Gender field is not found")>
 		</cfif>
-		<cfif len(arguments.date_of_birth) EQ 0>
+		<cfif len(arguments.data.date_of_birth) EQ 0>
 			<cfset arrayAppend(error,"*Date_of_birth field is Empty")>
-		<cfelseif NOT isDate(arguments.date_of_birth) OR (isDate(arguments.date_of_birth) AND arguments.date_of_birth GT now())>
+		<cfelseif NOT isDate(arguments.data.date_of_birth) OR (isDate(arguments.data.date_of_birth) AND arguments.data.date_of_birth GT now())>
 			<cfset arrayAppend(error,"Input of Date_of_birth field is Invalid")>
 		</cfif>
-		<cfif len(arguments.profile) EQ 0 AND len(arguments.id) EQ 0>
+		<cfif len(arguments.data.profile) EQ 0 AND len(arguments.data.id) EQ 0>
 			<cfset arrayAppend(error,"*Profile pic field is Empty")>
 		<cfelse>
-			<cfif arguments.profile NEQ "">
+			<cfif arguments.data.profile NEQ "">
 				<cfset uploadDir = expandPath('./uploads/')>        
 				<cfif not directoryExists(uploadDir)>
 					<cfdirectory action="create" directory="#uploadDir#">
@@ -68,7 +65,7 @@
 			<cfelse>
 				<cfset filename = "">
 			</cfif>
-			<cfif NOT len(arguments.profile) EQ 0>
+			<cfif NOT len(arguments.data.profile) EQ 0>
 				<cfset ext = "jpg,jpeg,png,gif,bmp,tiff">
 				<cfif NOT listFindNoCase(ext,listLast(filename,"."))>
 					<cffile action = "delete" 
@@ -77,47 +74,51 @@
 				</cfif>
 			</cfif>
 		</cfif>
-		<cfif len(arguments.house_flat) EQ 0>
+		<cfif len(arguments.data.house_flat) EQ 0>
 			<cfset arrayAppend(error,"*House_flat field is Empty")>
 		</cfif>
-		<cfif len(arguments.street) EQ 0>
+		<cfif len(arguments.data.street) EQ 0>
 			<cfset arrayAppend(error,"*Street field is Empty")>
 		</cfif>
-		<cfif len(arguments.city) EQ 0>
+		<cfif len(arguments.data.city) EQ 0>
 			<cfset arrayAppend(error,"*City field is Empty")>
 		</cfif>
-		<cfif len(arguments.state) EQ 0>
+		<cfif len(arguments.data.state) EQ 0>
 			<cfset arrayAppend(error,"*State field is Empty")>
 		</cfif>
-		<cfif len(arguments.country) EQ 0>
+		<cfif len(arguments.data.country) EQ 0>
 			<cfset arrayAppend(error,"*Country field is Empty")>
 		</cfif>
-		<cfif len(arguments.pincode) EQ 0>
+		<cfif len(arguments.data.pincode) EQ 0>
 			<cfset arrayAppend(error,"*Pincode field is Empty")>
 		</cfif>
-		<cfif len(arguments.email) EQ 0>
+		<cfif len(arguments.data.email) EQ 0>
 			<cfset arrayAppend(error,"*Email field is Empty")>
-		<cfelseif NOT REFindNoCase("^[\w]+@[\w]+\.[a-zA-Z]{2,}$",arguments.email)>
+		<cfelseif NOT REFindNoCase("^[\w]+@[\w]+\.[a-zA-Z]{2,}$",arguments.data.email)>
 			<cfset arrayAppend(error,"Input of Email field is Invalid")>
 		</cfif>
-		<cfif len(arguments.phone) EQ 0>
+		<cfif len(arguments.data.phone) EQ 0>
 			<cfset arrayAppend(error,"*Phone field is Empty")>
-		<cfelseif NOT REFindNoCase("[0-9]{10}",arguments.phone)>
+		<cfelseif NOT REFindNoCase("[0-9]{10}",arguments.data.phone)>
 			<cfset arrayAppend(error,"*Input of Phone field is Invalid")>
 		</cfif>
-		<cfset variables.hobbies = manager.selectHobbies>
-		<cfif NOT structKeyExists(arguments,"hobbies") OR (structKeyExists(arguments,"hobbies") AND listLen(arguments.hobbies) EQ 0)>
-			<cfset arrayAppend(error,"*Hobbies field to be selected")>
-		<cfelse>
-			<cfset tflag=0>
-			<cfloop list="#arguments.hobbies#" item="i">
-				<cfif NOT listFind(structKeyList(variables.hobbies),i)>
-					<cfset tflag=1>
+		<cfset local.hobby = selectHobbies()>
+		<cfif structKeyExists(arguments.data,"hobbyIds")>
+			<cfloop list="#arguments.data.hobbyIds#" index="local.i">
+				<cfif NOT listFind(local.hobby.id,local.i)>
+					<cfset arrayAppend(local.message.errors,"*Invalid value for hobbies field")>
+					<cfbreak>
 				</cfif>
 			</cfloop>
-			<cfif tflag EQ 1>
-				<cfset arrayAppend(error,"*Selection of Hobbies field is Invalid")>
-			</cfif>
+		<cfelseif structKeyExists(arguments.data,"hobbieNames")>
+			<cfloop list="#arguments.data.hobbieNames#" index="local.i">
+				<cfif NOT listFind(local.hobby.value,local.i)>
+					<cfset arrayAppend(local.message.errors,"*Invalid value for hobbies field")>
+					<cfbreak>
+				</cfif>
+			</cfloop>
+		<cfelse> 
+			<cfset arrayAppend(local.message.errors,"*Hobbies field is required.")>
 		</cfif>
 
 //---xls
