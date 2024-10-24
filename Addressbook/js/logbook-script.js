@@ -12,7 +12,7 @@ $(document).ready(function(){
 			else{
 				$.each(listObj,function(_,value){
 					let row = `<tr>`;
-					row += `<td><img class="img-fluid img-thumbnail rounded-circle mx-auto d-block" src="./uploads/${value.profile}" alt="profile" width="50" height="50"></td>`;
+					row += `<td><img class="img-fluid img-thumbnail rounded-pill mx-auto d-block" src="./uploads/${value.profile}" alt="profile" width="60" height="60"></td>`;
 					row += `<td class="contactname">${value.title.value+' '+value.firstname+' '+value.lastname}</td>`;
 					row += `<td class="contactemail">${value.email}</td>`;
 					row += `<td class="contactphone">${value.phone}</td>`;
