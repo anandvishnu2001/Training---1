@@ -20,67 +20,19 @@
 			</div>
 		</nav>
 		<div class="container-fluid row d-flex justify-content-around rounded-3 mx-auto mt-5 p-3" data-bs-theme="dark">
-            <div class="card col-3 rounded-3 p-3">
+            <div id="categories" class="card col-3 rounded-3 p-3">
                 <p class="h2 card-header card-title text-center text-success">Categories</p>
-                <div class="card-body list-group">
-                    <li class="list-group-item d-flex justify-content-end gap-2">
-                        <a href="" class="py-2 px-3 text-decoration-none list-group-item-action">gg</a>
-                        <button class="btn btn-sm fw-bold btn-outline-success btn-block">Edit</button>
-                        <button class="btn btn-sm fw-bold btn-outline-danger btn-block">Delete</button>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-end gap-2">
-                        <a href="" class="py-2 px-3 text-decoration-none list-group-item-action">First item</a>
-                        <button class="btn btn-sm fw-bold btn-outline-success btn-block">Edit</button>
-                        <button class="btn btn-sm fw-bold btn-outline-danger btn-block">Delete</button>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-end gap-2">
-                        <a href="" class="py-2 px-3 text-decoration-none list-group-item-action">First item</a>
-                        <button class="btn btn-sm fw-bold btn-outline-success btn-block">Edit</button>
-                        <button class="btn btn-sm fw-bold btn-outline-danger btn-block">Delete</button>
-                    </li>
-                </div>
+                <div id="categorylist" class="card-body list-group"></div>
                 <button id="addCategory" name="addCategory" class="card-footer btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="add">Add</button>
             </div>
-            <div class="card col-3 rounded-3 p-3">
+            <div id="subcategories" class="card col-3 rounded-3 p-3">
                 <p class="h2 card-header card-title text-center text-success">Sub categories</p>
-                <div class="card-body list-group">
-                    <li class="list-group-item d-flex justify-content-end gap-2">
-                        <a href="" class="py-2 px-3 text-decoration-none list-group-item-action">First item</a>
-                        <button class="btn btn-sm fw-bold btn-outline-success btn-block">Edit</button>
-                        <button class="btn btn-sm fw-bold btn-outline-danger btn-block">Delete</button>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-end gap-2">
-                        <a href="" class="py-2 px-3 text-decoration-none list-group-item-action">First item</a>
-                        <button class="btn btn-sm fw-bold btn-outline-success btn-block">Edit</button>
-                        <button class="btn btn-sm fw-bold btn-outline-danger btn-block">Delete</button>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-end gap-2">
-                        <a href="" class="py-2 px-3 text-decoration-none list-group-item-action">First item</a>
-                        <button class="btn btn-sm fw-bold btn-outline-success btn-block">Edit</button>
-                        <button class="btn btn-sm fw-bold btn-outline-danger btn-block">Delete</button>
-                    </li>
-                </div>
+                <div id="subcategorylist" class="card-body list-group"></div>
                 <button id="addSubcategory" name="addSubcategory" class="card-footer btn btn-primary btn-block">Add</button>
             </div>
-            <div class="card col-3 rounded-3 p-3">
+            <div id="products" class="card col-3 rounded-3 p-3">
                 <p class="h2 card-header card-title text-center text-success">Products</p>
-                <div class="card-body list-group">
-                    <li class="list-group-item d-flex justify-content-end gap-2">
-                        <a href="" class="py-2 px-3 text-decoration-none list-group-item-action">First item</a>
-                        <button class="btn btn-sm fw-bold btn-outline-success btn-block">Edit</button>
-                        <button class="btn btn-sm fw-bold btn-outline-danger btn-block">Delete</button>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-end gap-2">
-                        <a href="" class="py-2 px-3 text-decoration-none list-group-item-action">First item</a>
-                        <button class="btn btn-sm fw-bold btn-outline-success btn-block">Edit</button>
-                        <button class="btn btn-sm fw-bold btn-outline-danger btn-block">Delete</button>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-end gap-2">
-                        <a href="" class="py-2 px-3 text-decoration-none list-group-item-action">First item</a>
-                        <button class="btn btn-sm fw-bold btn-outline-success btn-block">Edit</button>
-                        <button class="btn btn-sm fw-bold btn-outline-danger btn-block">Delete</button>
-                    </li>
-                </div>
+                <div id="productlist" class="card-body list-group"></div>
                 <button id="addProduct" name="addProduct" class="card-footer btn btn-primary btn-block">Add</button>
             </div>
             <div class="modal fade" id="modal">
@@ -135,7 +87,7 @@
             </div>
 		</div>
 		<script type="text/javascript" src="./js/jQuery.js"></script>
-		<script type="text/javascript" src="./js/admin.js"></script>
+		<script type="text/javascript" src="./js/admin-home.js"></script>
 		<script type="text/javascript" src="./js/bootstrap.min.js"></script>
 	</body>
 </html>
