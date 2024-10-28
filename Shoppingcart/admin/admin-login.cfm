@@ -1,3 +1,20 @@
+<cfif structKeyExists(session, "check") 
+    AND session.check.access>
+	    <cflocation url="./admin-home.cfm" addToken="no">
+<cfelse>
+	<cfset session.check = {
+        "access" = false
+    }>
+</cfif>
+<cfif structKeyExists(form, "btn")>
+    <cfset control = CreateObject("component", "Shoppingcart.components.control")>
+	<cfset control.adminLogin(admin=form.admin, password=form.password)>
+    <cfif session.check.access>
+		<cflocation url="admin-home.cfm" addToken="no">
+	<cfelse>
+		<cflocation url="admin-login.cfm" addToken="no">
+	</cfif>
+</cfif>
 <html lang="en">
 	<head>
 		<link href="./css/admin.css" rel="stylesheet">
@@ -36,8 +53,8 @@
 				Log in
 			</button>
 		</div>
-		<script type="text/javascript" src="./js/jQuery.js"></script>
-		<script type="text/javascript" src="./js/admin.js"></script>
+		<script type="text/javascript" src="./js/jQuery.js"></script><!---
+		<script type="text/javascript" src="./js/admin.js"></script>--->
 		<script type="text/javascript" src="./js/bootstrap.min.js"></script>
 	</body>
 </html>

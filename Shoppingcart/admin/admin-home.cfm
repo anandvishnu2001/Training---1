@@ -1,3 +1,11 @@
+<cfif structKeyExists(url, "logout") AND url.logout EQ 1>
+	<cfset structClear(session)>
+	<cflocation url="admin-login.cfm" addToken="no">
+</cfif>
+<cfif structKeyExists(form, 'okbtn')>
+
+<cfelse>
+</cfif>
 <html lang="en">
 	<head>
 		<link href="./css/admin.css" rel="stylesheet">
@@ -12,8 +20,8 @@
 				</a>
 				<ul class="navbar-nav nav-tabs nav-justified">
 					<li class="nav-item">
-						<a class="nav-link bg-success active text-info" href="">
-							Log in
+						<a class="nav-link bg-success active text-info" href="admin-home.cfm?logout=1">
+							Log out
 						</a>
 					</li>
 				</ul>
@@ -28,14 +36,14 @@
             <div id="subcategories" class="card col-3 rounded-3 p-3">
                 <p class="h2 card-header card-title text-center text-success">Sub categories</p>
                 <div id="subcategorylist" class="card-body list-group"></div>
-                <button id="addSubcategory" name="addSubcategory" class="card-footer btn btn-primary btn-block">Add</button>
+                <button id="addSubcategory" name="addSubcategory" class="card-footer btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="add">Add</button>
             </div>
             <div id="products" class="card col-3 rounded-3 p-3">
                 <p class="h2 card-header card-title text-center text-success">Products</p>
                 <div id="productlist" class="card-body list-group"></div>
-                <button id="addProduct" name="addProduct" class="card-footer btn btn-primary btn-block">Add</button>
+                <button id="addProduct" name="addProduct" class="card-footer btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="add">Add</button>
             </div>
-            <div class="modal fade" id="modal">
+            <div class="modal fade" id="modal" tabindex="-1" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content d-flex p-3">
                         <div class="modal-header d-flex">
@@ -73,14 +81,15 @@
                                     <label for="productPicture" class="form-label text-light text-start">Product Picture</label>	
                                 </div>
                             </fieldset>
+                            <input type="hidden" name="recordId" id="recordId">
                             <fieldset class="delete-mode d-flex flex-column rounded border gap-2 p-3">
 				                <legend class="text-warning">Are you sure you want to delete this contact?</legend>
-                                <input type="hidden" name="d_id" id="d_id">
                             </fieldset>
                         </form>
                         <div class="modal-footer d-flex justify-content-between">
                             <button name="okbtn" id="okbtn" type="submit" class="btn btn-outline-success fw-bold"></button>
-                            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+                            <button name="dltbtn" id="dltbtn" type="submit" class="btn btn-outline-success fw-bold">Yes</button>
+                            <button type="button" class="btn btn-outline-danger fw-bold" data-bs-dismiss="modal">Cancel</button>
                         </div>
                     </div>
                 </div>

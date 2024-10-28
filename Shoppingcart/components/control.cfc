@@ -15,7 +15,7 @@
             AND
                 password = <cfqueryparam value="#arguments.password#" cfsqltype="cf_sql_varchar">
         </cfquery>
-        <cfif local.checkLog.recordCount EQ 0>
+        <cfif local.checkLog.recordCount NEQ 0>
             <cfset session.check = {
                 "access" = true,
                 "admin" = local.checkLog.adminid,

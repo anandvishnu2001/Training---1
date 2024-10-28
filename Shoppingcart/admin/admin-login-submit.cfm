@@ -1,9 +1,6 @@
-<cfif structKeyExists(session, "check")>
-    <cfif session.check.access>
+<cfif structKeyExists(session, "check") 
+    AND session.check.access>
 	    <cflocation url="./admin-home.cfm" addToken="no">
-    <cfelse>
-	    <cflocation url="./admin-login.cfm" addToken="no">
-    </cfif>
 <cfelse>
 	<cfset session.check = {
         "access" = false
@@ -20,4 +17,9 @@
             name="password" 
             value="#form.password#">
     </cfinvoke>
+    <cfif session.check.access>
+		<cflocation url="admin-home.cfm" addToken="no">
+	<cfelse>
+		<cflocation url="admin-login.cfm" addToken="no">
+	</cfif>
 </cfif>
