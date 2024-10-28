@@ -1,30 +1,30 @@
 <cfif structKeyExists(session, "check") 
     AND session.check.access>
-	    <cflocation url="./admin-home.cfm" addToken="no">
+	    <cflocation url="admin-home.cfm" addToken="no">
 <cfelse>
 	<cfset session.check = {
         "access" = false
     }>
 </cfif>
 <cfif structKeyExists(form, "btn")>
-    <cfset control = CreateObject("component", "Shoppingcart.components.control")>
+    <cfset control = CreateObject("component", "components.control")>
 	<cfset control.adminLogin(admin=form.admin, password=form.password)>
     <cfif session.check.access>
 		<cflocation url="admin-home.cfm" addToken="no">
 	<cfelse>
-		<cflocation url="admin-login.cfm" addToken="no">
+		<cflocation url="index.cfm" addToken="no">
 	</cfif>
 </cfif>
 <html lang="en">
 	<head>
-		<link href="./css/admin.css" rel="stylesheet">
-		<link href="./css/bootstrap.min.css" rel="stylesheet">
+		<link href="/css/admin.css" rel="stylesheet">
+		<link href="/css/bootstrap.min.css" rel="stylesheet">
 	</head>
 	<body class="d-flex flex-row align-items-center">
 		<nav class="navbar navbar-expand-lg navbar-light fixed-top" data-bs-theme="dark">
 			<div class="container-fluid bg-success fw-bold">
 				<a class="navbar-brand text-info" href="">
-					<img src="./images/shop.png" width="40" height="40" class="rounded-pill">
+					<img src="/images/shop.png" width="40" height="40" class="rounded-pill">
 					Shopping Cart
 				</a>
 				<ul class="navbar-nav nav-tabs nav-justified">
@@ -49,12 +49,12 @@
 				</div>
 				<span id="feedback" class="border-3 text-center text-danger bg-warning invisible"></span>
 			</form>
-			<button name="btn" type="submit" class="card-footer btn btn-success btn-block" form="login">
+			<button name="btn" id="btn" type="submit" class="card-footer btn btn-success btn-block" form="login">
 				Log in
 			</button>
 		</div>
-		<script type="text/javascript" src="./js/jQuery.js"></script><!---
-		<script type="text/javascript" src="./js/admin.js"></script>--->
-		<script type="text/javascript" src="./js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="/js/jQuery.js"></script><!---
+		<script type="text/javascript" src="/js/admin.js"></script>--->
+		<script type="text/javascript" src="/js/bootstrap.min.js"></script>
 	</body>
 </html>

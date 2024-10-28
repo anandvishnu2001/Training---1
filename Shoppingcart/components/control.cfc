@@ -55,14 +55,14 @@
             SELECT
                 categoryid,
                 name,
-                status,
                 createdat,
                 createdby
             FROM
                 category
+            WHERE
+                status = 1
             <cfif structKeyExists(arguments, 'category')>
-                WHERE
-                    name = <cfqueryparam value="#arguments.category#" cfsqltype="cf_sql_varchar">
+                    AND categoryid = <cfqueryparam value="#arguments.category#" cfsqltype="cf_sql_integer">
             </cfif>
             ;
         </cfquery>
@@ -71,7 +71,6 @@
             <cfset arrayAppend(local.output, {
                 "id" : local.list.categoryid,
                 "name" : local.list.name,
-                "status" : local.list.status,
                 "createdat" : local.list.createdat,
                 "createdby": local.list.createdby 
             })>
@@ -80,7 +79,8 @@
     </cffunction>
 
     <cffunction  name="getSubcategory" access="remote" returnFormat="JSON">
-        <cfargument  name="data" type="struct" required="true">
+        <cfargument  name="category" type="integer" required="false">
+        <cfargument  name="subcategory" type="integer" required="false">
         <cfquery name="local.list" datasource="shopping">
             SELECT
                 subcategoryid,
@@ -92,17 +92,20 @@
             FROM
                 subcategory
             WHERE
-                categoryid = <cfqueryparam value="#arguments.data.category#" cfsqltype="cf_sql_integer">
-                <cfif structKeyExists(arguments.data, 'subcategory')>
-                    AND name = <cfqueryparam value="#arguments.data.subcategory#" cfsqltype="cf_sql_varchar">
+                status = 1
+            AND
+                categoryid = <cfqueryparam value="#arguments.category#" cfsqltype="cf_sql_integer">
+                <cfif structKeyExists(arguments, 'subcategory')>
+                    AND
+                        name = <cfqueryparam value="#arguments.subcategory#" cfsqltype="cf_sql_varchar">
                 </cfif>
             ;
         </cfquery>
+        <cfset local.output = []>
         <cfoutput query="local.list">
             <cfset arrayAppend(local.output, {
                 "id" : local.list.subcategoryid,
                 "name" : local.list.name,
-                "status" : local.list.status,
                 "createdat" : local.list.createdat,
                 "createdby": local.list.createdby,
                 "category" : local.list.categoryid
@@ -112,7 +115,8 @@
     </cffunction>
 
     <cffunction  name="getProduct" access="remote" returnFormat="JSON">
-        <cfargument  name="data" type="struct" required="true">
+        <cfargument  name="subcategory" type="integer" required="true">
+        <cfargument  name="product" type="integer" required="false">
         <cfquery name="local.list" datasource="shopping">
             SELECT
                 productid,
@@ -128,12 +132,16 @@
             FROM
                 product
             WHERE
-                subcategoryid = <cfqueryparam value="#arguments.data.subcategory#" cfsqltype="cf_sql_integer">
-                <cfif structKeyExists(arguments.data, 'product')>
-                    AND name = <cfqueryparam value="#arguments.data.product#" cfsqltype="cf_sql_varchar">
+                status = 1
+            AND
+                subcategoryid = <cfqueryparam value="#arguments.subcategory#" cfsqltype="cf_sql_integer">
+                <cfif structKeyExists(arguments, 'product')>
+                    AND
+                        name = <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_varchar">
                 </cfif>
             ;
         </cfquery>
+        <cfset local.output = []>
         <cfoutput query="local.list">
             <cfset arrayAppend(local.output, {
                 "id" : local.list.productid,
@@ -142,7 +150,6 @@
                 "description" : local.list.description,
                 "stock" : local.list.stock,
                 "price" : local.list.price,
-                "status" : local.list.status,
                 "createdat" : local.list.createdat,
                 "createdby": local.list.createdby,
                 "subcategory" : local.list.subcategoryid
