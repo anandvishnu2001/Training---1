@@ -8,19 +8,28 @@
         }>
 	    <cflocation url="index.cfm" addToken="no">
 </cfif>
+<cfset control = CreateObject("component", "components.control")>
 <cfif structKeyExists(form, 'okbtn')>
-    <cfset variables.input = {}>
-    <cfif structKeyExists(form, 'category')>
-        <cfset variables.input['category'] = form.category>
-    </cfif>
-    <cfif structKeyExists(form, 'subcategory')>
-        <cfset variables.input['subcategory'] = form.subcategory>
-    </cfif>
+    <cfset variables.input = {
+        "admin" = session.check.admin
+    }>
     <cfif structKeyExists(form, 'recordId') AND len(form.recordId) NEQ 0>
         <cfset variables.input['id'] = form.recordId>
+        <cfset variables.input['action'] = 'edit'>
+    <cfelse>
+        <cfset variables.input['action'] = 'add'>
     </cfif>
-    <cfif NOT structIsEmpty(variables.input)>
-        
+    <cfif structKeyExists(form, 'categorySelect') AND len(form.categorySelect)>
+        <cfset variables.input['categorySelect'] = form.categorySelect>
+    <cfelseif len(form.categoryText) NEQ 0>
+        <cfset variables.input['category'] = form.categoryText>
+	    <cfset control.modifyCategory(variables.input)>
+    </cfif>
+    <cfif structKeyExists(form, 'subcategorySelect') AND len(form.subcategorySelect)>
+        <cfset variables.input['subcategorySelect'] = form.subcategorySelect>
+    <cfelseif len(form.subcategoryText) NEQ 0>
+        <cfset variables.input['subcategory'] = form.subcategoryText>
+	    <cfset control.modifySubcategory(variables.input)>
     </cfif>
 <cfelse>
 </cfif>
@@ -45,27 +54,108 @@
 				</ul>
 			</div>
 		</nav>
-		<div class="container-fluid row d-flex justify-content-around rounded-3 mx-auto mt-5 p-3" data-bs-theme="dark">
+		<div class="container-fluid row d-flex align-items-center justify-content-around rounded-3 mx-auto mt-5 p-3" data-bs-theme="dark">
             <div id="categories" class="card col-3 rounded-3 p-3">
                 <p class="h2 card-header card-title text-center text-success">Categories</p>
-                <div id="categorylist" class="card-body list-group"></div>
-                <button id="addCategory" name="addCategory" class="card-footer btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="add" data-bs-set="category">
+                <div id="categorylist" class="card-body list-group">
+                    <cfset categories = control.getCategory()>
+                    <cfif arrayLen(categories) eq 0>
+                        <li class="list-group-item">Category is empty</li>
+                    <cfelse>
+                        <cfoutput>
+                            <cfloop array="#categories#" index="category">
+                            <li class="list-group-item d-flex justify-content-end gap-2 <cfif structKeyExists(url, 'cat') AND category.id EQ url.cat>active</cfif>">
+                                <a class="py-2 px-3 text-decoration-none list-group-item-action"
+                                    href="admin-home.cfm?cat=#category.id#">
+                                        #category.name#
+                                </a>
+                                <button class="btn btn-sm fw-bold btn-outline-success btn-block" data-bs-toggle="modal"
+                                    data-bs-target="#chr(35)#modal" data-bs-action="edit" data-bs-set="category" data-bs-id="#category.id#">
+                                        <img src="/images/edit.png" width="40" height="40" class="img-fluid">
+                                </button>
+                                <button class="btn btn-sm fw-bold btn-outline-danger btn-block" data-bs-toggle="modal"
+                                    data-bs-target="#chr(35)#modal" data-bs-action="delete" data-bs-id="#category.id#">
+                                        <img src="/images/delete.png" width="40" height="40" class="img-fluid">
+                                </button>
+                            </li>
+                            </cfloop>
+                        </cfoutput>
+                    </cfif>
+                </div>
+                <button id="addCategory" name="addCategory" class="card-footer btn btn-primary btn-block" data-bs-toggle="modal"
+                    data-bs-target="#modal" data-bs-action="add" data-bs-set="category">
                     <img src="/images/add.png" width="40" height="40" class="img-fluid">
                 </button>
             </div>
             <div id="subcategories" class="card col-3 rounded-3 p-3">
-                <p class="h2 card-header card-title text-center text-success">Sub categories</p>
-                <div id="subcategorylist" class="card-body list-group"></div>
-                <button id="addSubcategory" name="addSubcategory" class="card-footer btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="add" data-bs-set="subcategory">
-                    <img src="/images/add.png" width="40" height="40" class="img-fluid">
-                </button>
+                <cfif structKeyExists(url, 'cat')>
+                    <p class="h2 card-header card-title text-center text-success">Sub categories</p>
+                    <div id="subcategorylist" class="card-body list-group">
+                            <cfset categories = control.getSubcategory(category=url.cat)>
+                            <cfif arrayLen(categories) eq 0>
+                                <li class="list-group-item">Subcategory is empty</li>
+                            <cfelse>
+                                <cfoutput>
+                                    <cfloop array="#categories#" index="category">
+                                    <li class="list-group-item d-flex justify-content-end gap-2 <cfif structKeyExists(url, 'sub') AND category.id EQ url.sub>active</cfif>">
+                                        <a class="py-2 px-3 text-decoration-none list-group-item-action"
+                                            href="admin-home.cfm?cat=#category.category#&sub=#category.id#">
+                                                #category.name#
+                                        </a>
+                                        <button class="btn btn-sm fw-bold btn-outline-success btn-block" data-bs-toggle="modal"
+                                            data-bs-target="#chr(35)#modal" data-bs-action="edit" data-bs-set="subcategory"
+                                            data-bs-id="#category.id#">
+                                                <img src="/images/edit.png" width="40" height="40" class="img-fluid">
+                                        </button>
+                                        <button class="btn btn-sm fw-bold btn-outline-danger btn-block" data-bs-toggle="modal"
+                                            data-bs-target="#chr(35)#modal" data-bs-action="delete" data-bs-id="#category.id#">
+                                                <img src="/images/delete.png" width="40" height="40" class="img-fluid">
+                                        </button>
+                                    </li>
+                                    </cfloop>
+                                </cfoutput>
+                            </cfif>
+                    </div>
+                    <button id="addSubcategory" name="addSubcategory" class="card-footer btn btn-primary btn-block"
+                        data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="add" data-bs-set="subcategory">
+                        <img src="/images/add.png" width="40" height="40" class="img-fluid">
+                    </button>
+                </cfif>
             </div>
             <div id="products" class="card col-3 rounded-3 p-3">
-                <p class="h2 card-header card-title text-center text-success">Products</p>
-                <div id="productlist" class="card-body list-group"></div>
-                <button id="addProduct" name="addProduct" class="card-footer btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="add" data-bs-set="product">
-                    <img src="/images/add.png" width="40" height="40" class="img-fluid">
-                </button>
+                <cfif structKeyExists(url, 'sub')>
+                    <p class="h2 card-header card-title text-center text-success">Products</p>
+                    <div id="productlist" class="card-body list-group">
+                            <cfset categories = control.getProduct(subcategory=url.sub)>
+                            <cfif arrayLen(categories) eq 0>
+                                <li class="list-group-item">Subcategory is empty</li>
+                            <cfelse>
+                                <cfoutput>
+                                    <cfloop array="#categories#" index="category">
+                                    <li class="list-group-item d-flex justify-content-end gap-2">
+                                        <p class="py-2 px-3">#category.name#</p>
+                                        <p class="py-2 px-3">#category.description#</p>
+                                        <p class="py-2 px-3">#category.price#</p>
+                                        <img src="" class="img-thumbnail img-fluid" alt="viewImage" data-bs-theme="dark">
+                                        <button class="btn btn-sm fw-bold btn-outline-success btn-block" data-bs-toggle="modal"
+                                            data-bs-target="#chr(35)#modal" data-bs-action="edit" data-bs-set="product"
+                                            data-bs-id="#category.id#">
+                                                <img src="/images/edit.png" width="40" height="40" class="img-fluid">
+                                        </button>
+                                        <button class="btn btn-sm fw-bold btn-outline-danger btn-block" data-bs-toggle="modal"
+                                            data-bs-target="#chr(35)#modal" data-bs-action="delete" data-bs-id="#category.id#">
+                                                <img src="/images/delete.png" width="40" height="40" class="img-fluid">
+                                        </button>
+                                    </li>
+                                    </cfloop>
+                                </cfoutput>
+                            </cfif>
+                    </div>
+                    <button id="addProduct" name="addProduct" class="card-footer btn btn-primary btn-block" data-bs-toggle="modal"
+                        data-bs-target="#modal" data-bs-action="add" data-bs-set="product">
+                        <img src="/images/add.png" width="40" height="40" class="img-fluid">
+                    </button>
+                </cfif>
             </div>
             <div class="modal fade" id="modal" tabindex="-1" role="dialog">
                 <div class="modal-dialog">
@@ -75,15 +165,41 @@
                             <button type="button" class="btn-close border rounded" data-bs-dismiss="modal"></button>
                         </div>
                         <form id="modalForm" name="modalForm" class="modal-body d-flex flex-column gap-1" action="" method="post" enctype="multipart/form-data">
-                            <div class="category form-floating">
-                                <input type="text" name="category" id="category" class="form-control text-warning" placeholder="">
-                                <label for="category" class="form-label text-light">Category</label>
+                            <div class="categoryText form-floating">
+                                <input type="text" name="categoryText" id="categoryText" class="form-control text-warning" placeholder="">
+                                <label for="categoryText" class="form-label text-light">Category</label>
                             </div>
-                            <div class="subcategory form-floating">
-                                <input type="text" name="subcategory" id="subcategory" class="form-control text-warning" placeholder="">
-                                <label for="subcategory" class="form-label text-light">Sub category</label>
+                            <div class="categorySelect form-floating">
+                                <select id="categorySelect" name="categorySelect" class="form-select text-warning" placeholder="" required>
+                                        <option value=" "> </option>
+                                        <cfoutput>
+                                            <cfset categories = control.getCategory()>
+                                            <cfloop array="#categories#" index="category">
+                                                <option value="#category.id#">#category.name#</option>
+                                            </cfloop>
+                                        </cfoutput>
+                                </select>
+                                <label for="categorySelect" class="form-label">Category</label>
                             </div>
-                            <fieldset id="product" class="product d-flex flex-column rounded border gap-2 p-3">
+                            <div class="subcategoryText form-floating">
+                                <input type="text" name="subcategoryText" id="subcategoryText" class="form-control text-warning" placeholder="">
+                                <label for="subcategoryText" class="form-label text-light">Sub category</label>
+                            </div>
+                            <cfif structKeyExists(url, 'cat')>
+                                <div class="subcategorySelect form-floating">
+                                    <select id="subcategorySelect" name="categorySelect" class="form-select text-warning" placeholder="" required>
+                                            <option value=" "> </option>
+                                            <cfoutput>
+                                                <cfset categories = control.getSubCategory(category=url.cat)>
+                                                <cfloop array="#categories#" index="category">
+                                                    <option value="#category.id#">#category.name#</option>
+                                                </cfloop>
+                                            </cfoutput>
+                                    </select>
+                                    <label for="subcategorySelect" class="form-label">Subcategory</label>
+                                </div>
+                            </cfif>
+                            <fieldset id="product" class="d-flex flex-column rounded border gap-2 p-3">
                                 <legend class="text-primary">
                                     Product Details
                                     <hr class="border-5">

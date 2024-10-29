@@ -28,9 +28,8 @@
     </cffunction>
 
     <cffunction  name="modifyCategory" access="public">
-        <cfargument  name="action" type="string" required="true">
         <cfargument  name="data" type="struct" required="true">
-        <cfif arguments.action EQ "add">
+        <cfif arguments.data.action EQ "add">
             <cfquery name="local.add" datasource="shopping">
                 INSERT INTO
                     category(
@@ -42,10 +41,74 @@
                 VALUES(
                     <cfqueryparam value="#arguments.data.category#" cfsqltype="cf_sql_varchar">,
                     <cfqueryparam value="1" cfsqltype="cf_sql_integer">,
-                    <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">
+                    <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
                     <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
-                )
+                );
             </cfquery>
+        <cfelseif arguments.data.action EQ "edit">
+            <cfquery name="local.edit" datasource="shopping">
+                UPDATE
+                    category
+                SET
+                    name = <cfqueryparam value="#arguments.data.category#" cfsqltype="cf_sql_varchar">,
+                    lasteditedat = <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
+                    lasteditedby = <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
+                WHERE
+                    categoryid = <cfqueryparam value="#arguments.data.recordId#" cfsqltype="cf_sql_varchar">
+            </cfquery>
+        </cfif>
+    </cffunction>
+
+    <cffunction  name="modifySubcategory" access="public">
+        <cfargument  name="data" type="struct" required="true">
+        <cfif arguments.data.action EQ "add">
+            <cfquery name="local.add" datasource="shopping">
+                INSERT INTO
+                    subcategory(
+                        name,
+                        categoryid,
+                        status,
+                        createdat,
+                        createdby
+                    )
+                VALUES(
+                    <cfqueryparam value="#arguments.data.subcategory#" cfsqltype="cf_sql_varchar">,
+                    <cfqueryparam value="#arguments.data.categorySelect#" cfsqltype="cf_sql_integer">,
+                    <cfqueryparam value="1" cfsqltype="cf_sql_integer">,
+                    <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
+                    <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
+                );
+            </cfquery>
+        </cfif>
+    </cffunction>
+
+    <cffunction  name="modifyProduct" access="public">
+        <cfargument  name="data" type="struct" required="true">
+        <cfif arguments.data.action EQ "add">
+            <cfquery name="local.add" datasource="shopping">
+                INSERT INTO
+                    product(
+                        name,
+                        image,
+                        description,
+                        price,
+                        subcategoryid,
+                        status,
+                        createdat,
+                        createdby
+                    )
+                VALUES(
+                    <cfqueryparam value="#arguments.data.product#" cfsqltype="cf_sql_varchar">,
+                    <cfqueryparam value="#arguments.data.image#" cfsqltype="cf_sql_varchar">,
+                    <cfqueryparam value="#arguments.data.description#" cfsqltype="cf_sql_varchar">,
+                    <cfqueryparam value="#arguments.data.price#" cfsqltype="cf_sql_varchar">,
+                    <cfqueryparam value="#arguments.data.subcategorySelect#" cfsqltype="cf_sql_integer">,
+                    <cfqueryparam value="1" cfsqltype="cf_sql_integer">,
+                    <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
+                    <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
+                );
+            </cfquery>
+        <cfelseif arguments.data.action EQ "edit">
         </cfif>
     </cffunction>
 
@@ -79,7 +142,7 @@
     </cffunction>
 
     <cffunction  name="getSubcategory" access="remote" returnFormat="JSON">
-        <cfargument  name="category" type="integer" required="false">
+        <cfargument  name="category" type="integer" required="true">
         <cfargument  name="subcategory" type="integer" required="false">
         <cfquery name="local.list" datasource="shopping">
             SELECT
@@ -123,7 +186,6 @@
                 name,
                 image,
                 description,
-                stock,
                 price,
                 status,
                 createdat,
@@ -148,7 +210,6 @@
                 "name" : local.list.name,
                 "image" : local.list.image,
                 "description" : local.list.description,
-                "stock" : local.list.stock,
                 "price" : local.list.price,
                 "createdat" : local.list.createdat,
                 "createdby": local.list.createdby,
