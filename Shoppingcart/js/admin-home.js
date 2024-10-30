@@ -3,6 +3,7 @@ $(document).ready(function () {
   
   $('#products').hide();
 
+
   const url = new URLSearchParams(window.location.search);
 
   if(url.has('cat')) {
@@ -17,6 +18,30 @@ $(document).ready(function () {
     $('#modalForm').find('input','textarea','select').removeAttr('required').val();
     $('#modalForm')[0].reset();
     $('#recordId').val();
+    $('#set').val();
+  });
+
+  $('#modal').on('shown.bs.modal',function(event){
+    if(!$('#product').hasClass("d-none")) {
+      $('#categorySelect').change(function () {
+      $.ajax({
+        url: '/components/control.cfc?method=getSubcategory',
+        type: 'GET',
+        data: {
+          "category": $('#categorySelect').val()
+        },
+        success: function(data){
+          let subcategoryObj = JSON.parse(data);
+          $('#subcategorySelect').html('<option value=""></option>');
+          $.each(subcategoryObj, function(_, category) {
+            $('#subcategorySelect').append(
+              $('<option>', { value: category.id, text: category.name, selected: category.id == url.get('sub') })
+            );
+          });
+        }
+      });
+      });
+    }
   });
 
   $('#modal').on('show.bs.modal',function(event){
@@ -41,8 +66,10 @@ $(document).ready(function () {
       $('#dltbtn').addClass("d-none");
     if(button.data("bs-action") != "delete") {
       $('#okbtn').removeClass("d-none");
-      if(button.data("bs-set") === "category" && button.data("bs-action") === "add")
+      if(button.data("bs-set") === "category" && button.data("bs-action") === "add") {
         $('.categoryText').removeClass("d-none");
+        $('#categoryText').attr('required', 'true');
+      }
       else {
         let categorydataObj = button.data("bs-set") === "category" 
           ? { "category": button.data("bs-id") }
@@ -55,20 +82,21 @@ $(document).ready(function () {
             let categoryObj = JSON.parse(data);
             if(button.data("bs-set") === "category") {
               $('.categoryText').removeClass("d-none");
-              $('#categoryText').val(categoryObj[0].name);
-              $('#categoryText').attr('required', 'true');
+              $('#categoryText').val(categoryObj[0].name).attr('required', 'true');
               $('#recordId').val(categoryObj[0].id);
             }
             else {
               $('.categorySelect').removeClass("d-none");
-              $('#categorySelect').html('<option value=""></option>');
+              $('#categorySelect').attr('required', 'true').html('<option value=""></option>');
               $.each(categoryObj, function(_, category) {
                 $('#categorySelect').append(
                   $('<option>', { value: category.id, text: category.name, selected: category.id == url.get('cat') })
                 );
               });
-              if(button.data("bs-set") === "subcategory" && button.data("bs-action") === "add")
+              if(button.data("bs-set") === "subcategory" && button.data("bs-action") === "add") {
                 $('.subcategoryText').removeClass("d-none");
+                $('#subcategoryText').attr('required', 'true');
+              }
               else {
                 let subcategorydataObj = button.data("bs-set") == "subcategory"
                   ? {
@@ -78,7 +106,6 @@ $(document).ready(function () {
                   : {
                     "category": url.get('cat')
                   };
-                  console.log(subcategorydataObj);
                   $.ajax({
                     url: '/components/control.cfc?method=getSubcategory',
                     type: 'GET',
@@ -87,29 +114,40 @@ $(document).ready(function () {
                       let subcategoryObj = JSON.parse(data);
                       if (button.data("bs-set") === "subcategory") {
                         $('.subcategoryText').removeClass("d-none");
-                        $('#subcategoryText').val(subcategoryObj[0].name);
-                        $('#subcategoryText').attr('required', 'true');
+                        $('#subcategoryText').val(subcategoryObj[0].name).attr('required', 'true');
                         $('#recordId').val(subcategoryObj[0].id);
                       }
                       else {
                         $('.subcategorySelect').removeClass("d-none");
-                        $('#subcategorySelect').html('<option value=""></option>');
+                        $('#subcategorySelect').attr('required', 'true').html('<option value=""></option>');
                         $.each(subcategoryObj, function(_, category) {
                           $('#subcategorySelect').append(
                             $('<option>', { value: category.id, text: category.name, selected: category.id == url.get('sub') })
                           );
                         });
-                        if(button.data("bs-set") === "product" && button.data("bs-action") === "add")
-                          $('#product').removeClass("d-none");
+                        if(button.data("bs-set") === "product" && button.data("bs-action") === "add") {
+                          $('#product').removeClass("d-none").find('input','textarea','select').attr('required', 'true');
+                        }
                         else {
-                          let productdataObj = button.data("bs-set") == "product"
-                          ? {
-                            "subcategory": url.get('cat'),
-                            "product":  button.data("bs-id")
-                          }
-                          : {
-                            "subcategory": url.get('cat')
-                          };
+                          $('#product').removeClass("d-none");
+                          $.ajax({
+                            url: '/components/control.cfc?method=getProduct',
+                            type: 'GET',
+                            data: {
+                              "subcategory": url.get('sub'),
+                              "product":  button.data("bs-id")
+                            },
+                            success: function(data){
+                              let productObj = JSON.parse(data);
+                              $('#productName').val(productObj[0].name);
+                              $('#productDesc').val(productObj[0].description);
+                              $('#price').val(productObj[0].price);
+                              $('#recordId').val(productObj[0].id);
+                              $('#product').removeClass("d-none").find('input','textarea','select').attr('required', 'true');
+                              $('#productPic').removeAttr('required');
+                              $('#editImageView').removeClass("d-none").attr("src", `/images/${productObj[0].image}`);
+                            }
+                          });
                         }
                       }
                     }
@@ -119,41 +157,6 @@ $(document).ready(function () {
           }
         });
       }
-      /*
-      else {
-            else {
-              
-              
-              //console.log(url.get('cat'));
-              
-              
-                  
-                  }
-                  else if (button.data("bs-set") == "product") {
-                    
-                    $.ajax({
-                      url: '/components/control.cfc?method=getProduct',
-                      type: 'GET',
-                      data: {
-                        "subcategory": url.get('sub'),
-                        "product": button.data("bs-id")
-                      },
-                      success: function(data){
-                        let listObj = JSON.parse(data);
-                        if(button.data("bs-set") == "subcategory") {
-                          $('#productName').val(listObj[0].name);
-                          $('#product').removeClass("d-none").find('input','textarea','select').attr('required', 'true');
-                          $('#subcategoryText').attr('required', 'true');
-                        }
-                      }
-                    });
-                  }
-                }
-              });
-            }
-          }
-        });
-      }*/
       if(button.data("bs-action") == "edit") {
         $('#okbtn').html('Update');
         $('#editImageView').removeClass("d-none");
@@ -165,6 +168,8 @@ $(document).ready(function () {
     else {
       $('.delete-mode').removeClass("d-none");
       $('#dltbtn').removeClass("d-none");
+      $('#recordId').val(button.data("bs-id"));
+      $('#set').val(button.data("bs-set"));
     }
 	});
 });

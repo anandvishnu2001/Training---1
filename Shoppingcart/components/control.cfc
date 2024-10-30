@@ -27,6 +27,67 @@
         </cfif>
     </cffunction>
 
+    <cffunction  name="validate" access="public">
+        <cfargument  name="data" type="struct" required="true">
+        <cfset local.input = {
+            "data" = {
+                "admin" = session.check.admin
+            },
+            "message" = []
+        }>
+        <cfif structKeyExists(arguments.data, 'recordId') AND len(arguments.data.recordId) NEQ 0>
+            <cfset local.input.data['id'] = arguments.data.recordId>
+            <cfset local.input.data['action'] = 'edit'>
+        <cfelse>
+            <cfset local.input.data['action'] = 'add'>
+        </cfif>
+        <cfif structKeyExists(arguments.data, 'categorySelect') AND len(arguments.data.categorySelect) NEQ 0>
+            <cfset local.input.data['categorySelect'] = arguments.data.categorySelect>
+            <cfif structKeyExists(arguments.data, 'subcategorySelect') AND len(arguments.data.subcategorySelect) NEQ 0>
+                <cfset local.input.data['subcategorySelect'] = arguments.data.subcategorySelect>
+                <cfif structKeyExists(arguments.data, 'productName') AND len(arguments.data.productName) NEQ 0>
+                    <cfset local.input.data['name'] = arguments.data.productName>
+                <cfelse>
+                    <cfset arrayAppend(local.input.message, '*Product name required')>
+                </cfif>
+                <cfif structKeyExists(arguments.data, 'productDesc') AND len(arguments.data.productDesc) NEQ 0>
+                    <cfset local.input.data['description'] = arguments.data.productDesc>
+                <cfelse>
+                    <cfset arrayAppend(local.input.message, '*Product description required')>
+                </cfif>
+                <cfif structKeyExists(arguments.data, 'price') AND len(arguments.data.price) NEQ 0>
+                    <cfset local.input.data['price'] = arguments.data.price>
+                <cfelse>
+                    <cfset arrayAppend(local.input.message, '*Product price required')>
+                </cfif>
+                <cfif NOT structKeyExists(arguments.data, 'recordId')
+                    OR (structKeyExists(arguments.data, 'productPic') 
+                        AND len(arguments.data.productPic) NEQ 0)>
+                            <cfset uploadDir = expandPath('/images/')>        
+                            <cfif not directoryExists(uploadDir)>
+                                <cfdirectory action="create" directory="#uploadDir#">
+                            </cfif>
+                            <cffile action="upload"
+                                filefield="productPic"
+                                destination="#uploadDir#"
+                                nameConflict="makeunique">
+                            <cfset local.input.data['image'] = cffile.serverFile>
+                <cfelseif local.input.data['action'] EQ 'add'>
+                    <cfset arrayAppend(local.input.message, '*Product image required')>
+                </cfif>
+            <cfelseif len(arguments.data.subcategoryText) NEQ 0>
+                <cfset local.input.data['subcategory'] = arguments.data.subcategoryText>
+            <cfelse>
+                <cfset arrayAppend(local.input.message, '*Subcategory required')>
+            </cfif>
+        <cfelseif len(arguments.data.categoryText) NEQ 0>
+            <cfset local.input.data['category'] = arguments.data.categoryText>
+        <cfelse>
+            <cfset arrayAppend(local.input.message, '*Category required')>
+        </cfif>
+        <cfreturn local.input>
+    </cffunction>
+
     <cffunction  name="modifyCategory" access="public">
         <cfargument  name="data" type="struct" required="true">
         <cfif arguments.data.action EQ "add">
@@ -84,7 +145,7 @@
                 UPDATE
                     subcategory
                 SET
-                    <cfif structKeyExists(arguments.data, 'name')>
+                    <cfif structKeyExists(arguments.data, 'subcategory')>
                         name = <cfqueryparam value="#arguments.data.subcategory#" cfsqltype="cf_sql_varchar">,
                     </cfif>
                     categoryid = <cfqueryparam value="#arguments.data.categorySelect#" cfsqltype="cf_sql_integer">,
@@ -98,7 +159,6 @@
 
     <cffunction  name="modifyProduct" access="public">
         <cfargument  name="data" type="struct" required="true">
-        <cfdump var="#arguments.data#">
         <cfif arguments.data.action EQ "add">
             <cfquery name="local.add" datasource="shopping">
                 INSERT INTO
@@ -113,7 +173,7 @@
                         createdby
                     )
                 VALUES(
-                    <cfqueryparam value="#arguments.data.product#" cfsqltype="cf_sql_varchar">,
+                    <cfqueryparam value="#arguments.data.name#" cfsqltype="cf_sql_varchar">,
                     <cfqueryparam value="#arguments.data.image#" cfsqltype="cf_sql_varchar">,
                     <cfqueryparam value="#arguments.data.description#" cfsqltype="cf_sql_varchar">,
                     <cfqueryparam value="#arguments.data.price#" cfsqltype="cf_sql_varchar">,
@@ -123,15 +183,31 @@
                     <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
                 );
             </cfquery>
-            <cfset local.sub = {
-                action: 'edit',
-                categorySelect: arguments.data.categorySelect,
-                id: arguments.data.subcategorySelect,
-                admin: arguments.data.admin
-            }>
-            <cfset variable = modifySubcategory(local.sub)>
         <cfelseif arguments.data.action EQ "edit">
+            <cfquery name="local.edit" datasource="shopping">
+                UPDATE
+                    product
+                SET
+                    <cfif structKeyExists(arguments.data, 'image')>
+                        image = <cfqueryparam value="#arguments.data.image#" cfsqltype="cf_sql_varchar">,
+                    </cfif>
+                    name = <cfqueryparam value="#arguments.data.name#" cfsqltype="cf_sql_varchar">,
+                    description = <cfqueryparam value="#arguments.data.description#" cfsqltype="cf_sql_varchar">,
+                    price = <cfqueryparam value="#arguments.data.price#" cfsqltype="cf_sql_decimal">,
+                    subcategoryid = <cfqueryparam value="#arguments.data.subcategorySelect#" cfsqltype="cf_sql_integer">,
+                    lasteditedat = <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
+                    lasteditedby = <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
+                WHERE
+                    productid = <cfqueryparam value="#arguments.data.id#" cfsqltype="cf_sql_varchar">
+            </cfquery>
         </cfif>
+        <cfset local.sub = {
+            action: 'edit',
+            categorySelect: arguments.data.categorySelect,
+            id: arguments.data.subcategorySelect,
+            admin: arguments.data.admin
+        }>
+        <cfset variable = modifySubcategory(local.sub)>
     </cffunction>
 
     <cffunction  name="getCategory" access="remote" returnFormat="JSON">
@@ -239,5 +315,71 @@
             })>
         </cfoutput>
         <cfreturn local.output>
+    </cffunction>
+
+	<cffunction name="deleteItem" access="public">
+		<cfargument name="data" type="struct" required="true">
+        <cfif arguments.data.section EQ "category">
+            <cfquery name="local.deleteCategories" datasource="shopping">
+                UPDATE category
+                SET
+                    status = 0,
+                    deletedat = <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
+                    deletedby = <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
+                WHERE
+                    categoryid = <cfqueryparam value="#arguments.data.id#" cfsqltype="cf_sql_integer">
+            </cfquery>
+            <cfquery name="local.deleteSubCategories" datasource="shopping">
+                UPDATE subcategory
+                SET
+                    status = 0,
+                    deletedat = <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
+                    deletedby = <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
+                WHERE
+                    categoryid = <cfqueryparam value="#arguments.data.id#" cfsqltype="cf_sql_integer">
+            </cfquery>
+            <cfquery name="local.deleteProducts" datasource="shopping">
+                UPDATE product
+                SET
+                    status = 0,
+                    deletedat = <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
+                    deletedby = <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
+                WHERE
+                    subcategoryid IN (
+                        SELECT subcategoryid
+                        FROM subcategory
+                        WHERE categoryid = <cfqueryparam value="#arguments.data.id#" cfsqltype="cf_sql_integer">
+                    )
+            </cfquery>
+        <cfelseif arguments.data.section EQ "subcategory">
+            <cfquery name="local.deleteSubCategories" datasource="shopping">
+                UPDATE subcategory
+                SET
+                    status = 0,
+                    deletedat = <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
+                    deletedby = <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
+                WHERE
+                    subcategoryid = <cfqueryparam value="#arguments.data.id#" cfsqltype="cf_sql_integer">
+            </cfquery>
+            <cfquery name="local.deleteProducts" datasource="shopping">
+                UPDATE product
+                SET
+                    status = 0,
+                    deletedat = <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
+                    deletedby = <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
+                WHERE
+                    subcategoryid = <cfqueryparam value="#arguments.data.id#" cfsqltype="cf_sql_integer">
+            </cfquery>
+        <cfelseif arguments.data.section EQ "product">
+            <cfquery name="local.deleteProducts" datasource="shopping">
+                UPDATE product
+                SET
+                    status = 0,
+                    deletedat = <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
+                    deletedby = <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
+                WHERE
+                    productid = <cfqueryparam value="#arguments.data.id#" cfsqltype="cf_sql_integer">
+            </cfquery>
+        </cfif>
     </cffunction>
 </cfcomponent>

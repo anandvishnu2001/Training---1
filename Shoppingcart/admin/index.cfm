@@ -20,9 +20,8 @@
 		<link href="/css/admin.css" rel="stylesheet">
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
 	</head>
-	<body class="d-flex flex-row align-items-center">
-		<nav class="navbar navbar-expand-lg navbar-light fixed-top" data-bs-theme="dark">
-			<div class="container-fluid bg-success fw-bold">
+	<body class="container-fluid p-0 d-flex flex-row align-items-center">
+		<nav class="container-fluid p-1  navbar navbar-expand-lg justify-content-between bg-success navbar-light fw-bold fixed-top" data-bs-theme="dark">
 				<a class="navbar-brand text-info" href="">
 					<img src="/images/shop.png" width="40" height="40" class="rounded-pill">
 					Shopping Cart
@@ -34,7 +33,6 @@
 						</a>
 					</li>
 				</ul>
-			</div>
 		</nav>
 		<div class="card col-lg-4 col-md-6 col-8 rounded-3 mx-auto mt-5 mb-3 p-3" data-bs-theme="dark">
 			<p class="h1 card-header card-title text-center text-success">ADMIN LOGIN</p>

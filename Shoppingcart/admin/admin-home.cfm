@@ -10,70 +10,46 @@
 </cfif>
 <cfset control = CreateObject("component", "components.control")>
 <cfif structKeyExists(form, 'okbtn')>
-    <cfset variables.input = {
-        "admin" = session.check.admin
-    }>
-    <cfif structKeyExists(form, 'recordId') AND len(form.recordId) NEQ 0>
-        <cfset variables.input['id'] = form.recordId>
-        <cfset variables.input['action'] = 'edit'>
-    <cfelse>
-        <cfset variables.input['action'] = 'add'>
-    </cfif>
-    <cfif structKeyExists(form, 'categorySelect') AND len(form.categorySelect)>
-        <cfset variables.input['categorySelect'] = form.categorySelect>
-        <cfif structKeyExists(form, 'subcategorySelect') AND len(form.subcategorySelect)>
-            <cfset variables.input['subcategorySelect'] = form.subcategorySelect>
-            <cfif structKeyExists(form, 'productName') AND len(form.productName)>
-                <cfset variables.input['productName'] = form.productName>
-            </cfif>
-            <cfif structKeyExists(form, 'productDesc') AND len(form.productDesc)>
-                <cfset variables.input['productDesc'] = form.productDesc>
-            </cfif>
-            <cfif structKeyExists(form, 'price') AND len(form.price)>
-                <cfset variables.input['price'] = form.price>
-            </cfif>
-            <cfif structKeyExists(form, 'productPic') AND len(form.productPic)>
-                <cfset uploadDir = expandPath('/images/')>        
-				<cfif not directoryExists(uploadDir)>
-					<cfdirectory action="create" directory="#uploadDir#">
-				</cfif>
-				<cffile action="upload"
-					filefield="form.productPic"
-					destination="#uploadDir#"
-					nameConflict="makeunique">
-                <cfset variables.input['productPic'] = cffile.serverFile>
-            </cfif>
-        <cfdump var="#variables.input#">
-            <cfset control.modifyProduct(variables.input)>
-        <cfelseif len(form.subcategoryText) NEQ 0>
-            <cfset variables.input['subcategory'] = form.subcategoryText>
-            <cfset control.modifySubcategory(variables.input)>
+    <cfset variables.input = control.validate(form)>
+    <cfif arrayLen(variables.input.message) EQ 0>
+        <cfif structKeyExists(variables.input.data, 'category')>
+            <cfset control.modifyCategory(variables.input.data)>
+        <cfelseif  structKeyExists(variables.input.data, 'subcategory')>
+            <cfset control.modifySubcategory(variables.input.data)>
+        <cfelse>
+            <cfset control.modifyProduct(variables.input.data)>
         </cfif>
-    <cfelseif len(form.categoryText) NEQ 0>
-        <cfset variables.input['category'] = form.categoryText>
-	    <cfset control.modifyCategory(variables.input)>
+    <cfelse>
+        <div class="row">
+            <cfoutput>#arrayToList(variables.input.message)#</cfoutput>
+        </div>
     </cfif>
+<cfelseif structKeyExists(form, 'dltbtn')>
+    <cfset variables.section = {
+        "admin" = session.check.admin,
+        "section" = form.set,
+        "id" = form.recordId
+    }>
+    <cfset control.deleteItem(variables.section)>
 </cfif>
 <html lang="en">
 	<head>
 		<link href="/css/admin.css" rel="stylesheet">
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
 	</head>
-	<body class="d-flex flex-row align-items-center">
-		<nav class="navbar navbar-expand-lg navbar-light fixed-top" data-bs-theme="dark">
-			<div class="container-fluid bg-success fw-bold">
-				<a class="navbar-brand text-info" href="">
-					<img src="/images/shop.png" width="40" height="40" class="rounded-pill">
-					Shopping Cart
-				</a>
-				<ul class="navbar-nav nav-tabs nav-justified">
-					<li class="nav-item">
-						<a class="nav-link bg-success active text-info" href="admin-home.cfm?logout=1">
-							Log out
-						</a>
-					</li>
-				</ul>
-			</div>
+	<body class="container-fluid p-0 d-flex flex-row align-items-center">
+		<nav class="container-fluid p-1  navbar navbar-expand-lg navbar-light justify-content-between bg-success fw-bold fixed-top" data-bs-theme="dark">
+            <a class="navbar-brand text-info" href="">
+                <img src="/images/shop.png" width="40" height="40" class="rounded-pill">
+                Shopping Cart
+            </a>
+            <ul class="navbar-nav nav-tabs nav-justified">
+                <li class="nav-item">
+                    <a class="nav-link bg-success active text-info" href="admin-home.cfm?logout=1">
+                        Log out
+                    </a>
+                </li>
+            </ul>
 		</nav>
 		<div class="container-fluid row d-flex align-items-center justify-content-around rounded-3 mx-auto mt-5 p-3" data-bs-theme="dark">
             <div id="categories" class="card col-3 rounded-3 p-3">
@@ -92,11 +68,11 @@
                                 </a>
                                 <button class="btn btn-sm fw-bold btn-outline-success btn-block" data-bs-toggle="modal"
                                     data-bs-target="#chr(35)#modal" data-bs-action="edit" data-bs-set="category" data-bs-id="#category.id#">
-                                        <img src="/images/edit.png" width="40" height="40" class="img-fluid">
+                                        <img src="/images/edit.png" width="30" height="30" class="img-fluid">
                                 </button>
                                 <button class="btn btn-sm fw-bold btn-outline-danger btn-block" data-bs-toggle="modal"
-                                    data-bs-target="#chr(35)#modal" data-bs-action="delete" data-bs-id="#category.id#">
-                                        <img src="/images/delete.png" width="40" height="40" class="img-fluid">
+                                    data-bs-target="#chr(35)#modal" data-bs-action="delete" data-bs-set="category" data-bs-id="#category.id#">
+                                        <img src="/images/delete.png" width="30" height="30" class="img-fluid">
                                 </button>
                             </li>
                             </cfloop>
@@ -105,7 +81,7 @@
                 </div>
                 <button id="addCategory" name="addCategory" class="card-footer btn btn-primary btn-block" data-bs-toggle="modal"
                     data-bs-target="#modal" data-bs-action="add" data-bs-set="category">
-                    <img src="/images/add.png" width="40" height="40" class="img-fluid">
+                    <img src="/images/add.png" width="30" height="30" class="img-fluid">
                 </button>
             </div>
             <div id="subcategories" class="card col-3 rounded-3 p-3">
@@ -126,11 +102,11 @@
                                         <button class="btn btn-sm fw-bold btn-outline-success btn-block" data-bs-toggle="modal"
                                             data-bs-target="#chr(35)#modal" data-bs-action="edit" data-bs-set="subcategory"
                                             data-bs-id="#category.id#">
-                                                <img src="/images/edit.png" width="40" height="40" class="img-fluid">
+                                                <img src="/images/edit.png" width="30" height="30" class="img-fluid">
                                         </button>
                                         <button class="btn btn-sm fw-bold btn-outline-danger btn-block" data-bs-toggle="modal"
-                                            data-bs-target="#chr(35)#modal" data-bs-action="delete" data-bs-id="#category.id#">
-                                                <img src="/images/delete.png" width="40" height="40" class="img-fluid">
+                                            data-bs-target="#chr(35)#modal" data-bs-action="delete" data-bs-set="subcategory" data-bs-id="#category.id#">
+                                                <img src="/images/delete.png" width="30" height="30" class="img-fluid">
                                         </button>
                                     </li>
                                     </cfloop>
@@ -139,11 +115,11 @@
                     </div>
                     <button id="addSubcategory" name="addSubcategory" class="card-footer btn btn-primary btn-block"
                         data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="add" data-bs-set="subcategory">
-                        <img src="/images/add.png" width="40" height="40" class="img-fluid">
+                        <img src="/images/add.png" width="30" height="30" class="img-fluid">
                     </button>
                 </cfif>
             </div>
-            <div id="products" class="card col-3 rounded-3 p-3">
+            <div id="products" class="card col-5 rounded-3 p-3">
                 <cfif structKeyExists(url, 'sub')>
                     <p class="h2 card-header card-title text-center text-success">Products</p>
                     <div id="productlist" class="card-body list-group">
@@ -153,20 +129,28 @@
                             <cfelse>
                                 <cfoutput>
                                     <cfloop array="#categories#" index="category">
-                                    <li class="list-group-item d-flex justify-content-end gap-2">
-                                        <p class="py-2 px-3">#category.name#</p>
-                                        <p class="py-2 px-3">#category.description#</p>
-                                        <p class="py-2 px-3">#category.price#</p>
-                                        <img src="/images/#category.image#" class="img-thumbnail img-fluid" alt="viewImage" data-bs-theme="dark">
-                                        <button class="btn btn-sm fw-bold btn-outline-success btn-block" data-bs-toggle="modal"
-                                            data-bs-target="#chr(35)#modal" data-bs-action="edit" data-bs-set="product"
-                                            data-bs-id="#category.id#">
-                                                <img src="/images/edit.png" width="40" height="40" class="img-fluid">
-                                        </button>
-                                        <button class="btn btn-sm fw-bold btn-outline-danger btn-block" data-bs-toggle="modal"
-                                            data-bs-target="#chr(35)#modal" data-bs-action="delete" data-bs-id="#category.id#">
-                                                <img src="/images/delete.png" width="40" height="40" class="img-fluid">
-                                        </button>
+                                    <li class="row list-group-item d-flex justify-content-end">
+                                        <div class="col-7 d-flex flex-column gap-2">
+                                            <div class="d-flex gap-2">
+                                                <p class="py-2 px-3">#category.name#</p>
+                                                <p class="py-2 px-3">#category.price#</p>
+                                                </div>
+                                            <p class="py-2 px-3">#category.description#</p>
+                                        </div>
+                                        <div class="col-4 d-flex flex-column gap-2">
+                                            <img src="/images/#category.image#" class="img-thumbnail img-fluid" alt="viewImage" data-bs-theme="dark">
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm fw-bold btn-outline-success btn-block" data-bs-toggle="modal"
+                                                    data-bs-target="#chr(35)#modal" data-bs-action="edit" data-bs-set="product"
+                                                    data-bs-id="#category.id#">
+                                                        <img src="/images/edit.png" width="30" height="30" class="img-fluid">
+                                                </button>
+                                                <button class="btn btn-sm fw-bold btn-outline-danger btn-block" data-bs-toggle="modal"
+                                                    data-bs-target="#chr(35)#modal" data-bs-action="delete" data-bs-set="product" data-bs-id="#category.id#">
+                                                        <img src="/images/delete.png" width="30" height="30" class="img-fluid">
+                                                </button>
+                                            </div>
+                                        </div>
                                     </li>
                                     </cfloop>
                                 </cfoutput>
@@ -174,7 +158,7 @@
                     </div>
                     <button id="addProduct" name="addProduct" class="card-footer btn btn-primary btn-block" data-bs-toggle="modal"
                         data-bs-target="#modal" data-bs-action="add" data-bs-set="product">
-                        <img src="/images/add.png" width="40" height="40" class="img-fluid">
+                        <img src="/images/add.png" width="30" height="30" class="img-fluid">
                     </button>
                 </cfif>
             </div>
@@ -201,8 +185,8 @@
                                 <label for="subcategoryText" class="form-label text-light">Sub category</label>
                             </div>
                             <div class="subcategorySelect form-floating">
-                                <select id="subcategorySelect" name="categorySelect" class="form-select text-warning" placeholder="">
-                                        <option value=" "> </option>
+                                <select id="subcategorySelect" name="subcategorySelect" class="form-select text-warning" placeholder="">
+                                        <option value=""> </option>
                                 </select>
                                 <label for="subcategorySelect" class="form-label">Subcategory</label>
                             </div>
@@ -224,14 +208,15 @@
                                     <label for="price" class="form-label text-light">Price</label>
                                 </div>
                                 <div class="d-flex">
-                                    <img id="editImageView" src="" class="img-thumbnail img-fluid" alt="viewImage" data-bs-theme="dark"> 
+                                    <img id="editImageView" src="" class="img-thumbnail img-fluid" alt="viewImage" data-bs-theme="dark" width="100" height="100"> 
                                     <div class="form-floating">
-                                        <input class="form-control text-warning" type="file" name="productPic" id ="productPicture" accept="image/jpeg, image/png">
-                                        <label for="productPicture" class="form-label text-light text-start">Product Picture</label>	
+                                        <input class="form-control text-warning" type="file" name="productPic" id ="productPic" accept="image/jpeg, image/png">
+                                        <label for="productPic" class="form-label text-light text-start">Product Picture</label>	
                                     </div>
                                 </div>
                             </fieldset>
                             <input type="hidden" name="recordId" id="recordId">
+                            <input type="hidden" name="set" id="set">
                             <fieldset class="delete-mode d-flex flex-column rounded border gap-2 p-3">
 				                <legend class="text-warning">Are you sure you want to delete this contact?</legend>
                             </fieldset>
