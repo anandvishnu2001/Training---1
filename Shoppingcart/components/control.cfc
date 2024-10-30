@@ -54,7 +54,7 @@
                     lasteditedat = <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
                     lasteditedby = <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
                 WHERE
-                    categoryid = <cfqueryparam value="#arguments.data.recordId#" cfsqltype="cf_sql_varchar">
+                    categoryid = <cfqueryparam value="#arguments.data.id#" cfsqltype="cf_sql_varchar">
             </cfquery>
         </cfif>
     </cffunction>
@@ -79,11 +79,26 @@
                     <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
                 );
             </cfquery>
+        <cfelseif arguments.data.action EQ "edit">
+            <cfquery name="local.edit" datasource="shopping">
+                UPDATE
+                    subcategory
+                SET
+                    <cfif structKeyExists(arguments.data, 'name')>
+                        name = <cfqueryparam value="#arguments.data.subcategory#" cfsqltype="cf_sql_varchar">,
+                    </cfif>
+                    categoryid = <cfqueryparam value="#arguments.data.categorySelect#" cfsqltype="cf_sql_integer">,
+                    lasteditedat = <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
+                    lasteditedby = <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
+                WHERE
+                    subcategoryid = <cfqueryparam value="#arguments.data.id#" cfsqltype="cf_sql_varchar">
+            </cfquery>
         </cfif>
     </cffunction>
 
     <cffunction  name="modifyProduct" access="public">
         <cfargument  name="data" type="struct" required="true">
+        <cfdump var="#arguments.data#">
         <cfif arguments.data.action EQ "add">
             <cfquery name="local.add" datasource="shopping">
                 INSERT INTO
@@ -108,6 +123,13 @@
                     <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
                 );
             </cfquery>
+            <cfset local.sub = {
+                action: 'edit',
+                categorySelect: arguments.data.categorySelect,
+                id: arguments.data.subcategorySelect,
+                admin: arguments.data.admin
+            }>
+            <cfset variable = modifySubcategory(local.sub)>
         <cfelseif arguments.data.action EQ "edit">
         </cfif>
     </cffunction>
@@ -160,7 +182,7 @@
                 categoryid = <cfqueryparam value="#arguments.category#" cfsqltype="cf_sql_integer">
                 <cfif structKeyExists(arguments, 'subcategory')>
                     AND
-                        name = <cfqueryparam value="#arguments.subcategory#" cfsqltype="cf_sql_varchar">
+                        subcategoryid = <cfqueryparam value="#arguments.subcategory#" cfsqltype="cf_sql_integer">
                 </cfif>
             ;
         </cfquery>
@@ -199,7 +221,7 @@
                 subcategoryid = <cfqueryparam value="#arguments.subcategory#" cfsqltype="cf_sql_integer">
                 <cfif structKeyExists(arguments, 'product')>
                     AND
-                        name = <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_varchar">
+                        productid = <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_integer">
                 </cfif>
             ;
         </cfquery>

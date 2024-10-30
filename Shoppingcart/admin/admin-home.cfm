@@ -21,17 +21,38 @@
     </cfif>
     <cfif structKeyExists(form, 'categorySelect') AND len(form.categorySelect)>
         <cfset variables.input['categorySelect'] = form.categorySelect>
+        <cfif structKeyExists(form, 'subcategorySelect') AND len(form.subcategorySelect)>
+            <cfset variables.input['subcategorySelect'] = form.subcategorySelect>
+            <cfif structKeyExists(form, 'productName') AND len(form.productName)>
+                <cfset variables.input['productName'] = form.productName>
+            </cfif>
+            <cfif structKeyExists(form, 'productDesc') AND len(form.productDesc)>
+                <cfset variables.input['productDesc'] = form.productDesc>
+            </cfif>
+            <cfif structKeyExists(form, 'price') AND len(form.price)>
+                <cfset variables.input['price'] = form.price>
+            </cfif>
+            <cfif structKeyExists(form, 'productPic') AND len(form.productPic)>
+                <cfset uploadDir = expandPath('/images/')>        
+				<cfif not directoryExists(uploadDir)>
+					<cfdirectory action="create" directory="#uploadDir#">
+				</cfif>
+				<cffile action="upload"
+					filefield="form.productPic"
+					destination="#uploadDir#"
+					nameConflict="makeunique">
+                <cfset variables.input['productPic'] = cffile.serverFile>
+            </cfif>
+        <cfdump var="#variables.input#">
+            <cfset control.modifyProduct(variables.input)>
+        <cfelseif len(form.subcategoryText) NEQ 0>
+            <cfset variables.input['subcategory'] = form.subcategoryText>
+            <cfset control.modifySubcategory(variables.input)>
+        </cfif>
     <cfelseif len(form.categoryText) NEQ 0>
         <cfset variables.input['category'] = form.categoryText>
 	    <cfset control.modifyCategory(variables.input)>
     </cfif>
-    <cfif structKeyExists(form, 'subcategorySelect') AND len(form.subcategorySelect)>
-        <cfset variables.input['subcategorySelect'] = form.subcategorySelect>
-    <cfelseif len(form.subcategoryText) NEQ 0>
-        <cfset variables.input['subcategory'] = form.subcategoryText>
-	    <cfset control.modifySubcategory(variables.input)>
-    </cfif>
-<cfelse>
 </cfif>
 <html lang="en">
 	<head>
@@ -136,7 +157,7 @@
                                         <p class="py-2 px-3">#category.name#</p>
                                         <p class="py-2 px-3">#category.description#</p>
                                         <p class="py-2 px-3">#category.price#</p>
-                                        <img src="" class="img-thumbnail img-fluid" alt="viewImage" data-bs-theme="dark">
+                                        <img src="/images/#category.image#" class="img-thumbnail img-fluid" alt="viewImage" data-bs-theme="dark">
                                         <button class="btn btn-sm fw-bold btn-outline-success btn-block" data-bs-toggle="modal"
                                             data-bs-target="#chr(35)#modal" data-bs-action="edit" data-bs-set="product"
                                             data-bs-id="#category.id#">
@@ -170,14 +191,8 @@
                                 <label for="categoryText" class="form-label text-light">Category</label>
                             </div>
                             <div class="categorySelect form-floating">
-                                <select id="categorySelect" name="categorySelect" class="form-select text-warning" placeholder="" required>
-                                        <option value=" "> </option>
-                                        <cfoutput>
-                                            <cfset categories = control.getCategory()>
-                                            <cfloop array="#categories#" index="category">
-                                                <option value="#category.id#">#category.name#</option>
-                                            </cfloop>
-                                        </cfoutput>
+                                <select id="categorySelect" name="categorySelect" class="form-select text-warning" placeholder="">
+                                        <option value=""></option>
                                 </select>
                                 <label for="categorySelect" class="form-label">Category</label>
                             </div>
@@ -185,20 +200,12 @@
                                 <input type="text" name="subcategoryText" id="subcategoryText" class="form-control text-warning" placeholder="">
                                 <label for="subcategoryText" class="form-label text-light">Sub category</label>
                             </div>
-                            <cfif structKeyExists(url, 'cat')>
-                                <div class="subcategorySelect form-floating">
-                                    <select id="subcategorySelect" name="categorySelect" class="form-select text-warning" placeholder="" required>
-                                            <option value=" "> </option>
-                                            <cfoutput>
-                                                <cfset categories = control.getSubCategory(category=url.cat)>
-                                                <cfloop array="#categories#" index="category">
-                                                    <option value="#category.id#">#category.name#</option>
-                                                </cfloop>
-                                            </cfoutput>
-                                    </select>
-                                    <label for="subcategorySelect" class="form-label">Subcategory</label>
-                                </div>
-                            </cfif>
+                            <div class="subcategorySelect form-floating">
+                                <select id="subcategorySelect" name="categorySelect" class="form-select text-warning" placeholder="">
+                                        <option value=" "> </option>
+                                </select>
+                                <label for="subcategorySelect" class="form-label">Subcategory</label>
+                            </div>
                             <fieldset id="product" class="d-flex flex-column rounded border gap-2 p-3">
                                 <legend class="text-primary">
                                     Product Details
