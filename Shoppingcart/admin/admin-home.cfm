@@ -45,7 +45,7 @@
             </a>
             <ul class="navbar-nav nav-tabs nav-justified">
                 <li class="nav-item">
-                    <a class="nav-link bg-success active text-info" href="admin-home.cfm?logout=1">
+                    <a class="nav-link bg-success text-info" href="admin-home.cfm?logout=1">
                         Log out
                     </a>
                 </li>

@@ -28,7 +28,7 @@
 				</a>
 				<ul class="navbar-nav nav-tabs nav-justified">
 					<li class="nav-item">
-						<a class="nav-link bg-success active text-info" href="">
+						<a class="nav-link bg-success text-info" href="">
 							Log in
 						</a>
 					</li>
