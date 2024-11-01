@@ -27,6 +27,39 @@
         </cfif>
     </cffunction>
 
+    <cffunction  name="userLogin" access="public">
+        <cfargument  name="user" type="string" required="true">
+        <cfargument  name="password" type="string" required="true">
+        <cfquery name="local.checkLog" datasource="shopping">
+            SELECT
+                userid,
+                username,
+                email,
+                phone,
+                image,
+                status
+            FROM
+                admin
+            WHERE
+                username = <cfqueryparam value="#arguments.user#" cfsqltype="cf_sql_varchar">
+            AND
+                password = <cfqueryparam value="#arguments.password#" cfsqltype="cf_sql_varchar">
+        </cfquery>
+        <cfif local.checkLog.recordCount NEQ 0>
+            <cfset session.user = {
+                "access" = true,
+                "user" = local.checkLog.userid,
+                "name" = local.checkLog.username,
+                "email" = local.checkLog.email,
+                "phone" = local.checkLog.phone,
+                "image" = local.checkLog.image
+            }>
+        <cfelse>
+            <cfset structClear(session.check)>
+            <cfset session.user.access = false>
+        </cfif>
+    </cffunction>
+
     <cffunction  name="validate" access="public">
         <cfargument  name="data" type="struct" required="true">
         <cfset local.input = {
@@ -63,7 +96,7 @@
                 <cfif NOT structKeyExists(arguments.data, 'recordId')
                     OR (structKeyExists(arguments.data, 'productPic') 
                         AND len(arguments.data.productPic) NEQ 0)>
-                            <cfset uploadDir = expandPath('/images/')>        
+                            <cfset uploadDir = expandPath('/uploads/')>        
                             <cfif not directoryExists(uploadDir)>
                                 <cfdirectory action="create" directory="#uploadDir#">
                             </cfif>
@@ -276,8 +309,10 @@
     </cffunction>
 
     <cffunction  name="getProduct" access="remote" returnFormat="JSON">
-        <cfargument  name="subcategory" type="integer" required="true">
+        <cfargument  name="category" type="integer" required="false">
+        <cfargument  name="subcategory" type="integer" required="false">
         <cfargument  name="product" type="integer" required="false">
+        <cfargument  name="limit" type="boolean" required="false">
         <cfquery name="local.list" datasource="shopping">
             SELECT
                 productid,
@@ -287,18 +322,36 @@
                 price,
                 status,
                 createdat,
+                lasteditedat,
                 createdby,
+                lasteditedby,
                 subcategoryid
             FROM
                 product
             WHERE
                 status = 1
-            AND
-                subcategoryid = <cfqueryparam value="#arguments.subcategory#" cfsqltype="cf_sql_integer">
-                <cfif structKeyExists(arguments, 'product')>
-                    AND
-                        productid = <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_integer">
-                </cfif>
+            <cfif structKeyExists(arguments, 'category')>
+                AND
+                    subcategoryid IN (
+                        SELECT
+                            subcategoryid
+                        FROM
+                            subcategory
+                        WHERE
+                            categoryid = <cfqueryparam value="#arguments.category#" cfsqltype="cf_sql_integer">
+                    )
+            <cfelseif structKeyExists(arguments, 'subcategory')>
+                AND
+                    subcategoryid = <cfqueryparam value="#arguments.subcategory#" cfsqltype="cf_sql_integer">
+            </cfif>
+            <cfif structKeyExists(arguments, 'product')>
+                AND
+                    productid = <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_integer">
+            </cfif>
+            <cfif structKeyExists(arguments, 'limit')>
+                ORDER BY RAND()
+                LIMIT 6
+            </cfif>
             ;
         </cfquery>
         <cfset local.output = []>
@@ -310,11 +363,31 @@
                 "description" : local.list.description,
                 "price" : local.list.price,
                 "createdat" : local.list.createdat,
+                "lasteditedat" : local.list.lasteditedat,
                 "createdby": local.list.createdby,
+                "lasteditedby": local.list.lasteditedby,
                 "subcategory" : local.list.subcategoryid
             })>
         </cfoutput>
         <cfreturn local.output>
+    </cffunction>
+
+    <cffunction  name="addCart" access="remote" returnFormat="JSON">
+        <cfargument  name="cart" type="integer" required="false">
+        <cfargument  name="product" type="integer" required="true">
+        <cfargument  name="user" type="integer" required="false">
+        <cfquery name="local.list" datasource="shopping" result="result">
+            INSERT INTO
+                cart(
+                    productid,
+                    quantity,
+                )
+            VALUES(
+                <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_integer">,
+                <cfqueryparam value="1" cfsqltype="cf_sql_integer">
+            )
+        </cfquery>
+        <cfreturn result.GENERATEDKEY>
     </cffunction>
 
 	<cffunction name="deleteItem" access="public">

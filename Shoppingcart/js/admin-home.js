@@ -145,7 +145,7 @@ $(document).ready(function () {
                               $('#recordId').val(productObj[0].id);
                               $('#product').removeClass("d-none").find('input','textarea','select').attr('required', 'true');
                               $('#productPic').removeAttr('required');
-                              $('#editImageView').removeClass("d-none").attr("src", `/images/${productObj[0].image}`);
+                              $('#editImageView').removeClass("d-none").attr("src", `/uploads/${productObj[0].image}`);
                             }
                           });
                         }

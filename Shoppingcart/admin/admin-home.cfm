@@ -138,7 +138,7 @@
                                             <p class="py-2 px-3">#category.description#</p>
                                         </div>
                                         <div class="col-4 d-flex flex-column gap-2">
-                                            <img src="/images/#category.image#" class="img-thumbnail img-fluid" alt="viewImage" data-bs-theme="dark">
+                                            <img src="/uploads/#category.image#" class="img-thumbnail img-fluid" alt="viewImage" data-bs-theme="dark">
                                             <div class="d-flex gap-2">
                                                 <button class="btn btn-sm fw-bold btn-outline-success btn-block" data-bs-toggle="modal"
                                                     data-bs-target="#chr(35)#modal" data-bs-action="edit" data-bs-set="product"
