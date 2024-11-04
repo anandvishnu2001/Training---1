@@ -4,6 +4,33 @@
         <cfset session.user = {
             "access" = false
         }>
+<cfelse>
+    <cfset variables.carter = control.getCart(session.user.user)>
+</cfif>
+<cfif structKeyExists(url, 'searchWord')>
+    <cfif structKeyExists(url, 'sort')>
+        <cfset products = control.getProduct(search=url.searchWord,sort=url.sort)>
+    <cfelse>
+        <cfset products = control.getProduct(search=url.searchWord,sort='random')>
+    </cfif>
+<cfelseif structKeyExists(url, 'sub')>
+    <cfif structKeyExists(url, 'sort')>
+        <cfset products = control.getProduct(subcategory=url.sub,sort=url.sort)>
+    <cfelse>
+        <cfset products = control.getProduct(subcategory=url.sub,sort='random')>
+    </cfif>
+<cfelseif structKeyExists(url, 'cat')>
+    <cfif structKeyExists(url, 'sort')>
+        <cfset products = control.getProduct(category=url.cat,sort=url.sort)>
+    <cfelse>
+        <cfset products = control.getProduct(category=url.cat,sort='random')>
+    </cfif>
+<cfelse>
+    <cfif structKeyExists(url, 'sort')>
+        <cfset products = control.getProduct(sort=url.sort)>
+    <cfelse>
+        <cfset products = control.getProduct(sort='random')>
+    </cfif>
 </cfif>
 <html lang="en">
 	<head>
@@ -12,12 +39,12 @@
 	</head>
 	<body class="container-fluid p-0 d-flex flex-column align-items-center">
 		<nav id="main-nav" class="container-fluid navbar navbar-expand-lg justify-content-between bg-primary gap-5 z-3 fw-bold fixed-top" data-bs-theme="dark">
-            <a class="navbar-brand" href="index.cfm">
+            <a class="flex-grow-1 navbar-brand" href="index.cfm">
                 <img src="/images/shop.png" width="40" height="40" class="img-fluid">
                 Shopping Cart
             </a>
             <form class="flex-grow-1 d-flex">
-                <input name="searchWord" id="searchWord" class="form-control me-2" type="text" placeholder="Search">
+                <input name="searchWord" id="searchWord" class="form-control me-2" type="text" placeholder="Search" required>
                 <button name="search" id="search" class="btn btn-primary" type="submit">
                     <img src="/images/search.png" class="img-fluid" alt="Cart" width="30" height="30">
                 </button>
@@ -41,13 +68,27 @@
                 <li class="nav-item">
                     <a class="nav-link" href="cart.cfm">
                         <img src="/images/cart.png" class="img-fluid" alt="Cart" width="30" height="30">
-                        <span class="badge bg-danger rounded-pill">99</span>
+                        <cfif structKeyExists(variables, 'carter')
+                            AND arrayLen(variables.carter) GT 0>
+                            <cfoutput>
+                                <span class="badge bg-danger rounded-pill">#arrayLen(variables.carter)#</span>
+                            </cfoutput>
+                        </cfif>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="login.cfm">
-                        <img src="/images/login.png" class="img-fluid" alt="Login" width="30" height="30">
-                    </a>
+                    <cfif structKeyExists(session, 'user')
+                        AND session.user.access>
+                            <a class="nav-link" href="user.cfm">
+                                <cfoutput>
+                                    <img src="/uploads/#session.user.image#" class="img-fluid rounded-circle" alt="Login" width="30" height="30">
+                                </cfoutput>
+                            </a>
+                    <cfelse>
+                        <a class="nav-link" href="login.cfm">
+                            <img src="/images/login.png" class="img-fluid" alt="Login" width="30" height="30">
+                        </a>
+                    </cfif>
                 </li>
             </ul>
 		</nav>
@@ -91,18 +132,23 @@
 					Shopping Cart
 				</h1>
 		</nav>
+        <div class="container d-flex justify-content-center p-3 gap-5">
+            <h2 class="text-center text-success">
+                PRICE
+            </h2>
+            <cfoutput>
+                <cfset variables.url = cgi.HTTP_URL>
+                <cfset variables.url = REReplace(variables.url, "[&?]sort=[^&]*", "", "all")>
+                <cfset variables.url = variables.url & (find('?', variables.url) ? '&' : '?')>
+                <a href="#variables.url#sort=pricelow" class="btn btn-success">Low to High</a>
+                <a href="#variables.url#sort=pricehigh" class="btn btn-success">High to Low</a>
+            </cfoutput>
+        </div>
         <div class="container-fluid d-flex flex-row flex-wrap justify-content-evenly gap-5 p-5">
-            <cfif structKeyExists(url, 'sub')>
-                <cfset products = control.getProduct(subcategory=url.sub,limit=true)>
-            <cfelseif structKeyExists(url, 'cat')>
-                <cfset products = control.getProduct(category=url.cat,limit=true)>
-            <cfelse>
-                <cfset products = control.getProduct(limit=true)>
-            </cfif>
             <cfif arrayLen(products) NEQ 0>
                 <cfloop array="#products#" item="product">
                     <cfoutput>
-                        <div class="card bg-light fw-bold col-3 p-3">
+                        <a class="card bg-light text-decoration-none fw-bold col-3 p-3" href="product.cfm?pro=#product.id#">
                             <div class="card-body d-flex row flex-wrap">
                                 <img class="card-img col-md-6 w-50 h-auto img-fluid img-thumbnail" src="/uploads/#product.image#"
                                     alt="Card image" data-bs-theme="dark">
@@ -111,10 +157,7 @@
                                     <p class="card-text text-danger">#product.price#</p>
                                 </div>
                             </div>
-                            <a type="submit" class="card-footer btn fw-bold btn-primary btn-block" href="product.cfm?pro=#product.id#">
-                                Details
-                            </a>
-                        </div>
+                        </a>
                     </cfoutput>
                 </cfloop>
             <cfelse>

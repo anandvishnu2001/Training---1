@@ -78,7 +78,7 @@
             <div class="card bg-light fw-bold col-4 p-3 gap-5 p-5">
                 <cfoutput>
                     <p class="card-text bg-info text-center text-danger">Total Price :<br>#variables.cartTotal#</p>
-                    <button class="btn btn-success">Check out</button>
+                    <button class="btn btn-success">Place Order</button>
                     <button onclick="removeCart(#session.user.user#)" class="btn btn-danger">Empty cart</button>
                 </cfoutput>
             </div>

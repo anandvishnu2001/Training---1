@@ -24,22 +24,22 @@ $(document).ready(function () {
   $('#modal').on('shown.bs.modal',function(event){
     if(!$('#product').hasClass("d-none")) {
       $('#categorySelect').change(function () {
-      $.ajax({
-        url: '/components/control.cfc?method=getSubcategory',
-        type: 'GET',
-        data: {
-          "category": $('#categorySelect').val()
-        },
-        success: function(data){
-          let subcategoryObj = JSON.parse(data);
-          $('#subcategorySelect').html('<option value=""></option>');
-          $.each(subcategoryObj, function(_, category) {
-            $('#subcategorySelect').append(
-              $('<option>', { value: category.id, text: category.name, selected: category.id == url.get('sub') })
-            );
-          });
-        }
-      });
+        $.ajax({
+          url: '/components/control.cfc?method=getSubcategory',
+          type: 'GET',
+          data: {
+            "category": $('#categorySelect').val()
+          },
+          success: function(data){
+            let subcategoryObj = JSON.parse(data);
+            $('#subcategorySelect').html('<option value=""></option>');
+            $.each(subcategoryObj, function(_, category) {
+              $('#subcategorySelect').append(
+                $('<option>', { value: category.id, text: category.name, selected: category.id == url.get('sub') })
+              );
+            });
+          }
+        });
       });
     }
   });

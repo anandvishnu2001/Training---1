@@ -2,7 +2,7 @@
         AND session.check.access)
     OR (structKeyExists(url, "logout")
         AND url.logout EQ 1)>
-        <cfset structClear(session)>
+        <cfset structClear(session.check)>
         <cfset session.check = {
             "access" : false
         }>

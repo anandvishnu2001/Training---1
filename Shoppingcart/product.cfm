@@ -1,4 +1,8 @@
 <cfset control = CreateObject("component", "components.control")>
+<cfif structKeyExists(session, 'user') 
+    AND session.user.access>
+    <cfset variables.carter = control.getCart(session.user.user)>
+</cfif>
 <html lang="en">
 	<head>
 		<link href="/css/admin.css" rel="stylesheet">
@@ -6,16 +10,10 @@
 	</head>
 	<body class="container-fluid p-0 d-flex flex-column align-items-center">
 		<nav id="main-nav" class="container-fluid navbar navbar-expand-lg justify-content-between bg-primary gap-5 z-3 fw-bold fixed-top" data-bs-theme="dark">
-            <a class="navbar-brand" href="index.cfm">
+            <a class="flex-grow-1 navbar-brand" href="index.cfm">
                 <img src="/images/shop.png" width="40" height="40" class="img-fluid">
                 Shopping Cart
             </a>
-            <form class="flex-grow-1 d-flex">
-                <input class="form-control me-2" type="text" placeholder="Search">
-                <button class="btn btn-primary" type="button">
-                    <img src="/images/search.png" class="img-fluid" alt="Cart" width="30" height="30">
-                </button>
-            </form>
             <ul class="flex-grow-1 navbar-nav nav-tabs nav-justified">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="" data-bs-toggle="dropdown">
@@ -35,13 +33,27 @@
                 <li class="nav-item">
                     <a class="nav-link" href="cart.cfm">
                         <img src="/images/cart.png" class="img-fluid" alt="Cart" width="30" height="30">
-                        <span class="badge bg-danger rounded-pill">99</span>
+                        <cfif structKeyExists(variables, 'carter')
+                            AND arrayLen(variables.carter) GT 0>
+                            <cfoutput>
+                                <span class="badge bg-danger rounded-pill">#arrayLen(variables.carter)#</span>
+                            </cfoutput>
+                        </cfif>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="login.cfm">
-                        <img src="/images/login.png" class="img-fluid" alt="Login" width="30" height="30">
-                    </a>
+                    <cfif structKeyExists(session, 'user')
+                        AND session.user.access>
+                            <a class="nav-link" href="user.cfm">
+                                <cfoutput>
+                                    <img src="/uploads/#session.user.image#" class="img-fluid rounded-circle" alt="Login" width="30" height="30">
+                                </cfoutput>
+                            </a>
+                    <cfelse>
+                        <a class="nav-link" href="login.cfm">
+                            <img src="/images/login.png" class="img-fluid" alt="Login" width="30" height="30">
+                        </a>
+                    </cfif>
                 </li>
             </ul>
 		</nav>
@@ -49,11 +61,11 @@
             <cfif structKeyExists(url, 'pro')>
                 <cfset products = control.getProduct(product=url.pro)>
                 <cfoutput>
-                    <div class="card bg-light fw-bold p-3">
-                        <div class="card-body d-flex row flex-wrap">
-                            <img class="card-img col-md-6 w-50 h-auto img-fluid img-thumbnail" src="/uploads/#products[1].image#"
+                    <div class="card bg-light w-75 fw-bold p-5">
+                        <div class="card-body d-flex row flex-wrap gap-5">
+                            <img class="card-img col-md-6 w-25 h-auto img-fluid img-thumbnail" src="/uploads/#products[1].image#"
                                 alt="Card image" data-bs-theme="dark">
-                            <div class="col-md-6 d-flex flex-column justify-content-evenly align-items-start fw-bold">
+                            <div class="col-md-6 d-flex flex-column justify-content-evenly align-items-center fw-bold">
                                 <h1 class="card-title text-dark">#products[1].name#</h1>
                                 <h3 class="card-text text-muted">#products[1].description#</h3>
                                 <h2 class="card-text text-danger">#products[1].price#</h2>

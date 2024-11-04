@@ -5,6 +5,6 @@
 	<cfset this.datasource="address">
 	<cffunction name="onSessionEnd" returntype="void">
 		<cfargument name="session" type="struct" required="true">
-		<cflocation url="admin-login.cfm" addtoken="false">
+		<cflocation url="index.cfm" addtoken="false">
 	</cffunction>
 </cfcomponent>

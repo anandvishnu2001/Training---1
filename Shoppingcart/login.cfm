@@ -1,5 +1,8 @@
 <cfif NOT (structKeyExists(session, "user") 
-    AND session.user.access)>
+    	AND session.user.access)
+	OR (structKeyExists(url, 'log')
+		AND url.log EQ 0)>
+		<cfset structClear(session.user)>
         <cfset session.user = {
             "access" = false
         }>
@@ -8,7 +11,11 @@
 <cfif structKeyExists(form, "btn")>
 	<cfset control.userLogin(user=form.user, password=form.password)>
     <cfif session.user.access>
-		<cflocation url="index.cfm" addToken="no">
+		<cfif structKeyExists(url, 'pro')>
+		<cflocation url="cart.cfm?pro=#url.pro#" addToken="no">
+		<cfelse>
+			<cflocation url="index.cfm" addToken="no">
+		</cfif>
 	<cfelse>
 		<cflocation url="login.cfm" addToken="no">
 	</cfif>
@@ -19,27 +26,15 @@
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
 	</head>
 	<body class="container-fluid p-0 d-flex flex-row align-items-center">
-		<nav id="main-nav" class="container-fluid navbar navbar-expand-lg justify-content-between bg-primary gap-5 z-3 fw-bold fixed-top" data-bs-theme="dark">
+		<nav id="main-nav" class="container-fluid navbar navbar-expand-lg justify-content-center bg-primary gap-5 z-3 fw-bold fixed-top" data-bs-theme="dark">
             <a class="navbar-brand" href="index.cfm">
                 <img src="/images/shop.png" width="40" height="40" class="img-fluid">
                 Shopping Cart
             </a>
-            <form class="flex-grow-1 d-flex">
-                <input class="form-control me-2" type="text" placeholder="Search">
-                <button class="btn btn-primary" type="button">
-                    <img src="/images/search.png" class="img-fluid" alt="Cart" width="30" height="30">
-                </button>
-            </form>
-            <ul class="flex-grow-1 navbar-nav nav-tabs nav-justified">
+            <ul class="navbar-nav nav-tabs nav-justified">
                 <li class="nav-item">
                     <a class="nav-link" href="cart.cfm">
                         <img src="/images/cart.png" class="img-fluid" alt="Cart" width="30" height="30">
-                        <span class="badge bg-danger rounded-pill">99</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="login.cfm">
-                        <img src="/images/login.png" class="img-fluid" alt="Login" width="30" height="30">
                     </a>
                 </li>
             </ul>

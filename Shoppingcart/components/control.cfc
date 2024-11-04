@@ -39,7 +39,7 @@
                 image,
                 status
             FROM
-                admin
+                user
             WHERE
                 username = <cfqueryparam value="#arguments.user#" cfsqltype="cf_sql_varchar">
             AND
@@ -312,6 +312,7 @@
         <cfargument  name="category" type="integer" required="false">
         <cfargument  name="subcategory" type="integer" required="false">
         <cfargument  name="product" type="integer" required="false">
+        <cfargument  name="search" type="string" required="false">
         <cfargument  name="sort" type="string" required="false">
         <cfquery name="local.list" datasource="shopping">
             SELECT
@@ -348,11 +349,18 @@
                 AND
                     productid = <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_integer">
             </cfif>
+            <cfif structKeyExists(arguments, 'search') AND arguments.search GT 0>
+                AND
+                    name LIKE <cfqueryparam value="%#arguments.search#%" cfsqltype="cf_sql_varchar">
+            </cfif>
             <cfif structKeyExists(arguments, 'sort')>
                 <cfif arguments.sort EQ 'random'>
                     ORDER BY RAND()
                     LIMIT 6
-                <cfelseif arguments.sort EQ 'price'>
+                <cfelseif arguments.sort EQ 'pricelow'>
+                    ORDER BY price ASC
+                <cfelseif arguments.sort EQ 'pricehigh'>
+                    ORDER BY price DESC
                 </cfif>
             </cfif>
             ;
@@ -386,7 +394,7 @@
             WHERE
                 productid = <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_integer">
             AND
-                user = <cfqueryparam value="#arguments.user#" cfsqltype="cf_sql_integer">
+                userid = <cfqueryparam value="#arguments.user#" cfsqltype="cf_sql_integer">
             AND
                 status = <cfqueryparam value="1" cfsqltype="cf_sql_integer">
         </cfquery>
@@ -420,8 +428,63 @@
 
     <cffunction  name="editCart" access="remote" returnFormat="JSON">
         <cfargument  name="cart" type="integer" required="true">
-        <cfargument  name="product" type="integer" required="true">
-        <cfargument  name="user" type="integer" required="false">
+        <cfargument  name="quantity" type="string" required="true">
+        <cfquery name="local.edit" datasource="shopping" result="result">
+            UPDATE
+                cart
+            SET
+                quantity = quantity 
+                    <cfif arguments.quantity EQ 'increment'>
+                        +
+                    <cfelseif arguments.quantity EQ 'decrement'>
+                        -
+                    </cfif>
+                1
+            WHERE
+                cartid = <cfqueryparam value="#arguments.cart#" cfsqltype="cf_sql_integer">
+        </cfquery>
+    </cffunction>
+
+    <cffunction  name="deleteCart" access="remote" returnFormat="JSON">
+        <cfargument  name="cart" type="integer" required="false">
+        <cfargument  name="user" type="string" required="false">
+        <cfquery name="local.edit" datasource="shopping" result="result">
+            UPDATE
+                cart
+            SET
+                status = 0
+            WHERE
+                <cfif structKeyExists(arguments, 'cart')>
+                    cartid = <cfqueryparam value="#arguments.cart#" cfsqltype="cf_sql_integer">
+                <cfelseif structKeyExists(arguments, 'user')>
+                    userid = <cfqueryparam value="#arguments.user#" cfsqltype="cf_sql_integer">
+                </cfif>
+        </cfquery>
+    </cffunction>
+
+    <cffunction  name="getCart" access="remote" returnFormat="JSON">
+        <cfargument  name="user" type="integer" required="true">
+        <cfquery name="local.list" datasource="shopping">
+            SELECT
+                cartid,
+                productid,
+                quantity
+            FROM
+                cart
+            WHERE
+                userid = <cfqueryparam value="#arguments.user#" cfsqltype="cf_sql_integer">
+            AND
+                status = <cfqueryparam value="1" cfsqltype="cf_sql_integer">
+        </cfquery>
+        <cfset local.output = []>
+        <cfoutput query="local.list">
+            <cfset arrayAppend(local.output, {
+                "id" : local.list.cartid,
+                "product" : local.list.productid,
+                "quantity" : local.list.quantity
+            })>
+        </cfoutput>
+        <cfreturn local.output>
     </cffunction>
 
 	<cffunction name="deleteItem" access="public">
