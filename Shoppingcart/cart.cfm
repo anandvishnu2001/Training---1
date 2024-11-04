@@ -1,7 +1,10 @@
 <cfset control = CreateObject("component", "components.control")>
-<cfif structKeyExists(url, 'pro')>
-    <cfif structKeyExists(variables, 'carter')>
-        <cfset variables.carter = control.addCart(product=url.pro)>
+<cfif session.user.access>
+    <cfif structKeyExists(url, 'pro')>
+        <cfset control.addCart(product=url.pro,user=session.user.user)>
+    </cfif>
+<cfelse>
+    <cflocation url="login.cfm">
 </cfif>
 <html lang="en">
 	<head>

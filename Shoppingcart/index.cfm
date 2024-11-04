@@ -1,4 +1,10 @@
 <cfset control = CreateObject("component", "components.control")>
+<cfif NOT (structKeyExists(session, "user") 
+    AND session.user.access)>
+        <cfset session.user = {
+            "access" = false
+        }>
+</cfif>
 <html lang="en">
 	<head>
 		<link href="/css/admin.css" rel="stylesheet">
@@ -11,8 +17,8 @@
                 Shopping Cart
             </a>
             <form class="flex-grow-1 d-flex">
-                <input class="form-control me-2" type="text" placeholder="Search">
-                <button class="btn btn-primary" type="button">
+                <input name="searchWord" id="searchWord" class="form-control me-2" type="text" placeholder="Search">
+                <button name="search" id="search" class="btn btn-primary" type="submit">
                     <img src="/images/search.png" class="img-fluid" alt="Cart" width="30" height="30">
                 </button>
             </form>

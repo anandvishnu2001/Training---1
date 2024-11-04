@@ -312,7 +312,7 @@
         <cfargument  name="category" type="integer" required="false">
         <cfargument  name="subcategory" type="integer" required="false">
         <cfargument  name="product" type="integer" required="false">
-        <cfargument  name="limit" type="boolean" required="false">
+        <cfargument  name="sort" type="string" required="false">
         <cfquery name="local.list" datasource="shopping">
             SELECT
                 productid,
@@ -348,9 +348,12 @@
                 AND
                     productid = <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_integer">
             </cfif>
-            <cfif structKeyExists(arguments, 'limit')>
-                ORDER BY RAND()
-                LIMIT 6
+            <cfif structKeyExists(arguments, 'sort')>
+                <cfif arguments.sort EQ 'random'>
+                    ORDER BY RAND()
+                    LIMIT 6
+                <cfelseif arguments.sort EQ 'price'>
+                </cfif>
             </cfif>
             ;
         </cfquery>
@@ -373,21 +376,52 @@
     </cffunction>
 
     <cffunction  name="addCart" access="remote" returnFormat="JSON">
-        <cfargument  name="cart" type="integer" required="false">
+        <cfargument  name="product" type="integer" required="true">
+        <cfargument  name="user" type="integer" required="true">
+        <cfquery name="local.list" datasource="shopping">
+            SELECT
+                cartid
+            FROM
+                cart
+            WHERE
+                productid = <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_integer">
+            AND
+                user = <cfqueryparam value="#arguments.user#" cfsqltype="cf_sql_integer">
+            AND
+                status = <cfqueryparam value="1" cfsqltype="cf_sql_integer">
+        </cfquery>
+        <cfif local.list.recordCount NEQ 0>
+            <cfquery name="local.edit" datasource="shopping" result="result">
+                UPDATE
+                    cart
+                SET
+                    quantity = quantity + 1
+                WHERE
+                    cartid = <cfqueryparam value="#valueList(local.list.cartid)#" cfsqltype="cf_sql_integer" list='yes'>
+            </cfquery>
+        <cfelse>
+            <cfquery name="local.add" datasource="shopping">
+                INSERT INTO
+                    cart(
+                        productid,
+                        userid,
+                        quantity,
+                        status
+                    )
+                VALUES(
+                    <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_integer">,
+                    <cfqueryparam value="#arguments.user#" cfsqltype="cf_sql_integer">,
+                    <cfqueryparam value="1" cfsqltype="cf_sql_integer">,
+                    <cfqueryparam value="1" cfsqltype="cf_sql_integer">
+                )
+            </cfquery>
+        </cfif>
+    </cffunction>
+
+    <cffunction  name="editCart" access="remote" returnFormat="JSON">
+        <cfargument  name="cart" type="integer" required="true">
         <cfargument  name="product" type="integer" required="true">
         <cfargument  name="user" type="integer" required="false">
-        <cfquery name="local.list" datasource="shopping" result="result">
-            INSERT INTO
-                cart(
-                    productid,
-                    quantity,
-                )
-            VALUES(
-                <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_integer">,
-                <cfqueryparam value="1" cfsqltype="cf_sql_integer">
-            )
-        </cfquery>
-        <cfreturn result.GENERATEDKEY>
     </cffunction>
 
 	<cffunction name="deleteItem" access="public">

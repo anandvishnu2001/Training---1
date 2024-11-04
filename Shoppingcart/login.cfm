@@ -31,21 +31,6 @@
                 </button>
             </form>
             <ul class="flex-grow-1 navbar-nav nav-tabs nav-justified">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="" data-bs-toggle="dropdown">
-                        <img src="/images/menu.png" class="img-fluid" alt="Cart" width="30" height="30">
-                    </a>
-                    <ul class="dropdown-menu">
-                        <cfset categories = control.getCategory()>
-                        <cfloop array="#categories#" item="item">
-                            <cfoutput>
-                                <li>
-                                    <a id="#item.id#" class="dropdown-item" href="index.cfm?cat=#item.id#">#item.name#</a>
-                                </li>
-                            </cfoutput>
-                        </cfloop>
-                    </ul>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="cart.cfm">
                         <img src="/images/cart.png" class="img-fluid" alt="Cart" width="30" height="30">
