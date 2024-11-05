@@ -45,3 +45,17 @@ function removeCart(id) {
 
 $(document).ready(adjustNavbarPositions);
 $(window).resize(adjustNavbarPositions);
+
+$(document).ready(function () {
+    $("#order-card").hide();
+
+    $("#order-btn").click(function () {
+        $("#address-card").hide();
+        $("#order-card").show();
+    });
+
+    $("#address-btn").click(function () {
+        $("#order-card").hide();
+        $("#address-card").show();
+    });
+});

@@ -51,7 +51,7 @@
             </form>
             <ul class="flex-grow-1 navbar-nav nav-tabs nav-justified">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="" data-bs-toggle="dropdown">
+                    <a class="nav-link dropdown-toggle <cfif structKeyExists(url, 'cat')>active</cfif>" href="" data-bs-toggle="dropdown">
                         <img src="/images/menu.png" class="img-fluid" alt="Cart" width="30" height="30">
                     </a>
                     <ul class="dropdown-menu">

@@ -24,7 +24,7 @@
             </a>
             <ul class="flex-grow-1 navbar-nav nav-tabs nav-justified">
                 <li class="nav-item">
-                    <a class="nav-link" href="cart.cfm">
+                    <a class="nav-link active" href="cart.cfm">
                         <img src="/images/cart.png" class="img-fluid" alt="Cart" width="30" height="30">
                         <cfif structKeyExists(variables, 'carter')
                             AND arrayLen(variables.carter) GT 0>

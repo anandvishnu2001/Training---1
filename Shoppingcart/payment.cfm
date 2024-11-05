@@ -2,10 +2,7 @@
 <cfif structKeyExists(session, 'user') 
     AND session.user.access>
     <cfif structKeyExists(url, 'pro')>
-        <cfset control.addCart(product=url.pro,user=session.user.user)>
-        <cflocation  url="cart.cfm" addToken="no">
     </cfif>
-    <cfset variables.carter = control.getCart(session.user.user)>
 <cfelseif structKeyExists(url, 'pro')>
     <cflocation url="login.cfm?pro=#url.pro#" addToken="no">
 <cfelse>
@@ -44,38 +41,67 @@
             </ul>
 		</nav>
         <div class="container-fluid d-flex flex-row justify-content-evenly align-items-start gap-5 p-5 mt-5">
-            <div class="card bg-light fw-bold col-6 p-3">
-                <ul class="card-body list-group d-flex flex-column p-5">
-                    <cfset variables.cartTotal = 0>
-                    <cfif arrayLen(variables.carter) NEQ 0>
-                        <cfloop array="#variables.carter#" item="item">
-                            <cfoutput>
-                                <li class="list-group-item d-flex flex-column gap-3 p-5">
-                                    <cfset variables.cartProduct = control.getProduct(product=item.product)>
-                                    <div class="d-flex flex-row flex-wrap justify-content-evenly">
-                                        <img class="card-img w-25 h-auto img-fluid img-thumbnail" src="/uploads/#variables.cartProduct[1].image#"
-                                            alt="Card image" data-bs-theme="dark">
-                                        <div class="col-5 d-flex flex-column justify-content-evenly fw-bold">
-                                            <p class="h4 card-title text-info">#variables.cartProduct[1].name#</p>
-                                            <cfset variables.cartTotal += variables.cartProduct[1].price*item.quantity>
-                                            <p class="card-text text-danger">#variables.cartProduct[1].price*item.quantity#</p>
+            <div class="col-7 d-flex flex-column gap-5">
+                <div class="card bg-light fw-bold p-3">
+                    <ul class="card-body list-group d-flex flex-column p-5">
+                        <cfif arrayLen(cgi) NEQ 0>
+                                <cfoutput>
+                                    <li class="list-group-item d-flex flex-column gap-3 p-5">
+                                        <cfset variables.cartProduct = control.getProduct(product=item.product)>
+                                        <div class="d-flex flex-row flex-wrap justify-content-evenly">
+                                            <img class="card-img w-25 h-auto img-fluid img-thumbnail" src="/uploads/#variables.cartProduct[1].image#"
+                                                alt="Card image" data-bs-theme="dark">
+                                            <div class="col-5 d-flex flex-column justify-content-evenly fw-bold">
+                                                <p class="h4 card-title text-info">#variables.cartProduct[1].name#</p>
+                                                <cfset variables.cartTotal += variables.cartProduct[1].price*item.quantity>
+                                                <p class="card-text text-danger">#variables.cartProduct[1].price*item.quantity#</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="d-flex justify-content-evenly">
-                                        <button onclick="changeQuantity(#item.id#,'decrement')" class="btn btn-secondary rounded-pill <cfif item.quantity LTE 1>disabled</cfif>">-</button>
-                                        <p class="card-text text-muted">#item.quantity#</p>
-                                        <button onclick="changeQuantity(#item.id#,'increment')" class="btn btn-secondary rounded-pill">+</button>
-                                        <button onclick="removeCartProduct(#item.id#)" class="btn btn-danger">Remove item</button>
-                                    </div>
-                                </li>
-                            </cfoutput>
-                        </cfloop>
-                    <cfelse>
-                        <h1 class="text-center text-warning">Cart is Empty!!</h1>
-                    </cfif>
-                </ul>
+                                        <div class="d-flex justify-content-evenly">
+                                            <button onclick="changeQuantity(#item.id#,'decrement')" class="btn btn-secondary rounded-pill <cfif item.quantity LTE 1>disabled</cfif>">-</button>
+                                            <p class="card-text text-muted">#item.quantity#</p>
+                                            <button onclick="changeQuantity(#item.id#,'increment')" class="btn btn-secondary rounded-pill">+</button>
+                                            <button onclick="removeCartProduct(#item.id#)" class="btn btn-danger">Remove item</button>
+                                        </div>
+                                    </li>
+                                </cfoutput>
+                            </cfloop>
+                        <cfelse>
+                            <h1 class="text-center text-warning">Address is Empty!!</h1>
+                        </cfif>
+                    </ul>
+                </div>
+                <div class="card bg-light fw-bold p-3">
+                    <ul class="card-body list-group d-flex flex-column p-5">
+                            <cfloop array="#variables.carter#" item="item">
+                                <cfoutput>
+                                    <li class="list-group-item d-flex flex-column gap-3 p-5">
+                                        <cfset variables.cartProduct = control.getProduct(product=item.product)>
+                                        <div class="d-flex flex-row flex-wrap justify-content-evenly">
+                                            <img class="card-img w-25 h-auto img-fluid img-thumbnail" src="/uploads/#variables.cartProduct[1].image#"
+                                                alt="Card image" data-bs-theme="dark">
+                                            <div class="col-5 d-flex flex-column justify-content-evenly fw-bold">
+                                                <p class="h4 card-title text-info">#variables.cartProduct[1].name#</p>
+                                                <cfset variables.cartTotal += variables.cartProduct[1].price*item.quantity>
+                                                <p class="card-text text-danger">#variables.cartProduct[1].price*item.quantity#</p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-evenly">
+                                            <button onclick="changeQuantity(#item.id#,'decrement')" class="btn btn-secondary rounded-pill <cfif item.quantity LTE 1>disabled</cfif>">-</button>
+                                            <p class="card-text text-muted">#item.quantity#</p>
+                                            <button onclick="changeQuantity(#item.id#,'increment')" class="btn btn-secondary rounded-pill">+</button>
+                                            <button onclick="removeCartProduct(#item.id#)" class="btn btn-danger">Remove item</button>
+                                        </div>
+                                    </li>
+                                </cfoutput>
+                            </cfloop>
+                        <cfelse>
+                            <h1 class="text-center text-warning">Order is Empty!!</h1>
+                        </cfif>
+                    </ul>
+                </div>
             </div>
-            <div class="card bg-light fw-bold col-4 p-3 gap-5 p-5">
+            <div class="card bg-light fw-bold float-right col-4 p-3 gap-5 p-5">
                 <cfoutput>
                     <p class="card-text bg-info text-center text-danger">Total Price :<br>#variables.cartTotal#</p>
                     <button class="btn btn-success">Place Order</button>

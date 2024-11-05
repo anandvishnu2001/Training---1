@@ -1,18 +1,23 @@
-<cfif NOT (structKeyExists(session, "user") 
-    	AND session.user.access)
-	OR (structKeyExists(url, 'log')
-		AND url.log EQ 0)>
+
+<cfif structKeyExists(url, 'log')
+		AND url.log EQ 0>
 		<cfset structClear(session.user)>
-        <cfset session.user = {
-            "access" = false
-        }>
+</cfif>
+<cfif NOT (structKeyExists(session, "user") 
+    	AND session.user.access)>
+			<cfset session.user = {
+				"access" = false
+			}>
 </cfif>
 <cfset control = CreateObject("component", "components.control")>
 <cfif structKeyExists(form, "btn")>
 	<cfset control.userLogin(user=form.user, password=form.password)>
     <cfif session.user.access>
 		<cfif structKeyExists(url, 'pro')>
-		<cflocation url="cart.cfm?pro=#url.pro#" addToken="no">
+			<cflocation url="cart.cfm?pro=#url.pro#" addToken="no">
+		<cfelseif structKeyExists(url, 'log')
+			AND url.log EQ 1>
+				<cflocation url="user.cfm" addToken="no">
 		<cfelse>
 			<cflocation url="index.cfm" addToken="no">
 		</cfif>
