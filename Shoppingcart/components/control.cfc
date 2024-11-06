@@ -55,7 +55,7 @@
                 "image" = local.checkLog.image
             }>
         <cfelse>
-            <cfset structClear(session.check)>
+            <cfset structClear(session.user)>
             <cfset session.user.access = false>
         </cfif>
     </cffunction>

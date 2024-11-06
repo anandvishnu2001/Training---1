@@ -37,10 +37,11 @@
 		</nav>
         <div class="container-fluid d-flex flex-row flex-wrap align-items-start justify-content-start h-100 p-0 mt-5">
             <cfoutput>
-                <div class="bg-dark h-100 d-flex flex-column fw-bold col-4 gap-5 p-5">
-                    <img class="w-100 h-auto img-fluid img-thumbnail rounded-circle" src="/uploads/#session.user.image#"
-                        alt="Card image" data-bs-theme="dark">
-                    <h1 class="text-center text-info fw-bold">#session.user.name#</h1>
+                <div class="bg-dark h-100 d-flex flex-column align-items-center fw-bold col-4 gap-5 p-5">
+                    <img class="img-fluid img-thumbnail rounded-circle" src="/uploads/#session.user.image#"
+                        alt="Card image" width="80" height="80" data-bs-theme="dark">
+                    <h1 class="text-info fw-bold">#session.user.name#</h1>
+                <div class="d-grid fw-bold gap-5">
                     <button id="address-btn" class="btn fw-bold btn-outline-primary btn-block">
                         <img src="/images/address.png" class="img-fluid" alt="Login" width="40" height="40">
                         Manage Addresses
@@ -49,65 +50,61 @@
                         <img src="/images/order.png" class="img-fluid" alt="Login" width="40" height="40">
                         Order Details
                     </button>
+                    </div>
                 </div>
             </cfoutput>
             <div class="h-100 d-flex flex-column fw-bold col-8 p-5">
                 <div id="address-card" class="card bg-light h-100 fw-bold p-5">
                     <h3 class="card-title">Manage Addresses</h3>
-                    <cfoutput>
                     <div class="card-body overflow-y-scroll accordion">
                         <div class="accordion-item">
                             <div class="accordion-header">
-                                <span class="accordion-button bg-primary gap-5">
-                                    <h4 class="text-white">Accordion Item 1</h4>
-                                    <button class="btn btn-light">pdf</button>
+                                <span class="container-fluid accordion-button bg-primary gap-5">
+                                    <h4 class="text-white w-75">Name</h4>
+                                    <button class="btn btn-success">edit</button>
+                                    <button class="btn btn-danger">remove</button>
                                 </span>
                             </div>
-                            <div class="accordion-body list-goup"><div class="col-5">
-                                <span class="h5 card-text text-muted">Name</span>
-                                <span class="h5 card-text text-muted">Price</span>
+                            <div class="accordion-body"><div class="col-5">
+                                <h4 class="text-muted">Phone</h4>
+                                <h5 class="text-muted">Address</h5>
                             </div>
                         </div>
                     </div>
                 </div>
                 <button class="card-footer btn fw-bold btn-primary btn-block" href="">
                     <span class="h3">Add Address</span>
-                </button></cfoutput>
+                </button>
                 </div>
                 <div id="order-card" class="card bg-light h-100 fw-bold p-5">
                     <h3 class="card-title">Order History</h3>
-                    <ul class="card-body overflow-y-scroll list-group p-2 gap-3 d-flex fw-bold">
-                        <li class="d-flex flex-wrap justify-content-evenly p-5 list-group-item">
-                            <span class="h5 col-12 card-text text-dark">Order</span>
-                            <div class="col-5">
-                                <span class="h5 card-text text-muted">Name</span>
-                                <span class="h5 card-text text-muted">Price</span>
-                                <div class="d-flex flex-column gap-1 justify-content-evenly">
-                                    <a class="btn fw-bold btn-danger btn-block" href="">
-                                        Remove
-                                    </a>
-                                </div>
+                    <div class="card-body overflow-y-scroll accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <span class="container-fluid accordion-button bg-primary gap-5">
+                                    <h4 class="text-white w-75">Order</h4>
+                                    <button class="btn btn-danger">pdf</button>
+                                </span>
                             </div>
-                            <div class="col-5">
-                                <span class="h5 card-text text-muted">Name</span>
-                                <span class="h5 card-text text-muted">Price</span>
-                                <div class="d-flex flex-column gap-1 justify-content-evenly">
-                                    <a class="btn fw-bold btn-danger btn-block" href="">
-                                        Remove
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-5">
-                                <span class="h5 card-text text-muted">Name</span>
-                                <span class="h5 card-text text-muted">Price</span>
-                                <div class="d-flex flex-column gap-1 justify-content-evenly">
-                                    <a class="btn fw-bold btn-danger btn-block" href="">
-                                        Remove
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+                            <ul class="accordion-body list-group">
+                                <li class="list-group-item">
+                                    <img src="/images/logout.png" class="img-fluid" alt="Login" width="80" height="80">
+                                    <div class="">
+                                    <span class="h5 card-text text-muted">Name</span>
+                                    <span class="h5 card-text text-muted">Price</span>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="h5 card-text text-muted">Name</span>
+                                    <span class="h5 card-text text-muted">Price</span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="h5 card-text text-muted">Name</span>
+                                    <span class="h5 card-text text-muted">Price</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
