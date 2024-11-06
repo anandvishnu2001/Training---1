@@ -7,7 +7,7 @@
     </cfif>
     <cfset variables.carter = control.getCart(session.user.user)>
 <cfelseif structKeyExists(url, 'pro')>
-    <cflocation url="login.cfm?pro=#url.pro#" addToken="no">
+    <cflocation url="login.cfm?pro=#url.pro#&site=cart" addToken="no">
 <cfelse>
     <cflocation url="login.cfm" addToken="no">
 </cfif>
@@ -78,7 +78,9 @@
             <div class="card bg-light fw-bold col-4 p-3 gap-5 p-5">
                 <cfoutput>
                     <p class="card-text bg-info text-center text-danger">Total Price :<br>#variables.cartTotal#</p>
-                    <button class="btn btn-success">Check out</button>
+                    <cfif arrayLen(variables.carter) NEQ 0>
+                        <a class="btn btn-success" href="payment.cfm">Check out</a>
+                    </cfif>
                     <button onclick="removeCart(#session.user.user#)" class="btn btn-danger">Empty cart</button>
                 </cfoutput>
             </div>
