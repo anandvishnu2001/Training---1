@@ -30,6 +30,11 @@ function removeCartProduct(id) {
     });
 }
 
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
+});
+
 function removeCart(id) {
     $.ajax({
         url: '/components/control.cfc?method=deleteCart',
@@ -47,7 +52,7 @@ $(document).ready(adjustNavbarPositions);
 $(window).resize(adjustNavbarPositions);
 
 $(document).ready(function () {
-    $('[data-bs-toggle="tooltip"]').tooltip();
+    $("#address-card").hide();
 
     $("#order-card").hide();
     
@@ -56,13 +61,15 @@ $(document).ready(function () {
     $('input[type="radio"][name="address"]').change(function() {
         if ($('input[type="radio"][name="address"]:checked').length > 0) {
             $('#paymentbtn').prop('disabled', false);
-            $('#alert').hide();
         }
         else {
             $('#paymentbtn').prop('disabled', true);
-            $('#alert').show();
         }
     });
+
+    const url = new URLSearchParams(window.location.search);
+    if(url.has('keyword'))
+        $('#order-card').show();
 
     $("#order-btn").click(function () {
         $("#address-card").hide();

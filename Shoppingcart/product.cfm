@@ -46,7 +46,7 @@
                         AND session.user.access>
                             <a class="nav-link" href="user.cfm">
                                 <cfoutput>
-                                    <img src="/uploads/#session.user.image#" class="img-fluid rounded-circle" alt="Login" width="30" height="30">
+                                    <img src="/uploads/#session.user.image#" class="rounded-circle" alt="Login" width="30" height="30">
                                 </cfoutput>
                             </a>
                     <cfelse>

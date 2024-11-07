@@ -20,7 +20,15 @@
     <cfif structKeyExists(form, 'shippingId') AND len(form.shippingId) NEQ 0>
         <cfset variables.shipping['id'] = form.shippingId>
     </cfif>
-    <cfset control.modifyShipping(data=variables.shipping)>
+    <cfset variables.error = control.modifyShipping(data=variables.shipping)>
+    <cfif arrayLen(variables.error) NEQ 0>
+        <div class="alert alert-danger alert-dismissible fade show text-center mt-5 z-3 fw-bold">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <cfoutput>
+                #arrayToList(variables.error)#
+            </cfoutput>
+        </div>
+    </cfif>
 <cfelseif structKeyExists(form, 'dltbtn')>
     <cfset control.deleteShipping(id=form.shippingId)>
 </cfif>
@@ -30,7 +38,7 @@
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
 	</head>
 	<body class="container-fluid p-0 d-flex flex-column align-items-center">
-		<nav id="main-nav" class="container-fluid navbar navbar-expand-lg justify-content-center bg-primary gap-5 z-3 fw-bold fixed-top" data-bs-theme="dark">
+		<nav id="main-nav" class="container-fluid navbar navbar-expand-lg justify-content-center bg-primary gap-5 z-1 fw-bold fixed-top" data-bs-theme="dark">
             <div class="flex-grow-1">
                 <a class="navbar-brand ms-2" href="index.cfm">
                     <img src="/images/shop.png" width="40" height="40" class="img-fluid">
@@ -56,7 +64,7 @@
                 </li>
             </ul>
 		</nav>
-        <div class="container-fluid d-flex flex-row flex-wrap align-items-start justify-content-start h-100 p-0 mt-5">
+        <div class="container-fluid d-flex flex-row flex-wrap align-items-start justify-content-start z-0 h-100 p-0 mt-5">
             <cfoutput>
                 <div class="bg-dark h-100 d-flex flex-column align-items-center fw-bold col-4 gap-5 p-5">
                     <img class="img-fluid img-thumbnail rounded-circle" src="/uploads/#session.user.image#"
@@ -75,27 +83,26 @@
                 </div>
             </cfoutput>
             <div class="h-100 d-flex flex-column fw-bold col-8 p-5">
-                <div id="address-card" class="card bg-light h-100 fw-bold p-5">
-                    <h3 class="card-title">Manage Addresses</h3>
-                    <div class="card-body overflow-y-scroll accordion">
+                <div></div>
+                <div id="address-card" class="card z-1 bg-light h-100 fw-bold">
+                    <h1 class="card-header card-title text-white bg-primary">Manage Addresses</h1>
+                    <div class="card-body overflow-y-scroll d-grid gap-5 m-2">
                         <cfset variables.addresses = control.getShipping(user=session.user.user)>
                         <cfloop array="#variables.addresses#" item="address">
                             <cfoutput>
-                                <div class="accordion-item">
-                                    <div class="accordion-header">
-                                        <span class="container-fluid accordion-button bg-primary gap-5">
-                                            <h4 class="text-white w-75">#address.name#</h4>
-                                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#chr(35)#modal"
-                                                data-bs-action="edit" data-bs-id="#address.id#">
-                                                    Edit
-                                            </button>
-                                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#chr(35)#modal"
-                                                data-bs-action="delete" data-bs-id="#address.id#">
-                                                    Remove
-                                            </button>
-                                        </span>
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-evenly bg-primary gap-3">
+                                        <h4 class="flex-grow-1 text-white">#address.name#</h4>
+                                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#chr(35)#modal"
+                                            data-bs-action="edit" data-bs-id="#address.id#">
+                                                Edit
+                                        </button>
+                                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#chr(35)#modal"
+                                            data-bs-action="delete" data-bs-id="#address.id#">
+                                                Remove
+                                        </button>
                                     </div>
-                                    <div class="accordion-body">
+                                    <div class="card-body">
                                         <h4 class="text-muted">#address.phone#</h4>
                                         <h5 class="text-muted">
                                             #address.house#,
@@ -112,37 +119,95 @@
                     </div>
                     <button id='add' class="card-footer btn fw-bold btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#modal"
                         data-bs-action="add">
-                            <span class="h3">Add Address</span>
+                            <h3>Add Address</h3>
                     </button>
                 </div>
-                <div id="order-card" class="card bg-light h-100 fw-bold p-5">
-                    <h3 class="card-title">Order History</h3>
-                    <div class="card-body overflow-y-scroll accordion">
-                        <div class="accordion-item">
-                            <div class="accordion-header">
-                                <span class="container-fluid accordion-button bg-primary gap-5">
-                                    <h4 class="text-white w-75">Order</h4>
-                                    <button class="btn btn-danger">pdf</button>
-                                </span>
-                            </div>
-                            <ul class="accordion-body list-group">
-                                <li class="list-group-item">
-                                    <img src="/images/logout.png" class="col-5 img-fluid" alt="Login" width="40" height="40">
-                                    <div class="col-5 d-flex flex-column">
-                                        <span class="h5 card-text text-muted">Name</span>
-                                        <span class="h5 card-text text-muted">Price</span>
+                <div id="order-card" class="card z-1 bg-light h-100 fw-bold">
+                    <div class="card-header d-flex text-white bg-primary">
+                        <h1 class="flex-grow-1 card-title">Order History</h1>
+                        <form class="d-flex">
+                            <input name="keyword" id="keyword" class="form-control me-2" type="text" placeholder="Search" required>
+                            <button name="search" id="search" class="btn btn-primary" type="submit" value="keyword">
+                                <img src="/images/search.png" class="img-fluid" alt="Cart" width="30" height="30">
+                            </button>
+                        </form>
+                    </div>
+                    <div class="card-body overflow-y-scroll d-grid gap-5 m-2">
+                        <cfif structKeyExists(url, 'keyword')>
+                            <cfset variables.orders = control.getOrder(user=session.user.user,search=url.keyword)>
+                        <cfelse>
+                            <cfset variables.orders = control.getOrder(user=session.user.user)>
+                        </cfif>
+                        <cfloop array="#variables.orders#" item="order">
+                            <cfoutput>
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-evenly bg-primary gap-5">
+                                        <h5 class="flex-grow-1">
+                                            <span class="text-white">Order No :</span>
+                                            <span class="text-muted">#order.id#</span>
+                                        </h5>
+                                        <a class="btn btn-danger" href="order-invoice.cfm?order=#order.id#">pdf</a>
                                     </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <span class="h5 card-text text-muted">Name</span>
-                                    <span class="h5 card-text text-muted">Price</span>
-                                </li>
-                                <li class="list-group-item">
-                                    <span class="h5 card-text text-muted">Name</span>
-                                    <span class="h5 card-text text-muted">Price</span>
-                                </li>
-                            </ul>
-                        </div>
+                                    <cfset variables.total = 0>
+                                    <ul class="card-body list-group p-0">
+                                        <cfloop array="#order.items#" item="item">
+                                            <li class="list-group-item d-flex justify-content-between">
+                                                <img src="/uploads/#item.image#" class="col-3 img-fluid" alt="Login" width="40" height="40">
+                                                <div class="col-7 d-flex flex-column">
+                                                    <p class="card-text">
+                                                        <span class="text-dark">Item :</span>
+                                                        <span class="text-muted">#item.name#</span>
+                                                    </p>
+                                                    <p class="card-text">
+                                                        <span class="text-dark">Quantity :</span>
+                                                        <span class="text-muted">#item.quantity#</span>
+                                                    </p>
+                                                    <p class="card-text">
+                                                        <span class="text-dark">Price :</span>
+                                                        <span class="text-muted">
+                                                            #chr(8377)#
+                                                            #numberFormat(item.price,'__.00')#
+                                                        </span>
+                                                    </p>
+                                                    <p class="card-text">
+                                                        <span class="text-dark">Total Amount :</span>
+                                                        <span class="text-muted">
+                                                            #chr(8377)#
+                                                            #numberFormat(item.price*item.quantity,'__.00')#
+                                                        </span>
+                                                    </p>
+                                                    <cfset variables.total += item.price*item.quantity>
+                                                </div>
+                                            </li>
+                                        </cfloop>
+                                    </ul>
+                                    <div class="card-footer">
+                                        <div class="d-flex justify-content-between">
+                                            <p class="card-text">
+                                                <span class="text-dark">Date of Purchase :</span>
+                                                <span class="text-muted">#dateTimeFormat(order.date,'medium')#</span>
+                                            </p>
+                                            <p class="card-text">
+                                                <span class="text-dark">Total Billed Amount :</span>
+                                                <span class="text-muted">
+                                                    #chr(8377)#
+                                                    #numberFormat(variables.total,'__.00')#
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <p class="card-text d-flex gap-3">
+                                            <span class="text-dark">Address :</span>
+                                            <span class="col-10 text-muted">
+                                                #order.shipping.name# #order.shipping.phone#<br>
+                                                #order.shipping.house#, #order.shipping.street#,
+                                                #order.shipping.city#, #order.shipping.state#,
+                                                #order.shipping.country#, PIN - #order.shipping.pincode#
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </cfoutput>
+                        </cfloop>
                     </div>
                 </div>
             </div>

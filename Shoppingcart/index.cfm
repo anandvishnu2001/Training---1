@@ -7,31 +7,15 @@
 <cfelse>
     <cfset variables.carter = control.getCart(session.user.user)>
 </cfif>
-<cfif structKeyExists(url, 'searchWord')>
-    <cfif structKeyExists(url, 'sort')>
-        <cfset products = control.getProduct(search=url.searchWord,sort=url.sort)>
-    <cfelse>
-        <cfset products = control.getProduct(search=url.searchWord,sort='random')>
-    </cfif>
+<cfset argumentCollection = { sort = structKeyExists(url, 'sort') ? url.sort : 'random' }>
+<cfif structKeyExists(url, 'keyword')>
+    <cfset argumentCollection.search = url.keyword>
 <cfelseif structKeyExists(url, 'sub')>
-    <cfif structKeyExists(url, 'sort')>
-        <cfset products = control.getProduct(subcategory=url.sub,sort=url.sort)>
-    <cfelse>
-        <cfset products = control.getProduct(subcategory=url.sub,sort='random')>
-    </cfif>
+    <cfset argumentCollection.subcategory = url.sub>
 <cfelseif structKeyExists(url, 'cat')>
-    <cfif structKeyExists(url, 'sort')>
-        <cfset products = control.getProduct(category=url.cat,sort=url.sort)>
-    <cfelse>
-        <cfset products = control.getProduct(category=url.cat,sort='random')>
-    </cfif>
-<cfelse>
-    <cfif structKeyExists(url, 'sort')>
-        <cfset products = control.getProduct(sort=url.sort)>
-    <cfelse>
-        <cfset products = control.getProduct(sort='random')>
-    </cfif>
+    <cfset argumentCollection.category = url.cat>
 </cfif>
+<cfset products = control.getProduct(argumentCollection=argumentCollection)>
 <html lang="en">
 	<head>
 		<link href="/css/admin.css" rel="stylesheet">
@@ -44,8 +28,8 @@
                 Shopping Cart
             </a>
             <form class="flex-grow-1 d-flex">
-                <input name="searchWord" id="searchWord" class="form-control me-2" type="text" placeholder="Search" required>
-                <button name="search" id="search" class="btn btn-primary" type="submit">
+                <input name="keyword" id="keyword" class="form-control me-2" type="text" placeholder="Search" required>
+                <button name="search" id="search" class="btn btn-primary" type="submit" value="keyword">
                     <img src="/images/search.png" class="img-fluid" alt="Cart" width="30" height="30">
                 </button>
             </form>
@@ -81,7 +65,7 @@
                         AND session.user.access>
                             <a class="nav-link" href="user.cfm">
                                 <cfoutput>
-                                    <img src="/uploads/#session.user.image#" class="img-fluid rounded-circle" alt="Login" width="30" height="30">
+                                    <img src="/uploads/#session.user.image#" class="rounded-circle" alt="Login" width="30" height="30">
                                 </cfoutput>
                             </a>
                     <cfelse>

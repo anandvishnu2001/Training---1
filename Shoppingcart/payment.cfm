@@ -1,8 +1,6 @@
 <cfset control = CreateObject("component", "components.control")>
 <cfif structKeyExists(session, 'user') 
     AND session.user.access>
-    <cfif structKeyExists(url, 'pro')>
-    </cfif>
     <cfset variables.carter = control.getCart(session.user.user)>
 <cfelseif structKeyExists(url, 'pro')>
     <cflocation url="login.cfm?pro=#url.pro#&site=pay" addToken="no">
@@ -33,8 +31,17 @@
         'address' = form.shippingAddress,
         'user' = session.user.user
     }>
-    <cfset variables.error = control.payOrder(variables.order)>
-    <cfdump  var="#variables.error#">
+    <cfset variables.output = control.payOrder(variables.order)>
+    <cfif arrayLen(variables.output.error) EQ 0 AND structKeyExists(variables.output, 'order')>
+        <cflocation  url="confirm.cfm?order=#variables.output.order#" addToken="no">
+    <cfelse>
+        <div class="alert alert-danger alert-dismissible fade show text-center mt-5 z-3 fw-bold">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <cfoutput>
+                #arrayToList(variables.output.error)#
+            </cfoutput>
+        </div>
+    </cfif>
 </cfif>
 <html lang="en">
 	<head>
@@ -42,13 +49,13 @@
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
 	</head>
 	<body class="container-fluid p-0 d-flex flex-column align-items-center">
-		<nav id="main-nav" class="container-fluid navbar navbar-expand-lg justify-content-center bg-primary gap-5 z-3 fw-bold fixed-top" data-bs-theme="dark">
+		<nav id="main-nav" class="container-fluid navbar navbar-expand-lg justify-content-center bg-primary gap-5 z-1 fw-bold fixed-top" data-bs-theme="dark">
             <a class="flex-grow-1 navbar-brand ms-2" href="index.cfm">
                 <img src="/images/shop.png" width="40" height="40" class="img-fluid">
                 Shopping Cart
             </a>
 		</nav>
-        <div class="container-fluid h-100 d-flex flex-row justify-content-evenly align-items-start gap-5 p-5 mt-5">
+        <div class="container-fluid h-100 d-flex flex-row justify-content-evenly align-items-start z-0 gap-5 p-5 mt-5">
             <div class="col-7 h-100 overflow-y-scroll d-flex flex-column gap-5 p-5">
                 <div class="card h-75 bg-light p-3">
                     <h2 class="card-header fw-bold text-primary">Shipping Address</h2>
@@ -62,17 +69,10 @@
                                             <input type="radio" class="form-check-input bg-dark" id="address#address.id#" name="address" value="#address.id#">
                                             <label class="form-check-label" for="address#address.id#">
                                                 <div>
-                                                    <p class="card-title">
-                                                        #address.name#
-                                                        #address.phone#
-                                                    </p>
+                                                    <p class="card-title">#address.name# #address.phone#</p>
                                                     <p class="card-text">
-                                                        #address.house#,
-                                                        #address.street#,
-                                                        #address.city#,
-                                                        #address.state#,
-                                                        #address.country#,
-                                                        PIN-#address.pincode#
+                                                        #address.house#, #address.street#, #address.city#,
+                                                        #address.state#, #address.country#, PIN-#address.pincode#
                                                     </p>
                                                 </div>
                                             </label>
@@ -129,11 +129,10 @@
                     </cfif>
                 </div>
             </div>
-            <div class="card bg-light fw-bold float-right col-4 p-3 gap-5 p-5">
+            <div class="card bg-light fw-bold float-right col-4 p-3 gap-5 p-5" title="Select Shipping address to disable this button" data-bs-toggle="modal">
                     <p class="card-text bg-info text-center text-danger">Total Price :<br><cfoutput>#variables.orderTotal#</cfoutput></p>
-                    <div id="alert" class="alert alert-warning fw-bold">Address not Selected!!!</div>
-                    <button id="paymentbtn" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal"
-                        data-bs-action="pay"
+                    <button id="paymentbtn" class="btn btn-success"
+                        data-bs-target="#modal" data-bs-toggle="modal" data-bs-action="pay"
                         <cfoutput>
                             <cfif structKeyExists(url, 'pro')>
                                 data-bs-id="#url.pro#" data-bs-idtype="product"
@@ -190,19 +189,19 @@
                             <fieldset id="pay-mode" class="d-flex flex-wrap justify-content-evenly rounded border gap-2 p-3">
                                 <div class="col-12">
                                     <label for="cardNumber" class="form-label text-light">Card Number</label>
-                                    <input type="text" class="form-control text-warning" id="cardno" name="cardno" placeholder="1234 5678 9012 3456">
+                                    <input type="text" class="form-control text-warning" id="cardno" name="cardno" placeholder="1234 5678 9012 3456" autocomplete="off">
                                 </div>
                                 <div class="col-5">
                                     <label for="expiryDate" class="form-label text-light">Expiry Date</label>
-                                    <input type="text" class="form-control text-warning" id="expiry" name="expiry" placeholder="MM/YY">
+                                    <input type="text" class="form-control text-warning" id="expiry" name="expiry" placeholder="MM/YY" autocomplete="off">
                                 </div>
                                 <div class="col-5">
                                     <label for="cvv" class="form-label text-light">CVV</label>
-                                    <input type="text" class="form-control text-warning" id="cvv" name="cvv" placeholder="123">
+                                    <input type="text" class="form-control text-warning" id="cvv" name="cvv" placeholder="123" autocomplete="off">
                                 </div>
                                 <div class="col-12">
                                     <label for="cardholderName" class="form-label text-light">Cardholder Name</label>
-                                    <input type="text" class="form-control text-warning" id="cardname" name="cardname" placeholder="John Doe">
+                                    <input type="text" class="form-control text-warning" id="cardname" name="cardname" placeholder="John Doe" autocomplete="off">
                                 </div>
                             </fieldset>
                             <input type="hidden" name="shippingId" id="shippingId">

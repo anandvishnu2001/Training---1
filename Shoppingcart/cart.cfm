@@ -37,7 +37,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="user.cfm">
                         <cfoutput>
-                            <img src="/uploads/#session.user.image#" class="img-fluid rounded-circle" alt="Login" width="30" height="30">
+                            <img src="/uploads/#session.user.image#" class="rounded-circle" alt="Login" width="30" height="30">
                         </cfoutput>
                     </a>
                 </li>
@@ -72,18 +72,19 @@
                         </cfloop>
                     <cfelse>
                         <h1 class="text-center text-warning">Cart is Empty!!</h1>
+                        <a class="btn btn-outline-info" href="index.cfm">Explore our products</a>
                     </cfif>
                 </ul>
             </div>
-            <div class="card bg-light fw-bold col-4 p-3 gap-5 p-5">
-                <cfoutput>
-                    <p class="card-text bg-info text-center text-danger">Total Price :<br>#variables.cartTotal#</p>
-                    <cfif arrayLen(variables.carter) NEQ 0>
+            <cfif arrayLen(variables.carter) NEQ 0>
+                <div class="card bg-light fw-bold col-4 p-3 gap-5 p-5">
+                    <cfoutput>
+                        <p class="card-text bg-info text-center text-danger">Total Price :<br>#variables.cartTotal#</p>
                         <a class="btn btn-success" href="payment.cfm">Check out</a>
-                    </cfif>
-                    <button onclick="removeCart(#session.user.user#)" class="btn btn-danger">Empty cart</button>
-                </cfoutput>
-            </div>
+                        <button onclick="removeCart(#session.user.user#)" class="btn btn-danger">Empty cart</button>
+                    </cfoutput>
+                </div>
+            </cfif>
         </div>
 		<script type="text/javascript" src="/js/jQuery.js"></script>
 		<script type="text/javascript" src="/js/home.js"></script>

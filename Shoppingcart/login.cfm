@@ -1,12 +1,13 @@
-<cfif NOT (structKeyExists(session, "user") 
-    	AND session.user.access)>
+<cfif structKeyExists(url, 'log')
+		AND url.log EQ 0
+		AND structKeyExists(session, "user")>
+		<cfset structClear(session.user)>
+</cfif>
+<cfif NOT structKeyExists(session, "user") 
+    AND NOT session.user.access>
 			<cfset session.user = {
 				"access" = false
 			}>
-</cfif>
-<cfif structKeyExists(url, 'log')
-		AND url.log EQ 0>
-		<cfset structClear(session.user)>
 </cfif>
 <cfset control = CreateObject("component", "components.control")>
 <cfif structKeyExists(form, "btn")>
@@ -64,8 +65,8 @@
 				Log in
 			</button>
 		</div>
-		<script type="text/javascript" src="/js/jQuery.js"></script><!---
-		<script type="text/javascript" src="/js/admin.js"></script>--->
+		<script type="text/javascript" src="/js/jQuery.js"></script>
+		<script type="text/javascript" src="/js/home.js"></script>
 		<script type="text/javascript" src="/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="/js/bootstrap.bundle.min.js"></script>
 	</body>

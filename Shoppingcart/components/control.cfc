@@ -314,6 +314,7 @@
         <cfargument  name="product" type="integer" required="false">
         <cfargument  name="search" type="string" required="false">
         <cfargument  name="sort" type="string" required="false">
+        <cfargument  name="status" type="string" required="false">
         <cfquery name="local.list" datasource="shopping">
             SELECT
                 productid,
@@ -330,7 +331,9 @@
             FROM
                 product
             WHERE
-                status = 1
+                <cfif NOT structKeyExists(arguments, 'status')>
+                    status = 1
+                </cfif>
             <cfif structKeyExists(arguments, 'category')>
                 AND
                     subcategoryid IN (
@@ -346,7 +349,9 @@
                     subcategoryid = <cfqueryparam value="#arguments.subcategory#" cfsqltype="cf_sql_integer">
             </cfif>
             <cfif structKeyExists(arguments, 'product')>
-                AND
+                <cfif NOT structKeyExists(arguments, 'status')>
+                    AND
+                </cfif>
                     productid = <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_integer">
             </cfif>
             <cfif structKeyExists(arguments, 'search') AND arguments.search GT 0>
@@ -489,54 +494,82 @@
 
     <cffunction  name="modifyShipping" access="remote" returnFormat="JSON">
         <cfargument  name="data" type="struct" required="true">
-        <cfif structKeyExists(arguments.data, 'id')>
-            <cfquery name="local.edit" datasource="shopping">
-                UPDATE
-                    shipping
-                SET
-                    name = <cfqueryparam value="#arguments.data.name#" cfsqltype="cf_sql_varchar">,
-                    phone = <cfqueryparam value="#arguments.data.phone#" cfsqltype="cf_sql_decimal">,
-                    house = <cfqueryparam value="#arguments.data.house#" cfsqltype="cf_sql_varchar">,
-                    street = <cfqueryparam value="#arguments.data.street#" cfsqltype="cf_sql_varchar">,
-                    city = <cfqueryparam value="#arguments.data.city#" cfsqltype="cf_sql_varchar">,
-                    state = <cfqueryparam value="#arguments.data.state#" cfsqltype="cf_sql_varchar">,
-                    country = <cfqueryparam value="#arguments.data.country#" cfsqltype="cf_sql_varchar">,
-                    pincode = <cfqueryparam value="#arguments.data.pincode#" cfsqltype="cf_sql_varchar">,
-                    lasteditedat = <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">
-                WHERE
-                    shippingid = <cfqueryparam value="#arguments.data.id#" cfsqltype="cf_sql_integer">
-            </cfquery>
-        <cfelse>
-            <cfquery name="local.add" datasource="shopping">
-                INSERT INTO
-                    shipping(
-                        name,
-                        phone,
-                        house,
-                        street,
-                        city,
-                        state,
-                        country,
-                        pincode,
-                        userid,
-                        createdat,
-                        status
-                    )
-                VALUES(
-                    <cfqueryparam value="#arguments.data.name#" cfsqltype="cf_sql_varchar">,
-                    <cfqueryparam value="#arguments.data.phone#" cfsqltype="cf_sql_decimal">,
-                    <cfqueryparam value="#arguments.data.house#" cfsqltype="cf_sql_varchar">,
-                    <cfqueryparam value="#arguments.data.street#" cfsqltype="cf_sql_varchar">,
-                    <cfqueryparam value="#arguments.data.city#" cfsqltype="cf_sql_varchar">,
-                    <cfqueryparam value="#arguments.data.state#" cfsqltype="cf_sql_varchar">,
-                    <cfqueryparam value="#arguments.data.country#" cfsqltype="cf_sql_varchar">,
-                    <cfqueryparam value="#arguments.data.pincode#" cfsqltype="cf_sql_varchar">,
-                    <cfqueryparam value="#arguments.data.user#" cfsqltype="cf_sql_integer">,
-                    <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
-                    <cfqueryparam value="1" cfsqltype="cf_sql_integer">
-                )
-            </cfquery>
+        <cfset local.error = []>
+        <cfif len(arguments.data.name) EQ 0>
+            <cfset arrayAppend(local.error, "*Name required")>
         </cfif>
+        <cfif len(arguments.data.phone) EQ 0>
+            <cfset arrayAppend(local.error, "*Phone required")>
+        </cfif>
+        <cfif len(arguments.data.house) EQ 0>
+            <cfset arrayAppend(local.error, "*House required")>
+        </cfif>
+        <cfif len(arguments.data.street) EQ 0>
+            <cfset arrayAppend(local.error, "*Street required")>
+        </cfif>
+        <cfif len(arguments.data.city) EQ 0>
+            <cfset arrayAppend(local.error, "*City required")>
+        </cfif>
+        <cfif len(arguments.data.state) EQ 0>
+            <cfset arrayAppend(local.error, "*State required")>
+        </cfif>
+        <cfif len(arguments.data.country) EQ 0>
+            <cfset arrayAppend(local.error, "*Country required")>
+        </cfif>
+        <cfif len(arguments.data.pincode) EQ 0>
+            <cfset arrayAppend(local.error, "*Pincode required")>
+        </cfif>
+        <cfif arrayLen(local.error) EQ 0>
+            <cfif structKeyExists(arguments.data, 'id')>
+                <cfquery name="local.edit" datasource="shopping">
+                    UPDATE
+                        shipping
+                    SET
+                        name = <cfqueryparam value="#arguments.data.name#" cfsqltype="cf_sql_varchar">,
+                        phone = <cfqueryparam value="#arguments.data.phone#" cfsqltype="cf_sql_decimal">,
+                        house = <cfqueryparam value="#arguments.data.house#" cfsqltype="cf_sql_varchar">,
+                        street = <cfqueryparam value="#arguments.data.street#" cfsqltype="cf_sql_varchar">,
+                        city = <cfqueryparam value="#arguments.data.city#" cfsqltype="cf_sql_varchar">,
+                        state = <cfqueryparam value="#arguments.data.state#" cfsqltype="cf_sql_varchar">,
+                        country = <cfqueryparam value="#arguments.data.country#" cfsqltype="cf_sql_varchar">,
+                        pincode = <cfqueryparam value="#arguments.data.pincode#" cfsqltype="cf_sql_varchar">,
+                        lasteditedat = <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">
+                    WHERE
+                        shippingid = <cfqueryparam value="#arguments.data.id#" cfsqltype="cf_sql_integer">
+                </cfquery>
+            <cfelse>
+                <cfquery name="local.add" datasource="shopping">
+                    INSERT INTO
+                        shipping(
+                            name,
+                            phone,
+                            house,
+                            street,
+                            city,
+                            state,
+                            country,
+                            pincode,
+                            userid,
+                            createdat,
+                            status
+                        )
+                    VALUES(
+                        <cfqueryparam value="#arguments.data.name#" cfsqltype="cf_sql_varchar">,
+                        <cfqueryparam value="#arguments.data.phone#" cfsqltype="cf_sql_decimal">,
+                        <cfqueryparam value="#arguments.data.house#" cfsqltype="cf_sql_varchar">,
+                        <cfqueryparam value="#arguments.data.street#" cfsqltype="cf_sql_varchar">,
+                        <cfqueryparam value="#arguments.data.city#" cfsqltype="cf_sql_varchar">,
+                        <cfqueryparam value="#arguments.data.state#" cfsqltype="cf_sql_varchar">,
+                        <cfqueryparam value="#arguments.data.country#" cfsqltype="cf_sql_varchar">,
+                        <cfqueryparam value="#arguments.data.pincode#" cfsqltype="cf_sql_varchar">,
+                        <cfqueryparam value="#arguments.data.user#" cfsqltype="cf_sql_integer">,
+                        <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
+                        <cfqueryparam value="1" cfsqltype="cf_sql_integer">
+                    )
+                </cfquery>
+            </cfif>
+        </cfif>
+        <cfreturn local.error>
     </cffunction>
 
     <cffunction  name="getShipping" access="remote" returnFormat="JSON">
@@ -600,36 +633,39 @@
 
     <cffunction  name="payOrder" access="public">
         <cfargument  name="data" type="struct" required="true">
-        <cfset local.message = []>
+        <cfset local.result = {
+            'error' = []
+        }>
         <cfif arguments.data.cardno NEQ "1234567890654321">
-            <cfset arrayAppend(local.message, "*incorrect card no")>
+            <cfset arrayAppend(local.result.error, "*incorrect card no")>
         </cfif>
         <cfif arguments.data.expiry NEQ "01/30">
-            <cfset arrayAppend(local.message, "*incorrect expiration date")>
+            <cfset arrayAppend(local.result.error, "*incorrect expiration date")>
         </cfif>
         <cfif arguments.data.cvv NEQ "321">
-            <cfset arrayAppend(local.message, "*incorrect cvv")>
+            <cfset arrayAppend(local.result.error, "*incorrect cvv")>
         </cfif>
         <cfif arguments.data.cardname NEQ "ANAND VISHNU K V">
-            <cfset arrayAppend(local.message, "*incorrect holder name")>
+            <cfset arrayAppend(local.result.error, "*incorrect holder name")>
         </cfif>
-        <cfif arrayLen(local.message) EQ 0>
+        <cfif arrayLen(local.result.error) EQ 0>
             <cfset local.id = createUUID()>
             <cfquery name="local.add" datasource="shopping">
                 INSERT INTO
-                    order(
-                        orderid,
+                    ordercart(
                         orderdate,
-                        userid,
-                        shippingid
+                        shippingid,
+                        orderid,
+                        userid
                     )
                 VALUES(
-                    <cfqueryparam value="#local.id#" cfsqltype="cf_sql_varchar">,
                     <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
-                    <cfqueryparam value="#arguments.data.user#" cfsqltype="cf_sql_integer">,
-                    <cfqueryparam value="#arguments.data.address#" cfsqltype="cf_sql_integer">
+                    <cfqueryparam value="#arguments.data.address#" cfsqltype="cf_sql_integer">,
+                    <cfqueryparam value="#local.id#" cfsqltype="cf_sql_varchar">,
+                    <cfqueryparam value="#arguments.data.user#" cfsqltype="cf_sql_integer">
                 );
             </cfquery>
+            <cfset local.result['order'] = local.id>
             <cfset local.items = []>
             <cfif arguments.data.idType EQ 'cart'>
                 <cfset local.cart = getCart(arguments.data.user)>
@@ -641,10 +677,11 @@
                         'price' = local.product[1].price
                     })>
                 </cfloop>
+                <cfset deleteCart(user=arguments.data.user)>
             <cfelseif arguments.data.idType EQ 'product'>
                 <cfset local.product = getProduct(product=arguments.data.id)>
                 <cfset arrayAppend(local.items, {
-                        'product' = local.product[1].price,
+                        'product' = local.product[1].id,
                         'quantity' = 1,
                         'price' = local.product[1].price
                     })>
@@ -661,15 +698,99 @@
                             )
                         VALUES(
                             <cfqueryparam value="#item.quantity#" cfsqltype="cf_sql_varchar">,
-                            <cfqueryparam value="#item.price#" cfsqltype="cf_sql_timestamp">,
-                            <cfqueryparam value="#local.id#" cfsqltype="cf_sql_integer">,
+                            <cfqueryparam value="#item.price#" cfsqltype="cf_sql_decimal">,
+                            <cfqueryparam value="#local.id#" cfsqltype="cf_sql_varchar">,
                             <cfqueryparam value="#item.product#" cfsqltype="cf_sql_integer">
                         )
                     </cfquery>
                 </cfloop>
             </cfif>
         </cfif>
-        <cfreturn local.message>
+        <cfreturn local.result>
+    </cffunction>
+
+    <cffunction  name="getOrderitem" access="remote" returnFormat="JSON">
+        <cfargument  name="order" type="string" required="true">
+        <cfquery name="local.list" datasource="shopping">
+            SELECT
+                productid,
+                quantity,
+                price
+            FROM
+                orderitem
+            WHERE
+                orderid = <cfqueryparam value="#arguments.order#" cfsqltype="cf_sql_varchar">;
+        </cfquery>
+        <cfset local.output = []>
+        <cfoutput query="local.list">
+            <cfset arrayAppend(local.output, {
+                "product" : local.list.productid,
+                'quantity' = local.list.quantity,
+                'price' = local.list.price
+            })>
+        </cfoutput>
+        <cfreturn local.output>
+    </cffunction>
+
+    <cffunction  name="getOrder" access="remote" returnFormat="JSON">
+        <cfargument  name="user" type="integer" required="false">
+        <cfargument  name="order" type="string" required="false">
+        <cfargument  name="search" type="string" required="false">
+        <cfquery name="local.list" datasource="shopping">
+            SELECT
+                o.orderid,
+                o.orderdate,
+                s.name,
+                s.phone,
+                s.house,
+                s.street,
+                s.city,
+                s.state,
+                s.country,
+                s.pincode
+            FROM
+                ordercart o
+            INNER JOIN
+                shipping s
+            ON
+                o.shippingid = s.shippingid
+            WHERE
+                <cfif structKeyExists(arguments, 'user')>
+                    o.userid = <cfqueryparam value="#arguments.user#" cfsqltype="cf_sql_integer">
+                    <cfif structKeyExists(arguments, 'search')>
+                        AND
+                            o.orderid = <cfqueryparam value="#arguments.search#" cfsqltype="cf_sql_varchar">
+                    </cfif>
+                <cfelseif structKeyExists(arguments, 'order')>
+                    o.orderid = <cfqueryparam value="#arguments.order#" cfsqltype="cf_sql_varchar">
+                </cfif>
+            ;
+        </cfquery>
+        <cfset local.output = []>
+        <cfoutput query="local.list">
+            <cfset local.items = getOrderitem(order=local.list.orderid)>
+            <cfloop array="#local.items#" index="index" item="item">
+                <cfset local.product = getProduct(product=item.product,status="nostatus")>
+                <cfset local.items[index]['name'] = local.product[1].name>
+                <cfset local.items[index]['image'] = local.product[1].image>
+            </cfloop>
+            <cfset arrayAppend(local.output, {
+                "id" : local.list.orderid,
+                'date' = local.list.orderdate,
+                'shipping' = {
+                    'name' = local.list.name,
+                    'phone' = local.list.phone,
+                    'house' = local.list.house,
+                    'street' = local.list.street,
+                    'city' = local.list.city,
+                    'state' = local.list.state,
+                    'country' = local.list.country,
+                    'pincode' = local.list.pincode
+                },
+                'items' = local.items
+            })>
+        </cfoutput>
+        <cfreturn local.output>
     </cffunction>
 
 	<cffunction name="deleteItem" access="public">
