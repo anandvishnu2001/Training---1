@@ -62,7 +62,7 @@ $(document).ready(function () {
             $('#paymentbtn').prop('disabled', true);
             $('#alert').show();
         }
-      });
+    });
 
     $("#order-btn").click(function () {
         $("#address-card").hide();
@@ -77,9 +77,9 @@ $(document).ready(function () {
     $('#modal').on('hidden.bs.modal',function(event){
         $('#addressForm').find('input').removeAttr('required').val();
         $('#addressForm')[0].reset();
-        $('#shippingId').val();
-        $('#idType').val();
-        $('#shippingAddress').val();
+        $('#shippingId').val('');
+        $('#idType').val('');
+        $('#shippingAddress').val('');
     });
 
     $('#modal').on('show.bs.modal',function(event){
@@ -129,7 +129,7 @@ $(document).ready(function () {
                 $('#pay-mode').removeClass("d-none").find('input').attr('required', 'true');
                 $('#paybtn').removeClass("d-none");
                 $('#idType').val(button.data("bs-idtype"));
-                $('#shippingAddress').val(button.data("bs-idtype"));
+                $('#shippingAddress').val($('input[type="radio"][name="address"]:checked').val());
             }
         }
         else {

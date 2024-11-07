@@ -32,14 +32,14 @@
 	<body class="container-fluid p-0 d-flex flex-column align-items-center">
 		<nav id="main-nav" class="container-fluid navbar navbar-expand-lg justify-content-center bg-primary gap-5 z-3 fw-bold fixed-top" data-bs-theme="dark">
             <div class="flex-grow-1">
-                <a class="navbar-brand" title="home" data-bs-toggle="tooltip" href="index.cfm">
+                <a class="navbar-brand ms-2" href="index.cfm">
                     <img src="/images/shop.png" width="40" height="40" class="img-fluid">
                     Shopping Cart
                 </a>
             </div>
             <ul class="flex-grow-1 navbar-nav nav-tabs nav-justified">
                 <li class="nav-item">
-                    <a class="nav-link" title="cart" data-bs-toggle="tooltip" href="cart.cfm">
+                    <a class="nav-link" href="cart.cfm">
                         <img src="/images/cart.png" class="img-fluid" alt="Cart" width="30" height="30">
                         <cfif structKeyExists(variables, 'carter')
                             AND arrayLen(variables.carter) GT 0>
@@ -50,7 +50,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" title="logout" data-bs-toggle="tooltip" href="login.cfm?log=0">
+                    <a class="nav-link" href="login.cfm?log=0">
                         <img src="/images/logout.png" class="img-fluid" alt="Login" width="30" height="30">
                     </a>
                 </li>

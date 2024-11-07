@@ -23,7 +23,18 @@
     }>
     <cfset control.modifyShipping(data=variables.shipping)>
 <cfelseif structKeyExists(form, 'paybtn')>
-    <cfset control.payOrder(form)>
+    <cfset variables.order = {
+        'cardname' = form.cardname,
+        'cardno' = form.cardno,
+        'expiry' = form.expiry,
+        'cvv' = form.cvv,
+        'id' = form.shippingId,
+        'idType' = form.idType,
+        'address' = form.shippingAddress,
+        'user' = session.user.user
+    }>
+    <cfset variables.error = control.payOrder(variables.order)>
+    <cfdump  var="#variables.error#">
 </cfif>
 <html lang="en">
 	<head>
@@ -32,30 +43,10 @@
 	</head>
 	<body class="container-fluid p-0 d-flex flex-column align-items-center">
 		<nav id="main-nav" class="container-fluid navbar navbar-expand-lg justify-content-center bg-primary gap-5 z-3 fw-bold fixed-top" data-bs-theme="dark">
-            <a class="flex-grow-1 navbar-brand" href="index.cfm">
+            <a class="flex-grow-1 navbar-brand ms-2" href="index.cfm">
                 <img src="/images/shop.png" width="40" height="40" class="img-fluid">
                 Shopping Cart
             </a>
-            <ul class="flex-grow-1 navbar-nav nav-tabs nav-justified">
-                <li class="nav-item">
-                    <a class="nav-link" href="cart.cfm">
-                        <img src="/images/cart.png" class="img-fluid" alt="Cart" width="30" height="30">
-                        <cfif structKeyExists(variables, 'carter')
-                            AND arrayLen(variables.carter) GT 0>
-                            <cfoutput>
-                                <span class="badge bg-danger rounded-pill">#arrayLen(variables.carter)#</span>
-                            </cfoutput>
-                        </cfif>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="user.cfm">
-                        <cfoutput>
-                            <img src="/uploads/#session.user.image#" class="img-fluid rounded-circle" alt="Login" width="30" height="30">
-                        </cfoutput>
-                    </a>
-                </li>
-            </ul>
 		</nav>
         <div class="container-fluid h-100 d-flex flex-row justify-content-evenly align-items-start gap-5 p-5 mt-5">
             <div class="col-7 h-100 overflow-y-scroll d-flex flex-column gap-5 p-5">
@@ -199,19 +190,19 @@
                             <fieldset id="pay-mode" class="d-flex flex-wrap justify-content-evenly rounded border gap-2 p-3">
                                 <div class="col-12">
                                     <label for="cardNumber" class="form-label text-light">Card Number</label>
-                                    <input type="text" class="form-control text-warning" id="cardNumber" placeholder="1234 5678 9012 3456">
+                                    <input type="text" class="form-control text-warning" id="cardno" name="cardno" placeholder="1234 5678 9012 3456">
                                 </div>
                                 <div class="col-5">
                                     <label for="expiryDate" class="form-label text-light">Expiry Date</label>
-                                    <input type="text" class="form-control text-warning" id="expiryDate" placeholder="MM/YY">
+                                    <input type="text" class="form-control text-warning" id="expiry" name="expiry" placeholder="MM/YY">
                                 </div>
                                 <div class="col-5">
                                     <label for="cvv" class="form-label text-light">CVV</label>
-                                    <input type="text" class="form-control text-warning" id="cvv" placeholder="123">
+                                    <input type="text" class="form-control text-warning" id="cvv" name="cvv" placeholder="123">
                                 </div>
                                 <div class="col-12">
                                     <label for="cardholderName" class="form-label text-light">Cardholder Name</label>
-                                    <input type="text" class="form-control text-warning" id="cardholderName" placeholder="John Doe">
+                                    <input type="text" class="form-control text-warning" id="cardname" name="cardname" placeholder="John Doe">
                                 </div>
                             </fieldset>
                             <input type="hidden" name="shippingId" id="shippingId">
