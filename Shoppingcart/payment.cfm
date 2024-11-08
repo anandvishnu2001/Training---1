@@ -19,7 +19,15 @@
         'pincode' = form.pincode,
         'user' = session.user.user
     }>
-    <cfset control.modifyShipping(data=variables.shipping)>
+    <cfset variables.error = control.modifyShipping(data=variables.shipping)>
+    <cfif arrayLen(variables.error) NEQ 0>
+        <nav class="alert alert-danger alert-dismissible fade show text-center mt-5 z-3 fw-bold">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <cfoutput>
+                #arrayToList(variables.error)#
+            </cfoutput>
+        </nav>
+    </cfif>
 <cfelseif structKeyExists(form, 'paybtn')>
     <cfset variables.order = {
         'cardname' = form.cardname,
@@ -32,6 +40,7 @@
         'user' = session.user.user
     }>
     <cfset variables.output = control.payOrder(variables.order)>
+    <cfdump  var="#variables.output#">
     <cfif arrayLen(variables.output.error) EQ 0 AND structKeyExists(variables.output, 'order')>
         <cflocation  url="confirm.cfm?order=#variables.output.order#" addToken="no">
     <cfelse>
@@ -116,8 +125,9 @@
                                                     alt="Card image" height="40" data-bs-theme="dark">
                                                 <div class="col-5 d-flex flex-column justify-content-evenly fw-bold">
                                                     <p class="card-title text-info">#variables.orderItem[1].name#</p>
+                                                    <p class="card-text text-warning">#variables.orderItem[1].price#</p>
                                                     <cfset variables.orderTotal += variables.orderItem[1].price*item.quantity>
-                                                    <p class="card-text text-danger">#variables.orderItem[1].price*item.quantity#</p>
+                                                    <p class="card-text text-danger">#numberFormat(variables.orderItem[1].price*item.quantity,'.__')#</p>
                                                 </div>
                                             </div>
                                         </cfoutput>
@@ -129,90 +139,90 @@
                     </cfif>
                 </div>
             </div>
-            <div class="card bg-light fw-bold float-right col-4 p-3 gap-5 p-5" title="Select Shipping address to disable this button" data-bs-toggle="modal">
-                    <p class="card-text bg-info text-center text-danger">Total Price :<br><cfoutput>#variables.orderTotal#</cfoutput></p>
-                    <button id="paymentbtn" class="btn btn-success"
-                        data-bs-target="#modal" data-bs-toggle="modal" data-bs-action="pay"
-                        <cfoutput>
-                            <cfif structKeyExists(url, 'pro')>
-                                data-bs-id="#url.pro#" data-bs-idtype="product"
-                            <cfelseif arrayLen(variables.carter) GT 0>
-                                data-bs-id="#variables.carter[1].id#" data-bs-idtype="cart"
-                            </cfif>
-                        </cfoutput>>
-                        Payment
-                    </button>
-                    <a class="btn btn-danger" href="cart.cfm">Cancel</a>
+            <div class="card bg-light fw-bold float-right col-4 p-3 gap-5 p-5">
+                <p class="card-text bg-info text-center text-danger">Total Price :<br><cfoutput>#numberFormat(variables.orderTotal,'.__')#</cfoutput></p>
+                <button id="paymentbtn" class="btn btn-success"
+                    data-bs-target="#modal" data-bs-toggle="modal" data-bs-action="pay"
+                    <cfoutput>
+                        <cfif structKeyExists(url, 'pro')>
+                            data-bs-id="#url.pro#" data-bs-idtype="product"
+                        <cfelseif arrayLen(variables.carter) GT 0>
+                            data-bs-id="#variables.carter[1].id#" data-bs-idtype="cart"
+                        </cfif>
+                    </cfoutput>>
+                    Payment
+                </button>
+                <a class="btn btn-danger" href="cart.cfm">Cancel</a>
             </div>
-            <div class="modal fade" id="modal" tabindex="-1" role="dialog" data-bs-theme="dark">
-                <div class="modal-dialog">
-                    <div class="modal-content d-flex p-3">
-                        <div class="modal-header d-flex">
-                            <h2 id="modalhead" class="modal-title flex-grow-1 fw-bold text-primary text-center">Shipping Address Details</h2>
-                            <button type="button" class="btn-close border rounded" data-bs-dismiss="modal"></button>
-                        </div>
-                        <form id="addressForm" name="addressForm" class="modal-body d-flex flex-column gap-2 p-3" action="" method="post" enctype="multipart/form-data">
-                            <fieldset id="modify-mode" class="d-flex flex-column rounded border gap-2 p-3">
-                                <div class="form-floating">
-                                    <input class="form-control text-warning" type="text" id="name" name="name" placeholder="">
-                                    <label for="name" class="form-label text-light">Name</label>
-                                </div>
-                                <div class="form-floating">
-                                    <input class="form-control text-warning" type="text" id="phone" name="phone" placeholder="">
-                                    <label for="phone" class="form-label text-light">Phone</label>
-                                </div>
-                                <div class="form-floating">
-                                    <input class="form-control text-warning" type="text" id="house" name="house" placeholder="">
-                                    <label for="house" class="form-label text-light">House/Flat</label>
-                                </div>
-                                <div class="form-floating">
-                                    <input class="form-control text-warning" type="text" id="street" name="street" placeholder="">
-                                    <label for="street" class="form-label text-light">Street</label>
-                                </div>
-                                <div class="form-floating">
-                                    <input class="form-control text-warning" type="text" id="city" name="city" placeholder="">
-                                    <label for="city" class="form-label text-light">City</label>
-                                </div>
-                                <div class="form-floating">
-                                    <input class="form-control text-warning" type="text" id="state" name="state" placeholder="">
-                                    <label for="state" class="form-label text-light">State</label>
-                                </div>
-                                <div class="form-floating">
-                                    <input class="form-control text-warning" type="text" id="country" name="country" placeholder="">
-                                    <label for="country" class="form-label text-light">Country</label>
-                                </div>
-                                <div class="">
-                                    <input class="form-control text-warning" type="text" id="pincode" name="pincode" placeholder="">
-                                    <label for="pincode" class="form-label text-light">Pincode</label>
-                                </div>
-                            </fieldset>
-                            <fieldset id="pay-mode" class="d-flex flex-wrap justify-content-evenly rounded border gap-2 p-3">
-                                <div class="col-12">
-                                    <label for="cardNumber" class="form-label text-light">Card Number</label>
-                                    <input type="text" class="form-control text-warning" id="cardno" name="cardno" placeholder="1234 5678 9012 3456" autocomplete="off">
-                                </div>
-                                <div class="col-5">
-                                    <label for="expiryDate" class="form-label text-light">Expiry Date</label>
-                                    <input type="text" class="form-control text-warning" id="expiry" name="expiry" placeholder="MM/YY" autocomplete="off">
-                                </div>
-                                <div class="col-5">
-                                    <label for="cvv" class="form-label text-light">CVV</label>
-                                    <input type="text" class="form-control text-warning" id="cvv" name="cvv" placeholder="123" autocomplete="off">
-                                </div>
-                                <div class="col-12">
-                                    <label for="cardholderName" class="form-label text-light">Cardholder Name</label>
-                                    <input type="text" class="form-control text-warning" id="cardname" name="cardname" placeholder="John Doe" autocomplete="off">
-                                </div>
-                            </fieldset>
-                            <input type="hidden" name="shippingId" id="shippingId">
-                            <input type="hidden" name="shippingAddress" id="shippingAddress">
-                            <input type="hidden" name="idType" id="idType">
-                        </form>
-                        <div class="modal-footer d-flex justify-content-between">
-                            <button name="okbtn" id="okbtn" type="submit" class="btn btn-outline-success fw-bold" form="addressForm"></button>
-                            <button name="paybtn" id="paybtn" type="submit" class="btn btn-outline-success fw-bold" form="addressForm">Pay</button>
-                            <button type="button" class="btn btn-outline-danger fw-bold" data-bs-dismiss="modal">Cancel</button>
-                        </div>
+        </div>
+        <div class="modal fade" id="modal" data-bs-theme="dark">
+            <div class="modal-dialog">
+                <div class="modal-content d-flex p-3">
+                    <div class="modal-header d-flex">
+                        <h2 id="modalhead" class="modal-title flex-grow-1 fw-bold text-primary text-center">Shipping Address Details</h2>
+                        <button type="button" class="btn-close border rounded" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form id="addressForm" name="addressForm" class="modal-body d-flex flex-column gap-2 p-3" action="" method="post" enctype="multipart/form-data">
+                        <fieldset id="modify-mode" class="d-flex flex-column rounded border gap-2 p-3">
+                            <div class="form-floating">
+                                <input class="form-control text-warning" type="text" id="name" name="name" placeholder="">
+                                <label for="name" class="form-label text-light">Name</label>
+                            </div>
+                            <div class="form-floating">
+                                <input class="form-control text-warning" type="text" id="phone" name="phone" placeholder="">
+                                <label for="phone" class="form-label text-light">Phone</label>
+                            </div>
+                            <div class="form-floating">
+                                <input class="form-control text-warning" type="text" id="house" name="house" placeholder="">
+                                <label for="house" class="form-label text-light">House/Flat</label>
+                            </div>
+                            <div class="form-floating">
+                                <input class="form-control text-warning" type="text" id="street" name="street" placeholder="">
+                                <label for="street" class="form-label text-light">Street</label>
+                            </div>
+                            <div class="form-floating">
+                                <input class="form-control text-warning" type="text" id="city" name="city" placeholder="">
+                                <label for="city" class="form-label text-light">City</label>
+                            </div>
+                            <div class="form-floating">
+                                <input class="form-control text-warning" type="text" id="state" name="state" placeholder="">
+                                <label for="state" class="form-label text-light">State</label>
+                            </div>
+                            <div class="form-floating">
+                                <input class="form-control text-warning" type="text" id="country" name="country" placeholder="">
+                                <label for="country" class="form-label text-light">Country</label>
+                            </div>
+                            <div class="">
+                                <input class="form-control text-warning" type="text" id="pincode" name="pincode" placeholder="">
+                                <label for="pincode" class="form-label text-light">Pincode</label>
+                            </div>
+                        </fieldset>
+                        <fieldset id="pay-mode" class="d-flex flex-wrap justify-content-evenly rounded border gap-2 p-3">
+                            <div class="col-12">
+                                <label for="cardNumber" class="form-label text-light">Card Number</label>
+                                <input type="text" class="form-control text-warning" id="cardno" name="cardno" placeholder="1234 5678 9012 3456" autocomplete="off">
+                            </div>
+                            <div class="col-5">
+                                <label for="expiryDate" class="form-label text-light">Expiry Date</label>
+                                <input type="text" class="form-control text-warning" id="expiry" name="expiry" placeholder="MM/YY" autocomplete="off">
+                            </div>
+                            <div class="col-5">
+                                <label for="cvv" class="form-label text-light">CVV</label>
+                                <input type="text" class="form-control text-warning" id="cvv" name="cvv" placeholder="123" autocomplete="off">
+                            </div>
+                            <div class="col-12">
+                                <label for="cardholderName" class="form-label text-light">Cardholder Name</label>
+                                <input type="text" class="form-control text-warning" id="cardname" name="cardname" placeholder="John Doe" autocomplete="off">
+                            </div>
+                        </fieldset>
+                        <input type="hidden" name="shippingId" id="shippingId">
+                        <input type="hidden" name="shippingAddress" id="shippingAddress">
+                        <input type="hidden" name="idType" id="idType">
+                    </form>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button name="okbtn" id="okbtn" type="submit" class="btn btn-outline-success fw-bold" form="addressForm"></button>
+                        <button name="paybtn" id="paybtn" type="submit" class="btn btn-outline-success fw-bold" form="addressForm">Pay</button>
+                        <button type="button" class="btn btn-outline-danger fw-bold" data-bs-dismiss="modal">Cancel</button>
                     </div>
                 </div>
             </div>

@@ -22,7 +22,7 @@
         <div class="container-fluid h-100 d-flex flex-row justify-content-center align-items-center gap-5 p-5 mt-5">
             <div class="card bg-light col-6 p-3 gap-5 p-5">
                 <div class="alert alert-success text-center h2 fw-bold">Payment Successful!!!</div>
-                <a class="btn btn-outline-dark fw-bold" <cfoutput>href="user.cfm?searchWord=#url.order#"</cfoutput>>Order Details</a>
+                <a class="btn btn-outline-dark fw-bold" <cfoutput>href="user.cfm?keyword=#url.order#"</cfoutput>>Order Details</a>
                 <a class="btn btn-outline-primary fw-bold" href="index.cfm">Continue Exploring</a>
             </div>
         </div>

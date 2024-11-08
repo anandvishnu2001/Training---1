@@ -1,12 +1,14 @@
-<cfif NOT (structKeyExists(session, "check") 
-        AND session.check.access)
-    OR (structKeyExists(url, "logout")
-        AND url.logout EQ 1)>
-        <cfset structClear(session.check)>
-        <cfset session.check = {
-            "access" : false
-        }>
-	    <cflocation url="index.cfm" addToken="no">
+<cfif NOT structKeyExists(session, "check") 
+    OR NOT session.check.access
+    OR structKeyExists(url, "logout")>
+        <cfif structKeyExists(url, "logout")
+            AND url.logout EQ 1>
+                <cfset structClear(session.check)>
+        </cfif>
+    <cfset session.check = {
+        "access" = false
+    }>
+    <cflocation url="index.cfm" addToken="no">
 </cfif>
 <cfset control = CreateObject("component", "components.control")>
 <cfif structKeyExists(form, 'okbtn')>

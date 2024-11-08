@@ -57,10 +57,28 @@
                 </li>
             </ul>
 		</nav>
-        <div class="container-fluid d-flex flex-row flex-wrap justify-content-evenly gap-5 mt-5 p-5">
+        <div class="container-fluid d-flex flex-row flex-wrap justify-content-evenly mt-5 gap-5 p-5">
             <cfif structKeyExists(url, 'pro')>
                 <cfset products = control.getProduct(product=url.pro)>
                 <cfoutput>
+                    <div class="container d-flex justify-content-center p-3 gap-5">
+                        <cfset breadcrumbSub = control.getSubcategory(subcategory=products[1].subcategory)>
+                        <cfset breadcrumbCat = control.getCategory(category=breadcrumbSub[1].category)>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item"><a class="text-decoration-none" href="index.cfm">Home</a></li>
+                            <li class="breadcrumb-item">
+                                <a class="text-decoration-none" href="index.cfm?cat=#breadcrumbCat[1].id#">
+                                    #breadcrumbCat[1].name#
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a class="text-decoration-none" href="index.cfm?cat=#breadcrumbCat[1].id#&sub=#breadcrumbSub[1].id#">
+                                    #breadcrumbSub[1].name#
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active">#products[1].name#</li>
+                        </ul>
+                    </div>
                     <div class="card bg-light w-75 fw-bold p-5">
                         <div class="card-body d-flex row flex-wrap gap-5">
                             <img class="card-img col-md-6 w-25 h-auto img-fluid img-thumbnail" src="/uploads/#products[1].image#"
@@ -82,7 +100,7 @@
                     </div>
                 </cfoutput>
             <cfelse>
-                <h1 class="text-center text-warning">Products items Empty!!</h1>
+                <h1 class="text-center text-warning">Product Not Selected!!</h1>
             </cfif>
         </div>
 		<script type="text/javascript" src="/js/jQuery.js"></script>

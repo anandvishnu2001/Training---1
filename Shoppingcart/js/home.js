@@ -71,6 +71,11 @@ $(document).ready(function () {
     if(url.has('keyword'))
         $('#order-card').show();
 
+    $("#account-btn").click(function () {
+        $("#address-card").hide();
+        $("#order-card").hide();
+    });
+
     $("#order-btn").click(function () {
         $("#address-card").hide();
         $("#order-card").show();

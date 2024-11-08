@@ -1,13 +1,14 @@
-<cfif structKeyExists(url, 'log')
-		AND url.log EQ 0
-		AND structKeyExists(session, "user")>
-		<cfset structClear(session.user)>
-</cfif>
 <cfif NOT structKeyExists(session, "user") 
-    AND NOT session.user.access>
-			<cfset session.user = {
-				"access" = false
-			}>
+    OR structKeyExists(url, 'log')>
+	<cfif structKeyExists(session, 'user')
+		AND (structKeyExists(url, 'log')
+			AND url.log EQ 0
+			AND session.user.access)>
+				<cfset structClear(session.user)>
+	</cfif>
+	<cfset session.user = {
+		"access" = false
+	}>
 </cfif>
 <cfset control = CreateObject("component", "components.control")>
 <cfif structKeyExists(form, "btn")>
@@ -27,10 +28,10 @@
 				<cflocation url="index.cfm" addToken="no">
 			</cfif>
 	<cfelse>
-        <div class="alert alert-danger alert-dismissible fade show text-center z-3 fw-bold">
+        <nav class="alert alert-danger alert-dismissible fade show text-center z-3 fw-bold">
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             <cfoutput>#variables.error#!!!</cfoutput>
-        </div>
+        </nav>
 	</cfif>
 </cfif>
 <html lang="en">
@@ -38,7 +39,7 @@
 		<link href="/css/admin.css" rel="stylesheet">
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
 	</head>
-	<body class="container-fluid p-0 d-flex flex-row align-items-center">
+	<body class="container-fluid h-100 p-0 d-flex flex-column justify-content-center align-items-center">
 		<nav id="main-nav" class="container-fluid navbar navbar-expand-lg justify-content-center bg-primary gap-5 z-2 fw-bold fixed-top" data-bs-theme="dark">
             <a class="navbar-brand" href="index.cfm">
                 <img src="/images/shop.png" width="40" height="40" class="img-fluid">

@@ -7,7 +7,15 @@
 <cfelse>
     <cfset variables.carter = control.getCart(session.user.user)>
 </cfif>
-<cfset argumentCollection = { sort = structKeyExists(url, 'sort') ? url.sort : 'random' }>
+<cfset argumentCollection = {}>
+<cfif structKeyExists(url, 'sort')>
+    <cfset argumentCollection.sort = url.sort>
+<cfelse>
+    <cfset argumentCollection.sort = 'random'>
+</cfif>
+<cfif structKeyExists(url, 'range')>
+    <cfset argumentCollection.range = url.range>
+</cfif>
 <cfif structKeyExists(url, 'keyword')>
     <cfset argumentCollection.search = url.keyword>
 <cfelseif structKeyExists(url, 'sub')>
@@ -16,6 +24,11 @@
     <cfset argumentCollection.category = url.cat>
 </cfif>
 <cfset products = control.getProduct(argumentCollection=argumentCollection)>
+<cfif structKeyExists(form, 'filterbtn')
+    AND structKeyExists(form, 'check')
+    AND len(form.check) GT 0>
+        <cflocation  url="index.cfm?range=#form.check#" addToken="no">
+</cfif>
 <html lang="en">
 	<head>
 		<link href="/css/admin.css" rel="stylesheet">
@@ -28,13 +41,13 @@
                 Shopping Cart
             </a>
             <form class="flex-grow-1 d-flex">
-                <input name="keyword" id="keyword" class="form-control me-2" type="text" placeholder="Search" required>
+                <input name="keyword" id="keyword" class="form-control me-2" type="text" placeholder="Search for products" required>
                 <button name="search" id="search" class="btn btn-primary" type="submit" value="keyword">
                     <img src="/images/search.png" class="img-fluid" alt="Cart" width="30" height="30">
                 </button>
             </form>
             <ul class="flex-grow-1 navbar-nav nav-tabs nav-justified">
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown" title="Menu">
                     <a class="nav-link dropdown-toggle <cfif structKeyExists(url, 'cat')>active</cfif>" href="" data-bs-toggle="dropdown">
                         <img src="/images/menu.png" class="img-fluid" alt="Cart" width="30" height="30">
                     </a>
@@ -117,16 +130,19 @@
 				</h1>
 		</nav>
         <div class="container d-flex justify-content-center p-3 gap-5">
-            <h2 class="text-center text-success">
-                PRICE
-            </h2>
-            <cfoutput>
-                <cfset variables.url = cgi.HTTP_URL>
-                <cfset variables.url = REReplace(variables.url, "[&?]sort=[^&]*", "", "all")>
-                <cfset variables.url = variables.url & (find('?', variables.url) ? '&' : '?')>
-                <a href="#variables.url#sort=pricelow" class="btn btn-success">Low to High</a>
-                <a href="#variables.url#sort=pricehigh" class="btn btn-success">High to Low</a>
-            </cfoutput>
+            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal" data-bs-action="filter">Filter</button>
+            <div class="border border-2 border-secondary rounded d-flex justify-content-center align-items-center p-3 gap-1">
+                <h5 class="text-center text-success">
+                    PRICE
+                </h5>
+                <cfoutput>
+                    <cfset variables.url = cgi.HTTP_URL>
+                    <cfset variables.url = REReplace(variables.url, "[&?]sort=[^&]*", "", "all")>
+                    <cfset variables.url = variables.url & (find('?', variables.url) ? '&' : '?')>
+                    <a href="#variables.url#sort=pricelow" class="btn btn-success">Low to High</a>
+                    <a href="#variables.url#sort=pricehigh" class="btn btn-success">High to Low</a>
+                </cfoutput>
+            </div>
         </div>
         <div class="container-fluid d-flex flex-row flex-wrap justify-content-evenly gap-5 p-5">
             <cfif arrayLen(products) NEQ 0>
@@ -147,6 +163,38 @@
             <cfelse>
                 <h1 class="text-center text-warning">Products items Empty!!</h1>
             </cfif>
+        </div>
+        <div class="modal fade" id="modal" tabindex="-1" role="dialog" data-bs-theme="dark">
+            <div class="modal-dialog">
+                <div class="modal-content d-flex p-3">
+                    <div class="modal-header d-flex">
+                        <h2 id="modalhead" class="modal-title flex-grow-1 fw-bold text-primary text-center">Shipping Address Details</h2>
+                        <button type="button" class="btn-close border rounded" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form id="addressForm" name="addressForm" class="modal-body d-flex flex-column gap-2 p-3" action="" method="post" enctype="multipart/form-data">
+                        <div class="form-check">
+                            <input class="form-check-input bg-primary" type="radio" name="check" value="10000">
+                            <label class="form-check-label text-white">Price less than 10000</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input bg-primary" type="radio" name="check" value="10000,50000">
+                            <label class="form-check-label text-white">Price 10000 to 50000</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input bg-primary" type="radio" name="check" value="50000,100000">
+                            <label class="form-check-label text-white">Price 50000 to 100000</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input bg-primary" type="radio" name="check" value="100000,max">
+                            <label class="form-check-label text-white">Price more than 100000</label>
+                        </div>
+                    </form>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button name="filterbtn" id="filterbtn" type="submit" class="btn btn-outline-success fw-bold" form="addressForm">Filter</button>
+                        <button type="button" class="btn btn-outline-danger fw-bold" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
         </div>
 		<script type="text/javascript" src="/js/jQuery.js"></script>
 		<script type="text/javascript" src="/js/home.js"></script>

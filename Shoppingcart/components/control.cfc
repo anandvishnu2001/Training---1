@@ -30,7 +30,7 @@
     <cffunction  name="userLogin" access="public">
         <cfargument  name="user" type="string" required="true">
         <cfargument  name="password" type="string" required="true">
-        <cfset local.user = message = "">
+        <cfset local.message = "">
         <cfif len(arguments.user) NEQ 0 
             AND len(arguments.password) NEQ 0>
                 <cfquery name="local.checkLog" datasource="shopping">
@@ -38,6 +38,7 @@
                         userid,
                         username,
                         email,
+                        password,
                         phone,
                         image,
                         status
@@ -62,7 +63,40 @@
                     <cfset session.user.access = false>
                 </cfif>
             <cfelse>
-                <cfset local.message = "*Missisng email or password">
+                <cfset local.message = "*Missing email or password">
+        </cfif>
+        <cfreturn local.message>
+    </cffunction>
+
+    <cffunction  name="userEmailChange" access="public">
+        <cfargument  name="user" type="string" required="true">
+        <cfargument  name="email" type="string" required="true">
+        <cfset local.message = "">
+        <cfif len(arguments.user) NEQ 0 
+            AND len(arguments.email) NEQ 0>
+                <cfquery name="local.checkLog" datasource="shopping">
+                    SELECT
+                        email
+                    FROM
+                        user
+                    WHERE
+                        email = <cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar">
+                </cfquery>
+                <cfif local.checkLog.recordCount EQ 0>
+                    <cfquery name="local.checkLog" datasource="shopping">
+                        UPDATE
+                            user
+                        SET
+                            email = <cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar">
+                        WHERE
+                            userid = <cfqueryparam value="#arguments.user#" cfsqltype="cf_sql_varchar">
+                    </cfquery>
+                    <cfset session.user.email = arguments.email>
+                <cfelse>
+                    <cfset local.message = "*This email already has an account">
+                </cfif>
+            <cfelse>
+                <cfset local.message = "*Missing email">
         </cfif>
         <cfreturn local.message>
     </cffunction>
@@ -207,6 +241,7 @@
                         image,
                         description,
                         price,
+                        tax,
                         subcategoryid,
                         status,
                         createdat,
@@ -216,7 +251,8 @@
                     <cfqueryparam value="#arguments.data.name#" cfsqltype="cf_sql_varchar">,
                     <cfqueryparam value="#arguments.data.image#" cfsqltype="cf_sql_varchar">,
                     <cfqueryparam value="#arguments.data.description#" cfsqltype="cf_sql_varchar">,
-                    <cfqueryparam value="#arguments.data.price#" cfsqltype="cf_sql_varchar">,
+                    <cfqueryparam value="#arguments.data.price#" cfsqltype="cf_sql_decimal">,
+                    <cfqueryparam value="#arguments.data.tax#" cfsqltype="cf_sql_integer">,
                     <cfqueryparam value="#arguments.data.subcategorySelect#" cfsqltype="cf_sql_integer">,
                     <cfqueryparam value="1" cfsqltype="cf_sql_integer">,
                     <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
@@ -234,6 +270,7 @@
                     name = <cfqueryparam value="#arguments.data.name#" cfsqltype="cf_sql_varchar">,
                     description = <cfqueryparam value="#arguments.data.description#" cfsqltype="cf_sql_varchar">,
                     price = <cfqueryparam value="#arguments.data.price#" cfsqltype="cf_sql_decimal">,
+                    tax = <cfqueryparam value="#arguments.data.tax#" cfsqltype="cf_sql_integer">,
                     subcategoryid = <cfqueryparam value="#arguments.data.subcategorySelect#" cfsqltype="cf_sql_integer">,
                     lasteditedat = <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp">,
                     lasteditedby = <cfqueryparam value="#arguments.data.admin#" cfsqltype="cf_sql_integer">
@@ -280,7 +317,7 @@
     </cffunction>
 
     <cffunction  name="getSubcategory" access="remote" returnFormat="JSON">
-        <cfargument  name="category" type="integer" required="true">
+        <cfargument  name="category" type="integer" required="false">
         <cfargument  name="subcategory" type="integer" required="false">
         <cfquery name="local.list" datasource="shopping">
             SELECT
@@ -294,8 +331,10 @@
                 subcategory
             WHERE
                 status = 1
-            AND
-                categoryid = <cfqueryparam value="#arguments.category#" cfsqltype="cf_sql_integer">
+                <cfif structKeyExists(arguments, 'category')>
+                    AND
+                        categoryid = <cfqueryparam value="#arguments.category#" cfsqltype="cf_sql_integer">
+                </cfif>
                 <cfif structKeyExists(arguments, 'subcategory')>
                     AND
                         subcategoryid = <cfqueryparam value="#arguments.subcategory#" cfsqltype="cf_sql_integer">
@@ -321,6 +360,7 @@
         <cfargument  name="product" type="integer" required="false">
         <cfargument  name="search" type="string" required="false">
         <cfargument  name="sort" type="string" required="false">
+        <cfargument  name="range" type="string" required="false">
         <cfargument  name="status" type="string" required="false">
         <cfquery name="local.list" datasource="shopping">
             SELECT
@@ -329,6 +369,7 @@
                 image,
                 description,
                 price,
+                tax,
                 status,
                 createdat,
                 lasteditedat,
@@ -365,10 +406,32 @@
                 AND
                     name LIKE <cfqueryparam value="%#arguments.search#%" cfsqltype="cf_sql_varchar">
             </cfif>
+            <cfif structKeyExists(arguments, 'range')>
+                <cfset local.rangeLen = listLen(arguments.range)>
+                <cfif local.rangeLen GT 1>
+                    <cfset local.rangeArray = listToArray(arguments.range)>
+                    <cfif local.rangeArray[2] EQ 'max'>
+                        AND
+                            price > <cfqueryparam value="#local.rangeArray[1]#" cfsqltype="cf_sql_decimal">
+                    <cfelse>
+                        AND
+                            price
+                                BETWEEN
+                                    <cfqueryparam value="#local.rangeArray[1]#" cfsqltype="cf_sql_decimal">
+                                AND
+                                    <cfqueryparam value="#local.rangeArray[2]#" cfsqltype="cf_sql_decimal">
+                    </cfif>
+                <cfelseif local.rangeLen GT 0>
+                    AND
+                        price < <cfqueryparam value="#arguments.range#" cfsqltype="cf_sql_decimal">
+                </cfif>
+            </cfif>
             <cfif structKeyExists(arguments, 'sort')>
                 <cfif arguments.sort EQ 'random'>
                     ORDER BY RAND()
-                    LIMIT 6
+                    <cfif NOT structKeyExists(arguments, 'range')>
+                        LIMIT 6
+                    </cfif>
                 <cfelseif arguments.sort EQ 'pricelow'>
                     ORDER BY price ASC
                 <cfelseif arguments.sort EQ 'pricehigh'>
@@ -385,6 +448,7 @@
                 "image" : local.list.image,
                 "description" : local.list.description,
                 "price" : local.list.price,
+                "tax" : local.list.tax,
                 "createdat" : local.list.createdat,
                 "lasteditedat" : local.list.lasteditedat,
                 "createdby": local.list.createdby,
@@ -640,22 +704,22 @@
 
     <cffunction  name="payOrder" access="public">
         <cfargument  name="data" type="struct" required="true">
-        <cfset local.result = {
+        <cfset local.output = {
             'error' = []
         }>
         <cfif arguments.data.cardno NEQ "1234567890654321">
-            <cfset arrayAppend(local.result.error, "*incorrect card no")>
+            <cfset arrayAppend(local.output.error, "*incorrect card no")>
         </cfif>
         <cfif arguments.data.expiry NEQ "01/30">
-            <cfset arrayAppend(local.result.error, "*incorrect expiration date")>
+            <cfset arrayAppend(local.output.error, "*incorrect expiration date")>
         </cfif>
         <cfif arguments.data.cvv NEQ "321">
-            <cfset arrayAppend(local.result.error, "*incorrect cvv")>
+            <cfset arrayAppend(local.output.error, "*incorrect cvv")>
         </cfif>
         <cfif arguments.data.cardname NEQ "ANAND VISHNU K V">
-            <cfset arrayAppend(local.result.error, "*incorrect holder name")>
+            <cfset arrayAppend(local.output.error, "*incorrect holder name")>
         </cfif>
-        <cfif arrayLen(local.result.error) EQ 0>
+        <cfif arrayLen(local.output.error) EQ 0>
             <cfset local.id = createUUID()>
             <cfquery name="local.add" datasource="shopping">
                 INSERT INTO
@@ -672,7 +736,7 @@
                     <cfqueryparam value="#arguments.data.user#" cfsqltype="cf_sql_integer">
                 );
             </cfquery>
-            <cfset local.result['order'] = local.id>
+            <cfset local.output['order'] = local.id>
             <cfset local.items = []>
             <cfif arguments.data.idType EQ 'cart'>
                 <cfset local.cart = getCart(arguments.data.user)>
@@ -713,7 +777,7 @@
                 </cfloop>
             </cfif>
         </cfif>
-        <cfreturn local.result>
+        <cfreturn local.output>
     </cffunction>
 
     <cffunction  name="getOrderitem" access="remote" returnFormat="JSON">

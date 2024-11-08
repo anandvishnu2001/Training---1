@@ -1,6 +1,6 @@
 <cfset control = CreateObject("component", "components.control")>
-<cfif NOT (structKeyExists(session, "user") 
-    AND session.user.access)>
+<cfif NOT structKeyExists(session, "user") 
+    OR NOT session.user.access>
         <cflocation  url="login.cfm?log=1" addToken="no">
 <cfelse>
     <cfset variables.carter = control.getCart(session.user.user)>
@@ -22,15 +22,25 @@
     </cfif>
     <cfset variables.error = control.modifyShipping(data=variables.shipping)>
     <cfif arrayLen(variables.error) NEQ 0>
-        <div class="alert alert-danger alert-dismissible fade show text-center mt-5 z-3 fw-bold">
+        <nav class="alert alert-danger alert-dismissible fade show text-center mt-5 z-3 fw-bold">
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             <cfoutput>
                 #arrayToList(variables.error)#
             </cfoutput>
-        </div>
+        </nav>
     </cfif>
 <cfelseif structKeyExists(form, 'dltbtn')>
     <cfset control.deleteShipping(id=form.shippingId)>
+<cfelseif structKeyExists(form, 'emailbtn')>
+    <cfset variables.message = control.userEmailChange(user=session.user.user,email=form.email)>
+    <cfif len(variables.message) NEQ 0>
+        <nav class="alert alert-danger alert-dismissible fade show text-center mt-5 z-3 fw-bold">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <cfoutput>
+                #variables.message#
+            </cfoutput>
+        </nav>
+    </cfif>
 </cfif>
 <html lang="en">
 	<head>
@@ -67,23 +77,27 @@
         <div class="container-fluid d-flex flex-row flex-wrap align-items-start justify-content-start z-0 h-100 p-0 mt-5">
             <cfoutput>
                 <div class="bg-dark h-100 d-flex flex-column align-items-center fw-bold col-4 gap-5 p-5">
-                    <img class="img-fluid img-thumbnail rounded-circle" src="/uploads/#session.user.image#"
-                        alt="Card image" height="80" data-bs-theme="dark">
-                    <h1 class="text-info fw-bold">#session.user.name#</h1>
-                <div class="d-grid fw-bold gap-5">
-                    <button id="address-btn" class="btn fw-bold btn-outline-primary btn-block">
-                        <img src="/images/address.png" class="img-fluid" alt="Login" width="40" height="40">
-                        Manage Addresses
-                    </button>
-                    <button id="order-btn" class="btn fw-bold btn-outline-primary btn-block">
-                        <img src="/images/order.png" class="img-fluid" alt="Login" width="40" height="40">
-                        Order Details
-                    </button>
+                    <a href="user.cfm">
+                        <img class="img-fluid img-thumbnail rounded-circle" src="/uploads/#session.user.image#"
+                            alt="Card image" height="80" data-bs-theme="dark">
+                    </a>
+                    <div class="d-grid fw-bold gap-5">
+                        <button id="account-btn" class="btn fw-bold btn-outline-primary btn-block">
+                            <img src="/images/account.png" class="img-fluid" alt="Login" width="40" height="40">
+                            Account Details
+                        </button>
+                        <button id="address-btn" class="btn fw-bold btn-outline-primary btn-block">
+                            <img src="/images/address.png" class="img-fluid" alt="Login" width="40" height="40">
+                            Manage Addresses
+                        </button>
+                        <button id="order-btn" class="btn fw-bold btn-outline-primary btn-block">
+                            <img src="/images/order.png" class="img-fluid" alt="Login" width="40" height="40">
+                            Order Details
+                        </button>
                     </div>
                 </div>
             </cfoutput>
-            <div class="h-100 d-flex flex-column fw-bold col-8 p-5">
-                <div></div>
+            <div class="h-100 d-flex flex-column z-0 fw-bold col-8 p-5">
                 <div id="address-card" class="card z-1 bg-light h-100 fw-bold">
                     <h1 class="card-header card-title text-white bg-primary">Manage Addresses</h1>
                     <div class="card-body overflow-y-scroll d-grid gap-5 m-2">
@@ -210,6 +224,50 @@
                         </cfloop>
                     </div>
                 </div>
+                <cfoutput>
+                    <div class="h-100 position-absolute z-0 d-flex flex-column align-items-center fw-bold">
+                        <h1 class="container-fluid text-center">
+                            <span class="text-muted">Name of User :</span>
+                            <span class="text-primary">#session.user.name#</span>
+                        </h1>
+                        <div class="container-fluid h-50 d-flex flex-column fw-bold">
+                            <cfoutput>
+                                <form class="container-fluid" action="" method="post">
+                                    <fieldset class="d-flex flex-wrap border border-2 rounded gap-5 p-3">
+                                        <legend>Email</legend>
+                                        <div class="col-8 form-floating">
+                                            <input class="flex-grow-1 form-control bg-primary text-light fw-bold" type="text" id="email" 
+                                                name="email" placeholder="" value="#session.user.email#">
+                                            <label for="email" class="form-label">Email</label>
+                                        </div>
+                                        <button id="emailbtn" name="emailbtn" type="submit" class="btn btn-outline-success fw-bold">Change</button>
+                                    </fieldset>
+                                </form>
+                                <form class="container-fluid">
+                                    <fieldset class="d-flex flex-wrap border border-2 rounded gap-5 p-3">
+                                        <legend>Password</legend>
+                                        <div class="col-5 form-floating">
+                                            <input class="form-control bg-primary text-light fw-bold" type="text" id="currentPassword"
+                                                name="currentPassword" placeholder="">
+                                            <label for="currentPassword" class="form-label">Current Password</label>
+                                        </div>
+                                        <div class="col-5 form-floating">
+                                            <input class="form-control bg-primary text-light fw-bold" type="text" id="newPassword"
+                                                name="newPassword" placeholder="">
+                                            <label for="newPassword" class="form-label">New Password</label>
+                                        </div>
+                                        <div class="col-5 form-floating">
+                                            <input class="form-control bg-primary text-light fw-bold" type="text" id="confirmPassword"
+                                                name="confirmPassword" placeholder="">
+                                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                        </div>
+                                        <button id="passwordbtn" name="passwordbtn" type="submit" class="btn btn-outline-success fw-bold">Change</button>
+                                    </fieldset>
+                                </form>
+                            </cfoutput>
+                        </div>
+                    </div>
+                </cfoutput>
             </div>
             <div class="modal fade" id="modal" tabindex="-1" role="dialog" data-bs-theme="dark">
                 <div class="modal-dialog">
