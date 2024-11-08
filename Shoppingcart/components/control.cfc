@@ -30,34 +30,41 @@
     <cffunction  name="userLogin" access="public">
         <cfargument  name="user" type="string" required="true">
         <cfargument  name="password" type="string" required="true">
-        <cfquery name="local.checkLog" datasource="shopping">
-            SELECT
-                userid,
-                username,
-                email,
-                phone,
-                image,
-                status
-            FROM
-                user
-            WHERE
-                username = <cfqueryparam value="#arguments.user#" cfsqltype="cf_sql_varchar">
-            AND
-                password = <cfqueryparam value="#arguments.password#" cfsqltype="cf_sql_varchar">
-        </cfquery>
-        <cfif local.checkLog.recordCount NEQ 0>
-            <cfset session.user = {
-                "access" = true,
-                "user" = local.checkLog.userid,
-                "name" = local.checkLog.username,
-                "email" = local.checkLog.email,
-                "phone" = local.checkLog.phone,
-                "image" = local.checkLog.image
-            }>
-        <cfelse>
-            <cfset structClear(session.user)>
-            <cfset session.user.access = false>
+        <cfset local.user = message = "">
+        <cfif len(arguments.user) NEQ 0 
+            AND len(arguments.password) NEQ 0>
+                <cfquery name="local.checkLog" datasource="shopping">
+                    SELECT
+                        userid,
+                        username,
+                        email,
+                        phone,
+                        image,
+                        status
+                    FROM
+                        user
+                    WHERE
+                        email = <cfqueryparam value="#arguments.user#" cfsqltype="cf_sql_varchar">
+                </cfquery>
+                <cfif local.checkLog.recordCount NEQ 0
+                    AND local.checkLog.password EQ arguments.password>
+                        <cfset session.user = {
+                            "access" = true,
+                            "user" = local.checkLog.userid,
+                            "name" = local.checkLog.username,
+                            "email" = local.checkLog.email,
+                            "phone" = local.checkLog.phone,
+                            "image" = local.checkLog.image
+                        }>
+                <cfelse>
+                    <cfset local.message = "*Invalid email or password">
+                    <cfset structClear(session.user)>
+                    <cfset session.user.access = false>
+                </cfif>
+            <cfelse>
+                <cfset local.message = "*Missisng email or password">
         </cfif>
+        <cfreturn local.message>
     </cffunction>
 
     <cffunction  name="validate" access="public">
