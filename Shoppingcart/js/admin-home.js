@@ -17,6 +17,8 @@ $(document).ready(function () {
   $('#modal').on('hidden.bs.modal',function(event){
     $('#modalForm').find('input','textarea','select').removeAttr('required').val();
     $('#modalForm')[0].reset();
+    $('#imageList').html('');
+    $('#imageAdd').html('');
     $('#recordId').val();
     $('#set').val();
   });
@@ -35,11 +37,26 @@ $(document).ready(function () {
             $('#subcategorySelect').html('<option value=""></option>');
             $.each(subcategoryObj, function(_, category) {
               $('#subcategorySelect').append(
-                $('<option>', { value: category.id, text: category.name, selected: category.id == url.get('sub') })
+                $('<option>', {
+                  value: category.id,
+                  text: category.name,
+                  selected: category.id == url.get('sub')
+                })
               );
             });
           }
         });
+      });
+      $('#addImagebtn').click(function () { 
+        $('#imageAdd').append(
+          $('<input>').attr({
+            type: 'file',
+            name: 'productPic',
+            class: 'form-control text-warning',
+            accept: 'image/*',
+            required: true
+          })
+        ); 
       });
     }
   });
@@ -56,8 +73,8 @@ $(document).ready(function () {
       $('.subcategorySelect').addClass("d-none");
     if(!$('#product').hasClass("d-none"))
       $('#product').addClass("d-none");
-    if(!$('#editImageView').hasClass("d-none"))
-      $('#editImageView').addClass("d-none");
+    if(!$('#imageModify').hasClass("d-none"))
+      $('#imageModify').addClass("d-none");
     if(!$('#okbtn').hasClass("d-none"))
       $('#okbtn').addClass("d-none");
     if(!$('.delete-mode').hasClass("d-none"))
@@ -142,10 +159,24 @@ $(document).ready(function () {
                               $('#productName').val(productObj[0].name);
                               $('#productDesc').val(productObj[0].description);
                               $('#price').val(productObj[0].price);
+                              $('#tax').val(productObj[0].tax);
                               $('#recordId').val(productObj[0].id);
                               $('#product').removeClass("d-none").find('input','textarea','select').attr('required', 'true');
-                              $('#productPic').removeAttr('required');
-                              $('#editImageView').removeClass("d-none").attr("src", `/uploads/${productObj[0].image}`);
+                              $('#imageModify').removeClass("d-none");
+                              $.each(productObj[0].images, function(_, value) {
+                                $('#imageList').append(
+                                  $('<li>').addClass('list-group-item')
+                                    .append(
+                                      $('<img>').attr({
+                                        src: `/uploads/${value.image}`,
+                                        class: 'img-thumbnail',
+                                        alt: 'viewImage',
+                                        'data-bs-theme': 'dark',
+                                        width: 100
+                                      })
+                                    )
+                                );
+                              });
                             }
                           });
                         }

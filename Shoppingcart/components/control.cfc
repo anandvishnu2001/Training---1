@@ -134,6 +134,11 @@
                 <cfelse>
                     <cfset arrayAppend(local.input.message, '*Product price required')>
                 </cfif>
+                <cfif structKeyExists(arguments.data, 'tax') AND len(arguments.data.tax) NEQ 0>
+                    <cfset local.input.data['tax'] = arguments.data.tax>
+                <cfelse>
+                    <cfset arrayAppend(local.input.message, '*Product tax rate not specified')>
+                </cfif>
                 <cfif NOT structKeyExists(arguments.data, 'recordId')
                     OR (structKeyExists(arguments.data, 'productPic') 
                         AND len(arguments.data.productPic) NEQ 0)>
@@ -366,7 +371,6 @@
             SELECT
                 productid,
                 name,
-                image,
                 description,
                 price,
                 tax,
@@ -382,70 +386,88 @@
                 <cfif NOT structKeyExists(arguments, 'status')>
                     status = 1
                 </cfif>
-            <cfif structKeyExists(arguments, 'category')>
-                AND
-                    subcategoryid IN (
-                        SELECT
-                            subcategoryid
-                        FROM
-                            subcategory
-                        WHERE
-                            categoryid = <cfqueryparam value="#arguments.category#" cfsqltype="cf_sql_integer">
-                    )
-            <cfelseif structKeyExists(arguments, 'subcategory')>
-                AND
-                    subcategoryid = <cfqueryparam value="#arguments.subcategory#" cfsqltype="cf_sql_integer">
-            </cfif>
-            <cfif structKeyExists(arguments, 'product')>
-                <cfif NOT structKeyExists(arguments, 'status')>
+                <cfif structKeyExists(arguments, 'category')>
                     AND
-                </cfif>
-                    productid = <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_integer">
-            </cfif>
-            <cfif structKeyExists(arguments, 'search') AND arguments.search GT 0>
-                AND
-                    name LIKE <cfqueryparam value="%#arguments.search#%" cfsqltype="cf_sql_varchar">
-            </cfif>
-            <cfif structKeyExists(arguments, 'range')>
-                <cfset local.rangeLen = listLen(arguments.range)>
-                <cfif local.rangeLen GT 1>
-                    <cfset local.rangeArray = listToArray(arguments.range)>
-                    <cfif local.rangeArray[2] EQ 'max'>
-                        AND
-                            price > <cfqueryparam value="#local.rangeArray[1]#" cfsqltype="cf_sql_decimal">
-                    <cfelse>
-                        AND
-                            price
-                                BETWEEN
-                                    <cfqueryparam value="#local.rangeArray[1]#" cfsqltype="cf_sql_decimal">
-                                AND
-                                    <cfqueryparam value="#local.rangeArray[2]#" cfsqltype="cf_sql_decimal">
-                    </cfif>
-                <cfelseif local.rangeLen GT 0>
+                        subcategoryid IN (
+                            SELECT
+                                subcategoryid
+                            FROM
+                                subcategory
+                            WHERE
+                                categoryid = <cfqueryparam value="#arguments.category#" cfsqltype="cf_sql_integer">
+                        )
+                <cfelseif structKeyExists(arguments, 'subcategory')>
                     AND
-                        price < <cfqueryparam value="#arguments.range#" cfsqltype="cf_sql_decimal">
+                        subcategoryid = <cfqueryparam value="#arguments.subcategory#" cfsqltype="cf_sql_integer">
                 </cfif>
-            </cfif>
-            <cfif structKeyExists(arguments, 'sort')>
-                <cfif arguments.sort EQ 'random'>
-                    ORDER BY RAND()
-                    <cfif NOT structKeyExists(arguments, 'range')>
-                        LIMIT 6
+                <cfif structKeyExists(arguments, 'product')>
+                    <cfif NOT structKeyExists(arguments, 'status')>
+                        AND
                     </cfif>
-                <cfelseif arguments.sort EQ 'pricelow'>
-                    ORDER BY price ASC
-                <cfelseif arguments.sort EQ 'pricehigh'>
-                    ORDER BY price DESC
+                        productid = <cfqueryparam value="#arguments.product#" cfsqltype="cf_sql_integer">
                 </cfif>
-            </cfif>
+                <cfif structKeyExists(arguments, 'search') AND arguments.search GT 0>
+                    AND
+                        name LIKE <cfqueryparam value="%#arguments.search#%" cfsqltype="cf_sql_varchar">
+                </cfif>
+                <cfif structKeyExists(arguments, 'range')>
+                    <cfset local.rangeLen = listLen(arguments.range)>
+                    <cfif local.rangeLen GT 1>
+                        <cfset local.rangeArray = listToArray(arguments.range)>
+                        <cfif local.rangeArray[2] EQ 'max'>
+                            AND
+                                price > <cfqueryparam value="#local.rangeArray[1]#" cfsqltype="cf_sql_decimal">
+                        <cfelse>
+                            AND
+                                price
+                                    BETWEEN
+                                        <cfqueryparam value="#local.rangeArray[1]#" cfsqltype="cf_sql_decimal">
+                                    AND
+                                        <cfqueryparam value="#local.rangeArray[2]#" cfsqltype="cf_sql_decimal">
+                        </cfif>
+                    <cfelseif local.rangeLen GT 0>
+                        AND
+                            price < <cfqueryparam value="#arguments.range#" cfsqltype="cf_sql_decimal">
+                    </cfif>
+                </cfif>
+                <cfif structKeyExists(arguments, 'sort')>
+                    <cfif arguments.sort EQ 'random'>
+                        ORDER BY RAND()
+                        <cfif NOT structKeyExists(arguments, 'range')>
+                            LIMIT 6
+                        </cfif>
+                    <cfelseif arguments.sort EQ 'pricelow'>
+                        ORDER BY price ASC
+                    <cfelseif arguments.sort EQ 'pricehigh'>
+                        ORDER BY price DESC
+                    </cfif>
+                </cfif>
             ;
         </cfquery>
         <cfset local.output = []>
         <cfoutput query="local.list">
+            <cfquery name="local.image" datasource="shopping">
+                SELECT
+                    imageid,
+                    image
+                FROM
+                    image
+                WHERE
+                    status = 1
+                AND
+                    productid = <cfqueryparam value="#local.list.productid#" cfsqltype="cf_sql_decimal">
+            </cfquery>
+            <cfset local.images = []>
+            <cfloop query="local.image">
+                <cfset arrayAppend(local.images, {
+                    "id" : local.image.imageid,
+                    "image" : local.image.image
+                })>
+            </cfloop>
             <cfset arrayAppend(local.output, {
                 "id" : local.list.productid,
                 "name" : local.list.name,
-                "image" : local.list.image,
+                "images" : local.images,
                 "description" : local.list.description,
                 "price" : local.list.price,
                 "tax" : local.list.tax,
@@ -745,6 +767,7 @@
                     <cfset arrayAppend(local.items, {
                         'product' = item.product,
                         'quantity' = item.quantity,
+                        'tax' = local.product[1].tax,
                         'price' = local.product[1].price
                     })>
                 </cfloop>
@@ -754,6 +777,7 @@
                 <cfset arrayAppend(local.items, {
                         'product' = local.product[1].id,
                         'quantity' = 1,
+                        'tax' = local.product[1].tax,
                         'price' = local.product[1].price
                     })>
             </cfif>
@@ -764,12 +788,14 @@
                             orderitem(
                                 quantity,
                                 price,
+                                tax,
                                 orderid,
                                 productid
                             )
                         VALUES(
                             <cfqueryparam value="#item.quantity#" cfsqltype="cf_sql_varchar">,
                             <cfqueryparam value="#item.price#" cfsqltype="cf_sql_decimal">,
+                            <cfqueryparam value="#item.tax#" cfsqltype="cf_sql_integer">,
                             <cfqueryparam value="#local.id#" cfsqltype="cf_sql_varchar">,
                             <cfqueryparam value="#item.product#" cfsqltype="cf_sql_integer">
                         )
@@ -786,7 +812,8 @@
             SELECT
                 productid,
                 quantity,
-                price
+                price,
+                tax
             FROM
                 orderitem
             WHERE
@@ -797,7 +824,8 @@
             <cfset arrayAppend(local.output, {
                 "product" : local.list.productid,
                 'quantity' = local.list.quantity,
-                'price' = local.list.price
+                'price' = local.list.price,
+                'tax' = local.list.tax
             })>
         </cfoutput>
         <cfreturn local.output>
@@ -843,7 +871,6 @@
             <cfloop array="#local.items#" index="index" item="item">
                 <cfset local.product = getProduct(product=item.product,status="nostatus")>
                 <cfset local.items[index]['name'] = local.product[1].name>
-                <cfset local.items[index]['image'] = local.product[1].image>
             </cfloop>
             <cfset arrayAppend(local.output, {
                 "id" : local.list.orderid,

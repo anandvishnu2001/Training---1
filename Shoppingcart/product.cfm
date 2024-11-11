@@ -86,7 +86,7 @@
                             <div class="col-md-6 d-flex flex-column justify-content-evenly align-items-center fw-bold">
                                 <h1 class="card-title text-dark">#products[1].name#</h1>
                                 <h3 class="card-text text-muted">#products[1].description#</h3>
-                                <h2 class="card-text text-danger">#products[1].price#</h2>
+                                <h2 class="card-text text-danger">#products[1].price+(products[1].price*products[1].tax/100)#</h2>
                                 <div class="container-fluid btn-group btn-group-lg">
                                     <a class="card-link btn btn-success" href="cart.cfm?pro=#products[1].id#">
                                         Add to <img src="/images/cart.png" class="img-fluid" alt="Cart" width="30" height="30">

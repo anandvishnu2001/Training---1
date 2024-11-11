@@ -101,6 +101,7 @@
                 <div class="card h-75 bg-light fw-bold p-3">
                     <h2 class="card-header fw-bold text-primary">Order Details</h2>
                     <cfset variables.orderTotal = 0>
+                    <cfset variables.orderTax = 0>
                     <cfif structKeyExists(url, 'pro')>
                         <cfset variables.orderItem = control.getProduct(product=url.pro)>
                         <cfoutput>
@@ -109,8 +110,10 @@
                                     alt="Card image" height="40" data-bs-theme="dark">
                                 <div class="col-5 d-flex flex-column justify-content-evenly fw-bold">
                                 <p class="card-title text-info">#variables.orderItem[1].name#</p>
-                                <cfset variables.orderTotal += variables.orderItem[1].price>
-                                <p class="card-text text-danger">#variables.orderItem[1].price#</p>
+                                <cfset variables.orderTotal += variables.orderItem[1].price+(variables.orderItem[1].price*variables.orderItem[1].tax/100)>
+                                <cfset variables.orderTax += variables.orderItem[1].price*variables.orderItem[1].tax/100>
+                                <p class="card-text text-danger">#numberFormat(variables.orderItem[1].price+(variables.orderItem[1].price*variables.orderItem[1].tax/100),'.__')#</p>
+                                <p class="card-text text-warning">#numberFormat(variables.orderItem[1].price*variables.orderItem[1].tax/100,'.__')#</p>
                                 </div>
                             </div>
                         </cfoutput>
@@ -120,14 +123,19 @@
                                     <li class="list-group-item d-flex flex-column gap-3 p-5">
                                         <cfset variables.orderItem = control.getProduct(product=item.product)>
                                         <cfoutput>
-                                            <div class="d-flex flex-row flex-wrap justify-content-evenly">
+                                            <div class="d-flex flex-row flex-wrap justify-content-evenly gap-1">
                                                 <img class="card-img w-25 h-auto img-fluid img-thumbnail" src="/uploads/#variables.orderItem[1].image#"
                                                     alt="Card image" height="40" data-bs-theme="dark">
-                                                <div class="col-5 d-flex flex-column justify-content-evenly fw-bold">
+                                                <div class="col-5 d-flex flex-column fw-bold">
                                                     <p class="card-title text-info">#variables.orderItem[1].name#</p>
-                                                    <p class="card-text text-warning">#variables.orderItem[1].price#</p>
-                                                    <cfset variables.orderTotal += variables.orderItem[1].price*item.quantity>
-                                                    <p class="card-text text-danger">#numberFormat(variables.orderItem[1].price*item.quantity,'.__')#</p>
+                                                    <p class="card-text text-danger">#numberFormat(variables.orderItem[1].price+(variables.orderItem[1].price*variables.orderItem[1].tax/100),'.__')#</p>
+                                                    <p class="card-text text-warning">#orderItem[1].tax#%</p>
+                                                    <cfset variables.orderTotal += (variables.orderItem[1].price+(variables.orderItem[1].price*variables.orderItem[1].tax/100))*item.quantity>
+                                                    <cfset variables.orderTax += (variables.orderItem[1].price*variables.orderItem[1].tax/100)*item.quantity>
+                                                </div>
+                                                <div class="col-5 d-flex flex-column fw-bold">
+                                                    <p class="card-text text-danger">Total Price: #numberFormat((variables.orderItem[1].price+(variables.orderItem[1].price*variables.orderItem[1].tax/100))*item.quantity,'.__')#</p>
+                                                    <p class="card-text text-warning">Total Tax: #numberFormat((variables.orderItem[1].price*variables.orderItem[1].tax/100)*item.quantity,'.__')#</p>
                                                 </div>
                                             </div>
                                         </cfoutput>
@@ -139,8 +147,11 @@
                     </cfif>
                 </div>
             </div>
-            <div class="card bg-light fw-bold float-right col-4 p-3 gap-5 p-5">
-                <p class="card-text bg-info text-center text-danger">Total Price :<br><cfoutput>#numberFormat(variables.orderTotal,'.__')#</cfoutput></p>
+            <div class="card bg-light fw-bold col-4 p-3 gap-5 p-5">
+                <p class="card-text bg-info text-center text-danger">
+                    Total Payable Amount : <cfoutput>#numberFormat(variables.orderTotal,'.__')#</cfoutput><br>
+                    Total Estimated Tax : <cfoutput>#numberFormat(variables.orderTax,'.__')#</cfoutput>
+                </p>
                 <button id="paymentbtn" class="btn btn-success"
                     data-bs-target="#modal" data-bs-toggle="modal" data-bs-action="pay"
                     <cfoutput>

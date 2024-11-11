@@ -125,30 +125,31 @@
                 <cfif structKeyExists(url, 'sub')>
                     <p class="h2 card-header card-title text-center text-success">Products</p>
                     <div id="productlist" class="card-body list-group">
-                            <cfset categories = control.getProduct(subcategory=url.sub)>
-                            <cfif arrayLen(categories) eq 0>
+                            <cfset products = control.getProduct(subcategory=url.sub)>
+                            <cfif arrayLen(products) eq 0>
                                 <li class="list-group-item">Subcategory is empty</li>
                             <cfelse>
                                 <cfoutput>
-                                    <cfloop array="#categories#" index="category">
+                                    <cfloop array="#products#" index="product">
                                     <li class="row list-group-item d-flex justify-content-end">
                                         <div class="col-7 d-flex flex-column gap-2">
                                             <div class="d-flex gap-2">
-                                                <p class="py-2 px-3">#category.name#</p>
-                                                <p class="py-2 px-3">#category.price#</p>
+                                                <p class="py-2 px-3">#product.name#</p>
+                                                <p class="py-2 px-3">#product.price#</p>
                                                 </div>
-                                            <p class="py-2 px-3">#category.description#</p>
+                                            <p class="py-2 px-3">#product.description#</p>
                                         </div>
                                         <div class="col-4 d-flex flex-column gap-2">
-                                            <img src="/uploads/#category.image#" class="img-thumbnail img-fluid" alt="viewImage" data-bs-theme="dark">
+                                            <ul class="list-group list-group-horizontal">
+                                            </ul>
                                             <div class="d-flex gap-2">
                                                 <button class="btn btn-sm fw-bold btn-outline-success btn-block" data-bs-toggle="modal"
                                                     data-bs-target="#chr(35)#modal" data-bs-action="edit" data-bs-set="product"
-                                                    data-bs-id="#category.id#">
+                                                    data-bs-id="#product.id#">
                                                         <img src="/images/edit.png" width="30" height="30" class="img-fluid">
                                                 </button>
                                                 <button class="btn btn-sm fw-bold btn-outline-danger btn-block" data-bs-toggle="modal"
-                                                    data-bs-target="#chr(35)#modal" data-bs-action="delete" data-bs-set="product" data-bs-id="#category.id#">
+                                                    data-bs-target="#chr(35)#modal" data-bs-action="delete" data-bs-set="product" data-bs-id="#product.id#">
                                                         <img src="/images/delete.png" width="30" height="30" class="img-fluid">
                                                 </button>
                                             </div>
@@ -209,12 +210,15 @@
                                     <input class="form-control text-warning" type="text" id="price" name="price" placeholder="">
                                     <label for="price" class="form-label text-light">Price</label>
                                 </div>
-                                <div class="d-flex">
-                                    <img id="editImageView" src="" class="img-thumbnail img-fluid" alt="viewImage" data-bs-theme="dark" width="100" height="100"> 
-                                    <div class="form-floating">
-                                        <input class="form-control text-warning" type="file" name="productPic" id ="productPic" accept="image/jpeg, image/png">
-                                        <label for="productPic" class="form-label text-light text-start">Product Picture</label>	
-                                    </div>
+                                <div class="form-floating">
+                                    <input class="form-control text-warning" type="number" id="tax" name="tax" min="0" max="100" placeholder="">
+                                    <label for="tax" class="form-label text-light">Tax Rate(%)</label>
+                                </div>
+                                <div id="imageModify" class="d-flex flex-column form-floating">
+                                    <ul id="imageList" class="list-group list-group-horizontal">
+                                    </ul>
+                                    <button id="addImagebtn" class="btn btn-outline-primary fw-bold">Add Image</button>
+                                    <div id="imageAdd" class="list-group"></div>
                                 </div>
                             </fieldset>
                             <input type="hidden" name="recordId" id="recordId">

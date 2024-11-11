@@ -163,10 +163,10 @@
                                         <a class="btn btn-danger" href="order-invoice.cfm?order=#order.id#">pdf</a>
                                     </div>
                                     <cfset variables.total = 0>
+                                    <cfset variables.tax = 0>
                                     <ul class="card-body list-group p-0">
                                         <cfloop array="#order.items#" item="item">
                                             <li class="list-group-item d-flex justify-content-between">
-                                                <img src="/uploads/#item.image#" class="col-3 img-fluid" alt="Login" width="40" height="40">
                                                 <div class="col-7 d-flex flex-column">
                                                     <p class="card-text">
                                                         <span class="text-dark">Item :</span>
@@ -180,32 +180,53 @@
                                                         <span class="text-dark">Price :</span>
                                                         <span class="text-muted">
                                                             #chr(8377)#
-                                                            #numberFormat(item.price,'__.00')#
+                                                            #numberFormat(item.price+(item.price*item.tax/100),'__.00')#
+                                                        </span>
+                                                    </p>
+                                                    <p class="card-text">
+                                                        <span class="text-dark">Tax :</span>
+                                                        <span class="text-muted">
+                                                            #item.tax#%
                                                         </span>
                                                     </p>
                                                     <p class="card-text">
                                                         <span class="text-dark">Total Amount :</span>
                                                         <span class="text-muted">
                                                             #chr(8377)#
-                                                            #numberFormat(item.price*item.quantity,'__.00')#
+                                                            #numberFormat((item.price+(item.price*item.tax/100))*item.quantity,'__.00')#
                                                         </span>
                                                     </p>
-                                                    <cfset variables.total += item.price*item.quantity>
+                                                    <p class="card-text">
+                                                        <span class="text-dark">Total Tax :</span>
+                                                        <span class="text-muted">
+                                                            #chr(8377)#
+                                                            #numberFormat((item.price*item.tax/100)*item.quantity,'__.00')#
+                                                        </span>
+                                                    </p>
+                                                    <cfset variables.total += (item.price+(item.price*item.tax/100))*item.quantity>
+                                                    <cfset variables.tax += (item.price*item.tax/100)*item.quantity>
                                                 </div>
                                             </li>
                                         </cfloop>
                                     </ul>
                                     <div class="card-footer">
                                         <div class="d-flex justify-content-between">
-                                            <p class="card-text">
+                                            <p class="row card-text">
                                                 <span class="text-dark">Date of Purchase :</span>
-                                                <span class="text-muted">#dateTimeFormat(order.date,'medium')#</span>
+                                                <span class="col-12 text-muted">#dateTimeFormat(order.date,'medium')#</span>
                                             </p>
                                             <p class="card-text">
                                                 <span class="text-dark">Total Billed Amount :</span>
                                                 <span class="text-muted">
                                                     #chr(8377)#
                                                     #numberFormat(variables.total,'__.00')#
+                                                </span>
+                                            </p>
+                                            <p class="card-text">
+                                                <span class="text-dark">Total Estimated Tax :</span>
+                                                <span class="text-muted">
+                                                    #chr(8377)#
+                                                    #numberFormat(variables.tax,'__.00')#
                                                 </span>
                                             </p>
                                         </div>

@@ -66,8 +66,8 @@
                                                 alt="Card image" data-bs-theme="dark">
                                             <div class="col-5 d-flex flex-column justify-content-evenly fw-bold">
                                                 <p class="h4 card-title text-info">#variables.cartProduct[1].name#</p>
-                                                <cfset variables.cartTotal += variables.cartProduct[1].price*item.quantity>
-                                                <p class="card-text text-danger">#variables.cartProduct[1].price*item.quantity#</p>
+                                                <cfset variables.cartTotal += (variables.cartProduct[1].price+(variables.cartProduct[1].price*variables.cartProduct[1].tax/100))*item.quantity>
+                                                <p class="card-text text-danger">#(variables.cartProduct[1].price+(variables.cartProduct[1].price*variables.cartProduct[1].tax/100))*item.quantity#</p>
                                             </div>
                                         </div>
                                         <div class="d-flex justify-content-evenly">
